@@ -49,7 +49,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     var enhance by mutableStateOf(true); private set
     var sharpen by mutableStateOf(true); private set
     var blackWhite by mutableStateOf(true); private set  // rang ke halke daag bhi hat jate hain
-    var asPdf by mutableStateOf(false); private set
+    var asPdf by mutableStateOf(true); private set  // vector PDF: zoom par bhi saaf
 
     fun updateRemoveShadow(v: Boolean) { removeShadow = v; clearOutput() }
     fun updateEnhance(v: Boolean) { enhance = v; clearOutput() }
@@ -104,6 +104,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                     val work = File(ctx.cacheDir, "work").apply { deleteRecursively(); mkdirs() }
                     val pages = mutableListOf<File>()
                     val previews = mutableListOf<Bitmap>()
+                    val vectors = mutableListOf<VectorPage>()
+                    val makeVector = pdf && opts.blackWhite
                     input.forEachIndexed { i, uri ->
                         val src = ImageLoader.decodeScaled(ctx, uri, MAX_SIDE)
                             ?.let { ImageLoader.fitLongSide(it, MAX_SIDE) }
@@ -115,9 +117,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                             clean.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, it)
                         }
                         pages += f
+                        if (makeVector) vectors += VectorPage.from(clean)
                         previews += ImageLoader.scaleDown(clean, PREVIEW_SIDE)
                     }
-                    val outs = OutputFiles.build(ctx, pages, pdf, baseName())
+                    val outs = OutputFiles.build(ctx, pages, pdf, baseName(), vectors.takeIf { makeVector })
                     Triple(previews.toList() to pages.toList(), outs, outs.sumOf { it.length() })
                 }
                 cleanedPreviews = result.first.first

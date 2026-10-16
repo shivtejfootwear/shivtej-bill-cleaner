@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
@@ -23,17 +25,56 @@ object OutputFiles {
     private const val PDF_IMAGE_WIDTH_PX = 1800    // ~220 dpi: text saaf, size theek
 
     /** Saaf pages se final JPG(s) ya ek PDF banata hai, cache/out/ mein. */
-    fun build(ctx: Context, cleanedPages: List<File>, asPdf: Boolean, baseName: String): List<File> {
+    fun build(
+        ctx: Context,
+        cleanedPages: List<File>,
+        asPdf: Boolean,
+        baseName: String,
+        vectors: List<VectorPage>? = null,
+    ): List<File> {
         val outDir = File(ctx.cacheDir, "out").apply { deleteRecursively(); mkdirs() }
         return if (asPdf) {
             val pdf = File(outDir, "$baseName.pdf")
-            makePdf(cleanedPages, pdf)
+            if (vectors != null) makeVectorPdf(vectors, pdf) else makePdf(cleanedPages, pdf)
             listOf(pdf)
         } else {
             cleanedPages.mapIndexed { i, f ->
                 val name = if (cleanedPages.size == 1) "$baseName.jpg" else "${baseName}_p${i + 1}.jpg"
                 f.copyTo(File(outDir, name), overwrite = true)
             }
+        }
+    }
+
+    /** Vector PDF: har akshar ki outline path ke roop mein, isliye kitna bhi zoom karo saaf rehta hai. */
+    private fun makeVectorPdf(pages: List<VectorPage>, out: File) {
+        val doc = PdfDocument()
+        val paint = Paint().apply {
+            color = Color.BLACK
+            style = Paint.Style.FILL
+            isAntiAlias = true
+        }
+        try {
+            pages.forEachIndexed { i, vp ->
+                val pw = PDF_PAGE_WIDTH_PT
+                val s = pw.toFloat() / vp.width
+                val ph = (vp.height * s).roundToInt().coerceAtLeast(1)
+                val page = doc.startPage(PdfDocument.PageInfo.Builder(pw, ph, i + 1).create())
+                val path = Path().apply { fillType = Path.FillType.EVEN_ODD }
+                for (poly in vp.shapes) {
+                    path.moveTo(poly[0] * s, poly[1] * s)
+                    var j = 2
+                    while (j < poly.size - 1) {
+                        path.lineTo(poly[j] * s, poly[j + 1] * s)
+                        j += 2
+                    }
+                    path.close()
+                }
+                page.canvas.drawPath(path, paint)
+                doc.finishPage(page)
+            }
+            FileOutputStream(out).use { doc.writeTo(it) }
+        } finally {
+            doc.close()
         }
     }
 
