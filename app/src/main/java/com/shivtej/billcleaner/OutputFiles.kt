@@ -20,7 +20,7 @@ import kotlin.math.roundToInt
 object OutputFiles {
     const val FOLDER = "Shivtej Bill Cleaner"
     private const val PDF_PAGE_WIDTH_PT = 595      // A4 ki chaudai
-    private const val PDF_IMAGE_WIDTH_PX = 1240    // ~150 dpi: saaf bhi, chhota bhi
+    private const val PDF_IMAGE_WIDTH_PX = 1800    // ~220 dpi: text saaf, size theek
 
     /** Saaf pages se final JPG(s) ya ek PDF banata hai, cache/out/ mein. */
     fun build(ctx: Context, cleanedPages: List<File>, asPdf: Boolean, baseName: String): List<File> {

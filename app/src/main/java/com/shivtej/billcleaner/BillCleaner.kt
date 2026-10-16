@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
+import kotlin.math.roundToInt
 
 /** User ke chune hue saaf karne ke options. */
 data class CleanOptions(
@@ -22,11 +23,18 @@ data class CleanOptions(
  *     ujla hissa lete hain (kaala text gayab), phir use smooth karte hain.
  *  2. Har pixel ko us roshni se divide karte hain. Shadow wali jagah ki roshni kam thi,
  *     to woh bhi utni hi ujli ho jaati hai jitni baaki kagaz. Text kaala hi rehta hai.
- *  3. Levels: halka grey safed ho jata hai, text gehra.
+ *  3. Black & White mein: text ke kinare sharp (unsharp mask), phir "ink curve":
+ *     gehra grey pura kaala, halka grey pura safed. Isse scanned PDF jaisa saaf dikhta hai.
+ *  Photo chhoti ho to pehle badi ki jaati hai (MainViewModel), aur saare naap photo ke
+ *  size ke hisaab se badhte hain (k), taaki har size par ek jaisa result aaye.
  */
 object BillCleaner {
     private const val BLOCK = 2          // roshni ka naksha 2x chhota
-    private const val CLOSE_RADIUS = 6   // text hatane ke liye (≈26 px window)
+    private const val CLOSE_RADIUS = 6   // 1920 px photo par text hatane ke liye (≈26 px window)
+    private const val REF_SIDE = 1920f   // isi size par naap tay kiye gaye
+    private const val INK_BLACK = 110f   // isse gehra = pura kaala
+    private const val INK_WHITE = 200f   // isse halka = pura safed
+    private const val UNSHARP_AMOUNT = 1.6f
     private const val BLUR_RADIUS = 1
     private const val WHITE_AFTER_SHADOW = 210f
     private const val GAMMA = 1.6f
@@ -37,16 +45,23 @@ object BillCleaner {
         val h = src.height
         val px = IntArray(w * h)
         src.getPixels(px, 0, w, 0, 0, w, h)
+        src.recycle() // memory bachane ke liye; pixels ab px mein hain
 
+        val k = max(w, h) / REF_SIDE
         if (o.removeShadow) {
-            for (ch in 0..2) flattenChannel(px, w, h, ch)
+            val r = max(3, (CLOSE_RADIUS * k).roundToInt())
+            for (ch in 0..2) flattenChannel(px, w, h, ch, r)
         }
-        if (o.enhance) {
-            val white = if (o.removeShadow) WHITE_AFTER_SHADOW else autoWhite(px)
-            applyLevels(px, white)
+        val out = if (o.blackWhite) {
+            inkBlackWhite(px, w, h, k, o.sharpen, o.enhance)
+            px
+        } else {
+            if (o.enhance) {
+                val white = if (o.removeShadow) WHITE_AFTER_SHADOW else autoWhite(px)
+                applyLevels(px, white)
+            }
+            if (o.sharpen) sharpen(px, w, h) else px
         }
-        if (o.blackWhite) toGray(px)
-        val out = if (o.sharpen) sharpen(px, w, h) else px
 
         val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         bmp.setPixels(out, 0, w, 0, 0, w, h)
@@ -55,12 +70,12 @@ object BillCleaner {
 
     // ---------- Shadow hatana ----------
 
-    private fun flattenChannel(px: IntArray, w: Int, h: Int, ch: Int) {
+    private fun flattenChannel(px: IntArray, w: Int, h: Int, ch: Int, closeRadius: Int) {
         val shift = 16 - 8 * ch
         val sw = (w + BLOCK - 1) / BLOCK
         val sh = (h + BLOCK - 1) / BLOCK
 
-        // 1) Har 4x4 dabbe ka sabse ujla pixel
+        // 1) Har chhote dabbe ka sabse ujla pixel
         var small = FloatArray(sw * sh)
         for (y in 0 until h) {
             val row = y * w
@@ -74,8 +89,8 @@ object BillCleaner {
         // 2) "Closing": pehle aas-paas ka sabse ujla (text gayab), phir sabse dhundla
         //    (shadow ka kinara wapas apni sahi jagah). Isse shadow ke kinare par
         //    grey line / daag nahi bachta. Phir halka smooth.
-        small = rankFilter(small, sw, sh, CLOSE_RADIUS, takeMax = true)
-        small = rankFilter(small, sw, sh, CLOSE_RADIUS, takeMax = false)
+        small = rankFilter(small, sw, sh, closeRadius, takeMax = true)
+        small = rankFilter(small, sw, sh, closeRadius, takeMax = false)
         small = boxBlur(small, sw, sh, BLUR_RADIUS)
         small = boxBlur(small, sw, sh, BLUR_RADIUS)
 
@@ -215,10 +230,27 @@ object BillCleaner {
         }
     }
 
-    private fun toGray(px: IntArray) {
-        for (i in px.indices) {
-            val l = lum(px[i])
-            px[i] = (0xFF shl 24) or (l shl 16) or (l shl 8) or l
+    /** Black & White scan: sharp kinare + ink curve (kaala text, safed kagaz). */
+    private fun inkBlackWhite(px: IntArray, w: Int, h: Int, k: Float, sharpen: Boolean, ink: Boolean) {
+        val n = px.size
+        val g = FloatArray(n)
+        for (i in 0 until n) g[i] = lum(px[i]).toFloat()
+        if (sharpen) {
+            val r = max(1, (1.2f * k).roundToInt())
+            val b = boxBlur(boxBlur(g, w, h, r), w, h, r)
+            for (i in 0 until n) {
+                g[i] = (g[i] + UNSHARP_AMOUNT * (g[i] - b[i])).coerceIn(0f, 255f)
+            }
+        }
+        val span = INK_WHITE - INK_BLACK
+        for (i in 0 until n) {
+            val v = if (ink) {
+                var t = ((g[i] - INK_BLACK) / span).coerceIn(0f, 1f)
+                t = t * t * (3f - 2f * t)
+                t * 255f
+            } else g[i]
+            val c = (v + 0.5f).toInt().coerceIn(0, 255)
+            px[i] = (0xFF shl 24) or (c shl 16) or (c shl 8) or c
         }
     }
 

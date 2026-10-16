@@ -21,7 +21,8 @@ import java.util.Locale
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
-        const val MAX_SIDE = 2200      // saaf output ki lambi side (px)
+        const val MAX_SIDE = 3200      // saaf output ki lambi side (px); chhoti photo isse badi ki jaati hai
+        const val ZOOM_SIDE = 2400     // zoom par dikhane ke liye
         const val PREVIEW_SIDE = 1200  // screen par dikhane ke liye
         const val JPEG_QUALITY = 80    // chhota size, text saaf
         const val MAX_PAGES = 10
@@ -105,6 +106,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                     val previews = mutableListOf<Bitmap>()
                     input.forEachIndexed { i, uri ->
                         val src = ImageLoader.decodeScaled(ctx, uri, MAX_SIDE)
+                            ?.let { ImageLoader.fitLongSide(it, MAX_SIDE) }
                             ?: error("Page ${i + 1} ki photo khul nahi payi")
                         val clean = BillCleaner.clean(src, opts)
                         src.recycle()
@@ -155,7 +157,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         try {
             val uri = if (cleaned) cleanedPages.getOrNull(index)?.let { Uri.fromFile(it) }
             else originals.getOrNull(index)
-            uri?.let { ImageLoader.decodeScaled(getApplication<Application>(), it, MAX_SIDE) }
+            uri?.let { ImageLoader.decodeScaled(getApplication<Application>(), it, ZOOM_SIDE) }
         } catch (e: Throwable) {
             null
         }

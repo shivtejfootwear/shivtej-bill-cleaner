@@ -55,6 +55,21 @@ object ImageLoader {
         return scaled
     }
 
+    /** Lambi side theek [side] karta hai: chhoti photo badi (text smooth), badi photo chhoti. */
+    fun fitLongSide(bmp: Bitmap, side: Int): Bitmap {
+        val longSide = max(bmp.width, bmp.height)
+        if (longSide == side) return bmp
+        val s = side.toFloat() / longSide
+        val scaled = Bitmap.createScaledBitmap(
+            bmp,
+            (bmp.width * s).roundToInt().coerceAtLeast(1),
+            (bmp.height * s).roundToInt().coerceAtLeast(1),
+            true
+        )
+        if (scaled !== bmp) bmp.recycle()
+        return scaled
+    }
+
     private fun applyOrientation(bmp: Bitmap, orientation: Int): Bitmap {
         val m = Matrix()
         when (orientation) {
