@@ -25,8 +25,8 @@ data class CleanOptions(
  *  3. Levels: halka grey safed ho jata hai, text gehra.
  */
 object BillCleaner {
-    private const val BLOCK = 4          // roshni ka naksha 4x chhota
-    private const val MAX_RADIUS = 2     // text hatane ke liye (≈20 px window)
+    private const val BLOCK = 2          // roshni ka naksha 2x chhota
+    private const val CLOSE_RADIUS = 6   // text hatane ke liye (≈26 px window)
     private const val BLUR_RADIUS = 1
     private const val WHITE_AFTER_SHADOW = 210f
     private const val GAMMA = 1.6f
@@ -71,8 +71,11 @@ object BillCleaner {
                 if (v > small[i]) small[i] = v
             }
         }
-        // 2) Aas-paas ka sabse ujla (bold text bhi hat jaye), phir smooth
-        small = maxFilter(small, sw, sh, MAX_RADIUS)
+        // 2) "Closing": pehle aas-paas ka sabse ujla (text gayab), phir sabse dhundla
+        //    (shadow ka kinara wapas apni sahi jagah). Isse shadow ke kinare par
+        //    grey line / daag nahi bachta. Phir halka smooth.
+        small = rankFilter(small, sw, sh, CLOSE_RADIUS, takeMax = true)
+        small = rankFilter(small, sw, sh, CLOSE_RADIUS, takeMax = false)
         small = boxBlur(small, sw, sh, BLUR_RADIUS)
         small = boxBlur(small, sw, sh, BLUR_RADIUS)
 
@@ -114,15 +117,16 @@ object BillCleaner {
         }
     }
 
-    private fun maxFilter(a: FloatArray, w: Int, h: Int, r: Int): FloatArray {
+    /** Har pixel ke (2r+1)x(2r+1) aas-paas ka sabse bada (takeMax) ya sabse chhota maan. */
+    private fun rankFilter(a: FloatArray, w: Int, h: Int, r: Int, takeMax: Boolean): FloatArray {
         val tmp = FloatArray(a.size)
         for (y in 0 until h) {
             val row = y * w
             for (x in 0 until w) {
-                var m = 0f
+                var m = a[row + x]
                 for (xx in max(0, x - r)..min(w - 1, x + r)) {
                     val v = a[row + xx]
-                    if (v > m) m = v
+                    if (if (takeMax) v > m else v < m) m = v
                 }
                 tmp[row + x] = m
             }
@@ -132,10 +136,10 @@ object BillCleaner {
             val yA = max(0, y - r)
             val yB = min(h - 1, y + r)
             for (x in 0 until w) {
-                var m = 0f
+                var m = tmp[y * w + x]
                 for (yy in yA..yB) {
                     val v = tmp[yy * w + x]
-                    if (v > m) m = v
+                    if (if (takeMax) v > m else v < m) m = v
                 }
                 out[y * w + x] = m
             }

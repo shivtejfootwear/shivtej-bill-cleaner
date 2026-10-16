@@ -36,6 +36,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     var cleanedPreviews by mutableStateOf<List<Bitmap>>(emptyList()); private set
     var outputs by mutableStateOf<List<File>>(emptyList()); private set
     var outputSize by mutableStateOf(0L); private set
+    private var cleanedPages: List<File> = emptyList()  // pura size, zoom ke liye
 
     // Screen
     var page by mutableIntStateOf(0)
@@ -46,7 +47,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     var removeShadow by mutableStateOf(true); private set
     var enhance by mutableStateOf(true); private set
     var sharpen by mutableStateOf(true); private set
-    var blackWhite by mutableStateOf(false); private set
+    var blackWhite by mutableStateOf(true); private set  // rang ke halke daag bhi hat jate hain
     var asPdf by mutableStateOf(false); private set
 
     fun updateRemoveShadow(v: Boolean) { removeShadow = v; clearOutput() }
@@ -57,6 +58,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun clearOutput() {
         cleanedPreviews = emptyList()
+        cleanedPages = emptyList()
         outputs = emptyList()
         outputSize = 0L
     }
@@ -114,9 +116,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                         previews += ImageLoader.scaleDown(clean, PREVIEW_SIDE)
                     }
                     val outs = OutputFiles.build(ctx, pages, pdf, baseName())
-                    Triple(previews.toList(), outs, outs.sumOf { it.length() })
+                    Triple(previews.toList() to pages.toList(), outs, outs.sumOf { it.length() })
                 }
-                cleanedPreviews = result.first
+                cleanedPreviews = result.first.first
+                cleanedPages = result.first.second
                 outputs = result.second
                 outputSize = result.third
                 message = "Bill saaf ho gaya (${formatSize(outputSize)})"
@@ -144,6 +147,17 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             } finally {
                 busy = false
             }
+        }
+    }
+
+    /** Zoom ke liye pura size (preview chhota hota hai, isliye zoom par dhundla lagta tha). */
+    suspend fun loadFull(index: Int, cleaned: Boolean): Bitmap? = withContext(Dispatchers.IO) {
+        try {
+            val uri = if (cleaned) cleanedPages.getOrNull(index)?.let { Uri.fromFile(it) }
+            else originals.getOrNull(index)
+            uri?.let { ImageLoader.decodeScaled(getApplication<Application>(), it, MAX_SIDE) }
+        } catch (e: Throwable) {
+            null
         }
     }
 

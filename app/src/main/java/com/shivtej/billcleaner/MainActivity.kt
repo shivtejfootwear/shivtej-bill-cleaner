@@ -132,6 +132,8 @@ class MainActivity : ComponentActivity() {
 fun BillCleanerScreen(vm: MainViewModel) {
     val context = LocalContext.current
     var zoomBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var zoomPage by remember { mutableStateOf(0) }
+    var zoomCleaned by remember { mutableStateOf(false) }
 
     LaunchedEffect(vm.message) {
         vm.message?.let {
@@ -237,12 +239,12 @@ fun BillCleanerScreen(vm: MainViewModel) {
                 PreviewCard(
                     label = "Original Photo", labelColor = Color(0xFF3F4A5A),
                     bitmap = vm.originalPreviews[idx], modifier = Modifier.weight(1f),
-                    emptyText = "", onClick = { zoomBitmap = it }
+                    emptyText = "", onClick = { zoomPage = idx; zoomCleaned = false; zoomBitmap = it }
                 )
                 PreviewCard(
                     label = "Clean & Clear", labelColor = Blue,
                     bitmap = vm.cleanedPreviews.getOrNull(idx), modifier = Modifier.weight(1f),
-                    emptyText = "Neeche \"Clean & Generate\" dabao", onClick = { zoomBitmap = it }
+                    emptyText = "Neeche \"Clean & Generate\" dabao", onClick = { zoomPage = idx; zoomCleaned = true; zoomBitmap = it }
                 )
             }
             if (pageCount > 1) {
@@ -331,7 +333,9 @@ fun BillCleanerScreen(vm: MainViewModel) {
         Spacer(Modifier.height(8.dp))
     }
 
-    zoomBitmap?.let { bmp -> ZoomDialog(bmp) { zoomBitmap = null } }
+    zoomBitmap?.let { bmp ->
+        ZoomDialog(bmp, load = { vm.loadFull(zoomPage, zoomCleaned) }) { zoomBitmap = null }
+    }
 }
 
 private const val MAX_PAGES_TEXT = MainViewModel.MAX_PAGES
@@ -484,7 +488,10 @@ private fun FeatureStrip() {
 }
 
 @Composable
-private fun ZoomDialog(bitmap: Bitmap, onDismiss: () -> Unit) {
+private fun ZoomDialog(preview: Bitmap, load: suspend () -> Bitmap?, onDismiss: () -> Unit) {
+    // Pehle chhota preview dikhta hai, phir pura size aate hi saaf zoom
+    var bitmap by remember { mutableStateOf(preview) }
+    LaunchedEffect(preview) { load()?.let { bitmap = it } }
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
