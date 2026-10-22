@@ -79,7 +79,7 @@ import java.math.BigDecimal
  * target % is set — the new rate and amount. Tap a line to edit it; tap a column heading to say what it is.
  */
 @Composable
-fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: () -> Unit, onPhoto: () -> Unit, onView: () -> Unit = {}) {
+fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: () -> Unit, onPhoto: () -> Unit, onView: () -> Unit = {}, onFix: () -> Unit = {}) {
     val c = LocalContext.current.container
     val ed = rememberEditor(id)
     val inv = ed.invoice ?: return
@@ -98,6 +98,9 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
     var teach by remember { mutableStateOf<Int?>(null) }
     var message by remember { mutableStateOf<String?>(null) }
     val warnings = Warnings.of(inv, previous)
+    // Lines the scan did not understand: asked about once, as soon as the bill opens.
+    var askFix by remember(inv.id) { mutableStateOf(inv.id !in askedFix && doubtful(inv).isNotEmpty()) }
+    if (askFix) DoubtfulDialog(inv, onFix = { askedFix += inv.id; askFix = false; onFix() }, onLater = { askedFix += inv.id; askFix = false })
 
     BillContent(
         inv, warnings, thumb, onBack = onBack, onTargets = onTargets, onExport = onExport, onPhoto = onPhoto, onView = onView,
@@ -108,7 +111,7 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
         onHistory = { history = true }, onDelete = { askDelete = true },
         onAdd = { ed.change { Edits.addItem(it, System.currentTimeMillis()) } },
         onGst = { on -> ed.change { Edits.setSittingWithGst(it, on, System.currentTimeMillis()) } },
-        canUndo = ed.canUndo, onUndo = { ed.undo() }, message = message,
+        canUndo = ed.canUndo, onUndo = { ed.undo() }, message = message, onFix = onFix,
     )
 
     editing?.let { itemId ->
@@ -120,7 +123,7 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
             onSave = { v ->
                 // The scanner learns from the fix: the same misreading on this supplier's next bills is corrected by itself.
                 val (learnt, lessons) = com.shivtej.billscanner.core.ocr.Learning.fromEdit(c.prefs.learnt, inv, item!!, v)
-                if (lessons.isNotEmpty()) { c.prefs.learnt = learnt; message = tr("🧠 सीख लिया (अगले बिल में खुद ठीक होगा): ", "🧠 Learnt (fixed by itself next time): ") + lessons.joinToString(" · ") }
+                if (lessons.isNotEmpty()) { c.prefs.learnt = learnt; message = tr2(c.lang, "🧠 सीख लिया (अगले बिल में खुद ठीक होगा): ", "🧠 Learnt (fixed by itself next time): ") + lessons.joinToString(" · ") }
                 ed.change { Edits.updateItem(it, itemId, v, System.currentTimeMillis()) }
             },
             onVerified = { on -> ed.change { Edits.setVerified(it, itemId, on, System.currentTimeMillis()) } },
@@ -130,7 +133,7 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
             onDelete = {
                 val before = c.prefs.learnt
                 val after = com.shivtej.billscanner.core.ocr.Learning.fromDelete(before, inv, item!!)
-                if (after != before) { c.prefs.learnt = after; message = tr("🧠 सीख लिया: ऐसी लाइन अगली बार इस पार्टी के बिल में नहीं आएगी", "🧠 Learnt: such a line is skipped next time") }
+                if (after != before) { c.prefs.learnt = after; message = tr2(c.lang, "🧠 सीख लिया: ऐसी लाइन अगली बार इस पार्टी के बिल में नहीं आएगी", "🧠 Learnt: such a line is skipped next time") }
                 ed.change { Edits.deleteItem(it, itemId, System.currentTimeMillis()) }; editing = null
             },
             header = inv.header, withGst = inv.sittingWithGst, target = Target.pct(inv, item.copy(targetPct = null)),
@@ -220,7 +223,7 @@ fun BillContent(
     inv: Invoice, warnings: List<Warning>, thumb: Bitmap?, onBack: () -> Unit, onTargets: () -> Unit, onExport: () -> Unit, onPhoto: () -> Unit,
     onRow: (String) -> Unit = {}, onColumn: (Int) -> Unit = {}, onEditHeader: () -> Unit = {}, onVerify: () -> Unit = {}, onHistory: () -> Unit = {},
     onDelete: () -> Unit = {}, onAdd: () -> Unit = {}, onGst: (Boolean) -> Unit = {}, canUndo: Boolean = false, onUndo: () -> Unit = {},
-    message: String? = null, showWarnings: Boolean = false, onView: () -> Unit = {},
+    message: String? = null, showWarnings: Boolean = false, onView: () -> Unit = {}, onFix: () -> Unit = {},
 ) {
     val h = inv.header
     val t = Totals.of(inv)
@@ -244,8 +247,9 @@ fun BillContent(
                     val arts = inv.items.filter { it.kind == ItemKind.ARTICLE }
                     val sure = arts.count { it.needs.isEmpty() && com.shivtej.billscanner.core.ocr.Heal.proven(it.current) }
                     if (arts.isNotEmpty()) Text(
-                        "✓ $sure/${arts.size} " + tr("लाइन का हिसाब पक्का", "lines add up") + if (sure < arts.size) " · ⚠ ${arts.size - sure} " + tr("देखें", "to check") else "",
+                        "✓ $sure/${arts.size} " + tr("लाइन का हिसाब पक्का", "lines add up") + if (sure < arts.size) " · ⚠ ${arts.size - sure} " + tr("ठीक करें ›", "fix ›") else "",
                         fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold, color = if (sure == arts.size) C.ok else C.warn,
+                        modifier = if (sure < arts.size) Modifier.clickable(onClick = onFix) else Modifier,
                     )
                     val d = t.difference
                     when {
@@ -346,9 +350,10 @@ fun BillGrid(inv: Invoice, onRow: (String) -> Unit, onColumn: (Int) -> Unit, mod
     val cols = InvoiceExport.printedColumns(inv)
     val frozen = cols.indices.filter { cols[it].field == F.SR || cols[it].field == F.ARTICLE }
     val others = cols.indices - frozen.toSet()
-    val first = FIRST.flatMap { f -> others.filter { cols[it].field == f } }
-    val after = AFTER_BAITHA.flatMap { f -> others.filter { cols[it].field == f } }
-    val tail = others - first.toSet() - after.toSet()
+    // The bill's own columns in the bill's order; then ours: बैठा %, अपना %, नई रकम.
+    val first = others
+    val after = emptyList<Int>()
+    val tail = emptyList<Int>()
     val sheet = Target.sheet(inv)
     val lines = sheet.lines.associateBy { it.item.id }
     val t = Totals.of(inv)
@@ -360,9 +365,7 @@ fun BillGrid(inv: Invoice, onRow: (String) -> Unit, onColumn: (Int) -> Unit, mod
                 first.forEach { head(it) }
                 HeadCell(tr("बैठा %", "Baitha %"), 62.dp, Tone.GREEN)
                 if (sheet.any) HeadCell(tr("अपना %", "Our %"), 60.dp, Tone.TARGET)
-                after.forEach { head(it) }
                 if (sheet.any) HeadCell(tr("नई रकम", "New amount"), 84.dp, Tone.TARGET)
-                tail.forEach { head(it) }
             }
         }
         LazyColumn(Modifier.weight(1f, fill = false)) {
@@ -382,9 +385,7 @@ fun BillGrid(inv: Invoice, onRow: (String) -> Unit, onColumn: (Int) -> Unit, mod
                         first.forEach { tot(it) }
                         DataCell(pct(Calc.sittingTotal(inv)), 62.dp, Tone.GREEN, true, bold = true)
                         if (sheet.any) DataCell("", 60.dp, Tone.TARGET, true)
-                        after.forEach { tot(it) }
                         if (sheet.any) DataCell(num(sheet.taxable), 84.dp, Tone.TARGET, true, bold = true)
-                        tail.forEach { tot(it) }
                     }
                 }
             }
@@ -421,10 +422,8 @@ private fun GridRow(
             val s = Calc.sittingPct(item.current, inv.header, inv.sittingWithGst)
             DataCell(if (item.kind == ItemKind.CHARGE) "" else pct(s), 62.dp, Tone.GREEN, true, warn = s == null && item.kind == ItemKind.ARTICLE)
             if (anyTarget) DataCell(line?.let { pct(it.pct) + if (item.targetPct != null) "*" else "" } ?: "—", 60.dp, Tone.TARGET, true)
-            after.forEach { cell(it) }
             // Lines without our % keep the bill amount (shown plain).
             if (anyTarget) DataCell(line?.let { num(it.amount) } ?: item.current.taxable?.let { num(it) }.orEmpty(), 84.dp, if (line != null) Tone.TARGET else Tone.NORMAL, true, bold = line != null)
-            tail.forEach { cell(it) }
         }
     }
 }
@@ -444,3 +443,6 @@ fun lineStrip(inv: Invoice, item: LineItem): Bitmap? = runCatching {
     if (out !== page) page.recycle()
     out
 }.getOrNull()
+
+/** Bills whose "lines not understood" question was already asked in this session. */
+private val askedFix = mutableSetOf<String>()

@@ -32,7 +32,7 @@ class ExportTest {
 
     @Test fun xlsxIsAValidWorkbookWithTheBillDiscountColumn() {
         val inv = invoice(blank = setOf(5))
-        val bos = ByteArrayOutputStream(); InvoiceExport.xlsx(inv, bos)
+        val bos = ByteArrayOutputStream(); InvoiceExport.xlsxDetailed(inv, bos)
         System.getProperty("xlsx.out")?.let { File(it).writeBytes(bos.toByteArray()) }
         val parts = unzip(bos.toByteArray())
         assertTrue(parts.keys.containsAll(listOf("[Content_Types].xml", "xl/workbook.xml", "xl/styles.xml", "xl/worksheets/sheet1.xml", "xl/worksheets/sheet6.xml")))
@@ -46,6 +46,11 @@ class ExportTest {
         // Column K (11th) is the bill discount, right after the rate.
         assertEquals(10, InvoiceExport.ITEM_COLUMNS.indexOf("Original Bill Discount (%)"))
         assertEquals("Original Rate", InvoiceExport.ITEM_COLUMNS[9])
+        // The Excel the person gets has one sheet: bill + बैठा % + अपना % + नई रकम.
+        val one = ByteArrayOutputStream().also { InvoiceExport.xlsx(inv, it) }.toByteArray()
+        val p1 = unzip(one)
+        assertTrue(p1.containsKey("xl/worksheets/sheet1.xml") && !p1.containsKey("xl/worksheets/sheet2.xml"))
+        assertTrue(p1.getValue("xl/worksheets/sheet1.xml").contains(InvoiceExport.SITTING_HEADER.replace("&", "&amp;")))
     }
 
     @Test fun stockCsvOnlyHasSizesThatAddUp() {

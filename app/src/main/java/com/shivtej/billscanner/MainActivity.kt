@@ -23,6 +23,7 @@ import com.shivtej.billscanner.ui.BillTheme
 import com.shivtej.billscanner.ui.C
 import com.shivtej.billscanner.ui.ExportScreen
 import com.shivtej.billscanner.ui.FullBillScreen
+import com.shivtej.billscanner.ui.FixScreen
 import com.shivtej.billscanner.ui.HomeScreen
 import com.shivtej.billscanner.ui.PhotoScreen
 import com.shivtej.billscanner.ui.ProcessingScreen
@@ -82,13 +83,15 @@ fun Root(sharedTick: Int = 0) {
                 composable("inv/{id}") { e ->
                     val id = e.arguments!!.getString("id")!!
                     BillScreen(id, onBack = { nav.popBackStack() }, onTargets = { nav.navigate("inv/$id/targets") },
-                        onExport = { nav.navigate("inv/$id/export") }, onPhoto = { nav.navigate("inv/$id/photo") }, onView = { nav.navigate("inv/$id/view") })
+                        onExport = { nav.navigate("inv/$id/export") }, onPhoto = { nav.navigate("inv/$id/photo") }, onView = { nav.navigate("inv/$id/view") },
+                        onFix = { nav.navigate("inv/$id/fix") })
                 }
                 composable("inv/{id}/targets") { e ->
                     val id = e.arguments!!.getString("id")!!
                     TargetsScreen(id, onBack = { nav.popBackStack() }, onExport = { nav.navigate("inv/$id/export") })
                 }
                 composable("inv/{id}/export") { e -> ExportScreen(e.arguments!!.getString("id")!!, onBack = { nav.popBackStack() }) }
+                composable("inv/{id}/fix") { e -> FixScreen(e.arguments!!.getString("id")!!, onDone = { nav.popBackStack() }) }
                 composable("inv/{id}/view") { e -> FullBillScreen(e.arguments!!.getString("id")!!, onBack = { nav.popBackStack() }) }
                 composable("inv/{id}/photo") { e -> PhotoScreen(e.arguments!!.getString("id")!!, onBack = { nav.popBackStack() }) }
                 composable("settings") { SettingsScreen(onBack = { nav.popBackStack() }) }

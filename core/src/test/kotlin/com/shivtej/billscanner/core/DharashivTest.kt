@@ -180,7 +180,8 @@ class DharashivExportTest {
         val s1 = parts.getValue("xl/worksheets/sheet1.xml")
         assertTrue(s1.contains("बैठा %")); assertTrue(s1.contains("SM 651 N.BLUE GREY")); assertTrue(s1.contains("6 pair"))
         assertTrue(s1.contains("<v>35.01</v>"))      // बैठा % of SM 651
-        assertTrue(parts.getValue("xl/workbook.xml").contains("Company-wise"))
+        assertTrue(s1.contains("कंपनी-वार") && s1.contains("ASIAN"))      // company-wise rows under the totals, same sheet
+        assertTrue(!parts.containsKey("xl/worksheets/sheet2.xml"))           // one sheet only
     }
 }
 

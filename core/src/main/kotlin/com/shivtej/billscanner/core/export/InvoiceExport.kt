@@ -43,7 +43,11 @@ object InvoiceExport {
         else -> "Not verified yet"
     }
 
-    fun xlsx(inv: Invoice, out: OutputStream) =
+    /** One sheet only: the bill as printed, then बैठा %, अपना %, नई रकम and the totals (company-wise % below). */
+    fun xlsx(inv: Invoice, out: OutputStream) = Xlsx.write(listOf(printed(inv)), out)
+
+    /** The older detailed workbook (summary, items, stock) — kept for the stock file and checks. */
+    fun xlsxDetailed(inv: Invoice, out: OutputStream) =
         Xlsx.write(listOf(printed(inv), companies(inv), newBill(inv), summary(inv), items(inv), stock(inv)), out)
 
     // ------------------------------------------------------------ sheet 1: the bill as printed + बैठा % + target
@@ -185,6 +189,20 @@ object InvoiceExport {
             n + 1 to Cell.Text("नया Total →", St.BOLD_TEXT),
             n + 2 to Cell.Formula("ROUND($ac$sumRow+$ac${sumRow + 1}" + (if (extra.signum() != 0) "+${extra.toPlainString()}" else "") + ",0)", sheet.rounded, St.BOLD_MONEY))
         t.difference?.let { d -> if (d.signum() != 0) line("Printed total − calculated = ₹${Calc.fmt(d)} — check the bill", billCol to Cell.Num(d, St.WARN)) }
+        // Company-wise: what each brand really gave and the % set for it.
+        val groups = Groups.of(inv)
+        if (groups.size > 1) {
+            s.row(Cell.Empty)
+            line("कंपनी-वार", n to Cell.Text(SITTING_HEADER, St.HEADER_GREEN), n + 1 to Cell.Text(TARGET_HEADER, St.HEADER_ORANGE), n + 2 to Cell.Text("नई रकम", St.HEADER))
+            for (g in groups) {
+                val lines = sheet.lines.filter { l -> g.items.any { it.id == l.item.id } }
+                line("${g.key} (${g.items.size} lines · ${g.pairs.stripTrailingZeros().toPlainString()} pairs)",
+                    billCol to Cell.Num(g.billValue, St.BOLD_MONEY),
+                    n to (g.sittingPct?.let { Cell.Num(it, St.GREEN_PCT) } ?: Cell.Text(NEEDS_VERIFICATION, St.WARN)),
+                    n + 1 to ((g.target ?: inv.defaultTargetPct)?.let { Cell.Num(it, St.EDIT_PCT) } ?: Cell.Text("")),
+                    n + 2 to (if (lines.isNotEmpty()) Cell.Num(Calc.r2(lines.fold(BigDecimal.ZERO) { a, l -> a + l.amount }), St.BOLD_MONEY) else Cell.Text("")))
+            }
+        }
         return s
     }
 

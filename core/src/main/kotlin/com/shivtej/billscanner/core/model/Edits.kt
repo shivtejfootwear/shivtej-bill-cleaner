@@ -35,7 +35,27 @@ object Edits {
         val v = if (drivers) Calc.recalc(new) else new
         val ch = log(now, id, old.current, v)
         if (ch.isEmpty()) return inv
-        return inv.copy(items = inv.items.map { if (it.id == id) it.copy(current = v, verified = false) else it }, changes = inv.changes + ch)
+        return inv.copy(items = inv.items.map { if (it.id == id) it.copy(current = v, verified = false, needs = resolved(it, v)) else it }, changes = inv.changes + ch)
+    }
+
+    /**
+     * The person typed the line's numbers from the bill (the "fix" screen): saved exactly as typed, nothing worked out again.
+     */
+    fun fixItem(inv: Invoice, id: String, v: ItemValues, now: Long): Invoice {
+        val old = inv.items.firstOrNull { it.id == id } ?: return inv
+        val ch = log(now, id, old.current, v)
+        return inv.copy(items = inv.items.map { if (it.id == id) it.copy(current = v, verified = false, needs = resolved(it, v)) else it }, changes = inv.changes + ch)
+    }
+
+    private val ARITH = setOf(F.QTY, F.RATE, F.DISC_PCT, F.TAXABLE, F.GROSS, F.DISC_AMT)
+
+    /** Doubts left after an edit: none of what the person typed, none of the arithmetic once the line adds up. */
+    private fun resolved(item: LineItem, v: ItemValues): Set<F> {
+        val typed = Calc.diff(item.current, v)
+        var n = item.needs - typed
+        if (com.shivtej.billscanner.core.ocr.Heal.proven(v)) n = n - ARITH
+        if (v.mrp != null && F.MRP in typed) n = n - F.MRP
+        return n
     }
 
     fun recalcItem(inv: Invoice, id: String, now: Long): Invoice {

@@ -78,6 +78,19 @@ class ScreenshotTest {
         return inv
     }
 
+    @Test fun s10_fix_line() {
+        val p = InvoiceParser.parse(listOf(DharashivInvoice.page1(blankDiscOf = setOf(36)), DharashivInvoice.page2()))
+        val inv = Invoice("dh", now, p.header, p.header, p.items, columns = p.columns)
+        val item = com.shivtej.billscanner.ui.doubtful(inv).first()
+        shot("10_fix_line") { com.shivtej.billscanner.ui.FixContent(inv, item, null, 0, 1, null, {}, {}, {}, {}) }
+    }
+
+    @Test fun s10b_doubtful_popup() {
+        val p = InvoiceParser.parse(listOf(DharashivInvoice.page1(blankDiscOf = setOf(36)), DharashivInvoice.page2()))
+        val inv = Invoice("dh", now, p.header, p.header, p.items, columns = p.columns)
+        shot("10b_doubtful_popup") { BillContent(inv, Warnings.of(inv), null, {}, {}, {}, {}); com.shivtej.billscanner.ui.DoubtfulDialog(inv, {}, {}) }
+    }
+
     @Test fun s04_bill_dharashiv() {
         val inv = dharashiv()
         shot("04_bill_dharashiv") { BillContent(inv, Warnings.of(inv), null, {}, {}, {}, {}) }
