@@ -32,6 +32,7 @@ object Groups {
         for (i in list) {
             val v = i.current
             val q = v.qty ?: continue; val m = v.mrp ?: continue
+            if (Calc.sittingPct(v, inv.header, inv.sittingWithGst) == null) continue
             val cost = (if (inv.sittingWithGst) Calc.landedPerPair(v, inv.header) else Calc.netPerPair(v)) ?: continue
             mrpValue += m * q; costValue += cost * q
         }
@@ -69,6 +70,8 @@ object Target {
         val p = pct(inv, item) ?: return null
         val v = item.current
         val mrp = v.mrp ?: return null; val q = v.qty ?: return null
+        // MRP or amount misread (बैठा % makes no sense): no new rate until it is fixed.
+        if (v.taxable != null && Calc.sittingPct(v, inv.header, inv.sittingWithGst) == null) return null
         val g = Calc.gstPct(v, inv.header) ?: BigDecimal.ZERO
         val h = Calc.HUNDRED
         val net: BigDecimal; val landed: BigDecimal

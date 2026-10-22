@@ -89,7 +89,7 @@ object DharashivInvoice {
         fun right(xRight: Int, y: Int, text: String, h: Int = 20) = at((xRight - text.length * h * 0.55).toInt(), y, text, h)
     }
 
-    private fun top(b: Builder, pageTitle: String) {
+    private fun top(b: Builder, pageTitle: String, shiftedHeading: Boolean = false) {
         b.at(700, 20, pageTitle, 24)
         b.at(40, 60, "Subject to Osmanabad Jurisdiction."); b.at(760, 60, "Tax Invoice")
         b.at(790, 100, "Tax Invoice")
@@ -103,7 +103,9 @@ object DharashivInvoice {
         b.at(40, 348, "Party GST No: 27ECIPS0222J1ZI"); b.at(920, 348, "Eway Bill No:"); b.at(1350, 348, "Date : 27-Jul-26")
         b.at(920, 376, "Pay Mode: CREDIT"); b.at(1450, 376, "Due On : 27-Jul-26")
         b.at(30, 410, "Sr.No"); b.at(200, 410, "Item Description"); b.at(880, 410, "HSN"); b.at(985, 410, "GST%"); b.at(1080, 410, "Size")
-        b.at(1170, 410, "MRP"); b.at(1275, 410, "Qty"); b.at(1390, 410, "Rate"); b.at(1480, 410, "Disc."); b.at(1640, 410, "Amount")
+        if (!shiftedHeading) { b.at(1170, 410, "MRP"); b.at(1275, 410, "Qty"); b.at(1390, 410, "Rate"); b.at(1480, 410, "Disc."); b.at(1640, 410, "Amount") }
+        // The OCR read the headings one column too far right (what a real photo did): MRP over Qty, … Amount past the edge.
+        else { b.at(1275, 410, "MRP"); b.at(1390, 410, "Qty"); b.at(1480, 410, "Rate"); b.at(1640, 410, "Disc."); b.at(1700, 380, "Amount") }
     }
 
     private fun line(b: Builder, y: Int, l: L, blankDisc: Boolean) {
@@ -114,9 +116,9 @@ object DharashivInvoice {
     }
 
     /** Page 1: lines 1–50, "continued ...". [blankDiscOf]: serial numbers whose Disc. % is unreadable. */
-    fun page1(blankDiscOf: Set<Int> = emptySet(), bend: Double = 0.000012): OcrPage {
+    fun page1(blankDiscOf: Set<Int> = emptySet(), bend: Double = 0.000012, shiftedHeading: Boolean = false): OcrPage {
         val b = Builder(bend)
-        top(b, "TAX INVOICE")
+        top(b, "TAX INVOICE", shiftedHeading)
         var y = 445
         for (l in LINES) { line(b, y, l, l.sr in blankDiscOf); y += 31 }
         b.at(1500, y + 40, "continued ...")

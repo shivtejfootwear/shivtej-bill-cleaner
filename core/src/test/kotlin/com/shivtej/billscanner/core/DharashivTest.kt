@@ -111,6 +111,17 @@ class DharashivTest {
         assertEquals(d("649.30"), it7.current.taxable)
     }
 
+    @Test fun misplacedHeadingsAreFixedByTheBillsOwnArithmetic() {
+        val p = InvoiceParser.parse(listOf(DharashivInvoice.page1(shiftedHeading = true)))
+        assertEquals(50, p.items.size)
+        for ((i, l) in DharashivInvoice.LINES.withIndex()) {
+            val v = p.items[i].current
+            val msg = "line ${l.sr}: $v cols=${p.columns}"
+            assertEquals(msg, d(l.mrp), v.mrp); assertEquals(msg, BigDecimal(l.qty), v.qty); assertEquals(msg, d(l.rate), v.rate)
+            assertEquals(msg, d(l.disc), v.discPct); assertEquals(msg, d(l.amount), v.taxable)
+        }
+    }
+
     @Test fun flatPhotoToo() {
         val p = InvoiceParser.parse(listOf(DharashivInvoice.page1(bend = 0.0), DharashivInvoice.page2(bend = 0.0)))
         assertEquals(51, p.items.size)

@@ -149,7 +149,9 @@ object Calc {
         val mrp = v.mrp ?: return null
         if (mrp.signum() <= 0) return null
         val cost = (if (withGst) landedPerPair(v, h) else netPerPair(v)) ?: return null
-        return r2((mrp - cost).multiply(HUNDRED).divide(mrp, 10, RoundingMode.HALF_UP))
+        val p = r2((mrp - cost).multiply(HUNDRED).divide(mrp, 10, RoundingMode.HALF_UP))
+        // A cost above MRP by a lot, or almost nothing, means a misread number — shown as "check", never as a %.
+        return if (p < BigDecimal(-30) || p > BigDecimal(95)) null else p
     }
 
     /** बैठा % of the whole bill, weighted by MRP value. */
@@ -158,6 +160,7 @@ object Calc {
         for (i in inv.items) {
             if (i.kind != ItemKind.ARTICLE) continue
             val v = i.current; val q = v.qty ?: continue; val m = v.mrp ?: continue
+            if (sittingPct(v, inv.header, inv.sittingWithGst) == null) continue
             val c = (if (inv.sittingWithGst) landedPerPair(v, inv.header) else netPerPair(v)) ?: continue
             mrpV += m * q; costV += c * q
         }

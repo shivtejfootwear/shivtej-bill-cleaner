@@ -73,6 +73,15 @@ object InvoiceParser {
             notes += r.notes.map { if (pages.size > 1) "पेज ${i + 1}: $it" else it }
         }
         if (items.isEmpty()) notes += "बिल में आर्टिकल की टेबल नहीं मिली। फ़ोटो साफ़ और पूरी हो, फिर दोबारा स्कैन करें या आर्टिकल हाथ से जोड़ें।"
+        // A printed total that is nowhere near the lines is a misread (e.g. "2.00" taken from a page number).
+        val lines = items.fold(BigDecimal.ZERO) { a, i -> a + (i.current.taxable ?: BigDecimal.ZERO) }
+        if (lines.signum() > 0) {
+            fun far(x: BigDecimal?, lo: String, hi: String) = x != null && (x < lines * BigDecimal(lo) || x > lines * BigDecimal(hi))
+            if (far(header.printedGrandTotal, "0.6", "1.6")) { notes += "बिल का Total (${header.printedGrandTotal}) लाइनों से मेल नहीं खाता — गलत पढ़ा गया, छोड़ दिया"; header = header.copy(printedGrandTotal = null) }
+            if (far(header.printedSubtotal, "0.6", "1.6")) header = header.copy(printedSubtotal = null, printedQty = null)
+            val tax = listOfNotNull(header.cgstAmt, header.sgstAmt, header.igstAmt).fold(BigDecimal.ZERO) { a, b -> a + b }
+            if (tax > lines * BigDecimal("0.3")) header = header.copy(cgstAmt = null, sgstAmt = null, igstAmt = null)
+        }
         return ParsedInvoice(header, items, notes, columns)
     }
 
@@ -206,7 +215,9 @@ object InvoiceParser {
             cols = c
             assignTable(tableRows, cols, mh).let { cellRows = it.first; bounds = it.second; shifts = it.third }
         }
+        checkColumns(cols, cellRows)
         inferKinds(cols, cellRows)
+        solveByArithmetic(cols, cellRows)
         val assigned = tableRows.zip(cellRows)
 
         // ---- items: a line with a serial number (or 2+ numbers) starts an item; text-only lines continue it
@@ -447,6 +458,85 @@ object InvoiceParser {
             }
         }
         return null
+    }
+
+    /** A heading the OCR misplaced: the numbers under it do not fit what it says, so it is worked out again. */
+    private fun checkColumns(cols: List<Col>, rows: List<Map<Int, List<OcrWord>>>) {
+        val items = rows.filter { isItemLike(it, cols) }
+        if (items.size < 3) return
+        for ((ci, c) in cols.withIndex()) {
+            if (c.locked) continue
+            val texts = items.mapNotNull { r -> r[ci]?.let { cellText(it) }?.takeIf { it.isNotEmpty() } }
+            if (texts.size < items.size / 2) continue
+            val nums = texts.mapNotNull { number(it) }
+            val withPct = texts.count { it.contains('%') }
+            val bad = when (c.kind) {
+                Kind.DISC_PCT, Kind.GST_PCT, Kind.CGST_PCT, Kind.SGST_PCT, Kind.IGST_PCT ->
+                    nums.count { it > BigDecimal(100) } > nums.size / 5
+                Kind.AMOUNT, Kind.TAXABLE, Kind.GROSS, Kind.TOTAL, Kind.RATE, Kind.MRP, Kind.DISC_AMT, Kind.CGST_AMT, Kind.SGST_AMT, Kind.IGST_AMT ->
+                    withPct * 2 > texts.size
+                Kind.QTY -> withPct * 2 > texts.size || nums.count { it.scale() > 0 && it.stripTrailingZeros().scale() > 0 } * 2 > nums.size
+                else -> false
+            }
+            if (bad) c.kind = Kind.OTHER
+        }
+    }
+
+    /**
+     * The bill's own arithmetic decides which columns are Qty, Rate, Disc % and Amount:
+     * every way of reading the number columns is tried, and the one under which
+     * Qty × Rate × (1 − Disc%) = Amount holds on most lines wins — whatever the headings say.
+     */
+    private fun solveByArithmetic(cols: List<Col>, rows: List<Map<Int, List<OcrWord>>>) {
+        val items = rows.filter { isItemLike(it, cols) }
+        if (items.size < 3) return
+        val numericCols = cols.indices.filter { ci ->
+            val c = cols[ci]
+            !c.locked && c.kind !in setOf(Kind.SR, Kind.DESC, Kind.HSN, Kind.SIZE, Kind.COLOUR) &&
+                items.count { r -> r[ci]?.let { number(cellText(it)) } != null } * 10 >= items.size * 6
+        }
+        if (numericCols.size < 3) return
+        val vals = numericCols.associateWith { ci -> items.map { r -> r[ci]?.let { number(cellText(it)) } } }
+        val h = BigDecimal(100)
+        fun close(a: BigDecimal, b: BigDecimal) = (a - b).abs() <= maxOf(BigDecimal("0.06"), b.abs() * BigDecimal("0.002"))
+        fun score(q: Int, r: Int, d: Int?, t: Int): Int = items.indices.count { i ->
+            val qv = vals[q]!![i] ?: return@count false; val rv = vals[r]!![i] ?: return@count false; val tv = vals[t]!![i] ?: return@count false
+            val dv = if (d == null) BigDecimal.ZERO else vals[d]!![i] ?: return@count false
+            if (dv >= h || qv.signum() <= 0) return@count false
+            close(qv * rv * (h - dv) / h, tv)
+        }
+        fun idx(k: Kind) = cols.indexOfFirst { it.kind == k }.takeIf { it in numericCols }
+        val curQ = idx(Kind.QTY); val curR = idx(Kind.RATE); val curD = idx(Kind.DISC_PCT); val curT = idx(Kind.AMOUNT) ?: idx(Kind.TAXABLE)
+        val current = if (curQ != null && curR != null && curT != null) score(curQ, curR, curD, curT) else 0
+        if (current * 10 >= items.size * 9) return       // the headings already add up
+        var best = current; var pick: List<Int?>? = null
+        for (q in numericCols) for (r in numericCols) { if (r == q) continue
+            for (t in numericCols) { if (t == q || t == r) continue
+                for (d in listOf<Int?>(null) + numericCols) { if (d == q || d == r || d == t) continue
+                    val sc = score(q, r, d, t)
+                    if (sc > best) { best = sc; pick = listOf(q, r, d, t) }
+                }
+            }
+        }
+        val p = pick ?: return
+        if (best * 10 < items.size * 6) return
+        val (q, r, d, t) = p
+        // Whatever these columns were called before, they now are what the arithmetic says.
+        val taxableNamed = cols.any { it.kind == Kind.TAXABLE }
+        listOfNotNull(q, r, d, t).forEach { ci -> cols[ci].kind = Kind.OTHER }
+        cols[q!!].kind = Kind.QTY; cols[r!!].kind = Kind.RATE; d?.let { cols[it].kind = Kind.DISC_PCT }
+        cols[t!!].kind = if (taxableNamed && cols[t].roles.contains(Role.TAXABLE)) Kind.TAXABLE else Kind.AMOUNT
+        if (cols.count { it.kind == Kind.TAXABLE || it.kind == Kind.AMOUNT } > 1) cols.filter { (it.kind == Kind.TAXABLE || it.kind == Kind.AMOUNT) && it !== cols[t] }.forEach { it.kind = Kind.OTHER }
+        // MRP: the number column (left over) that is above the rate on almost every line.
+        val mrpNow = idx(Kind.MRP)
+        val rateVals = vals[r]!!
+        fun mrpScore(ci: Int) = items.indices.count { i -> val m = vals[ci]!![i]; val rv = rateVals[i]; m != null && rv != null && m > rv && m < rv * BigDecimal(4) }
+        if (mrpNow == null || mrpScore(mrpNow) * 10 < items.size * 7) {
+            val cand = numericCols.filter { it !in setOf(q, r, d, t) }.maxByOrNull { mrpScore(it) }
+            if (cand != null && mrpScore(cand) * 10 >= items.size * 7) { mrpNow?.let { cols[it].kind = Kind.OTHER }; cols[cand].kind = Kind.MRP }
+        }
+        // Give relabelled columns a clear name when the heading was something else.
+        for ((ci, k) in listOf(q to "Qty", r to "Rate", d to "Disc %", t to "Amount")) if (ci != null && cols[ci].label.isBlank()) cols[ci].label = k
     }
 
     /**
