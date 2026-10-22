@@ -71,7 +71,6 @@ android {
     packaging { resources.excludes += setOf("/META-INF/{AL2.0,LGPL2.1}", "META-INF/AL2.0", "META-INF/LGPL2.1") }
 }
 
-ksp { arg("room.schemaLocation", "$projectDir/schemas") }
 
 dependencies {
     implementation(project(":core"))

@@ -41,7 +41,7 @@ interface InvoiceDao {
     @Query("DELETE FROM invoices WHERE id = :id") suspend fun delete(id: String)
 }
 
-@Database(entities = [InvoiceRow::class], version = 1, exportSchema = true)
+@Database(entities = [InvoiceRow::class], version = 1, exportSchema = false)
 abstract class BillDb : RoomDatabase() {
     abstract fun invoices(): InvoiceDao
 

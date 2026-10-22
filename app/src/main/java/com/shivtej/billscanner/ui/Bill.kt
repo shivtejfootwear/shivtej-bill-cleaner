@@ -67,6 +67,7 @@ import com.shivtej.billscanner.core.model.Totals
 import com.shivtej.billscanner.core.model.Warning
 import com.shivtej.billscanner.core.model.Warnings
 import com.shivtej.billscanner.core.ocr.InvoiceParser
+import com.shivtej.billscanner.core.ocr.InvoiceParser.Kind as K
 import com.shivtej.billscanner.teachColumn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -178,7 +179,6 @@ fun HistoryDialog(inv: Invoice, onDismiss: () -> Unit) = AlertDialog(
 /** "What is this column?" — the answer is remembered for this supplier. */
 @Composable
 fun TeachDialog(col: BillColumn, onDismiss: () -> Unit, onPick: (InvoiceParser.Kind) -> Unit) {
-    val K = InvoiceParser.Kind
     val choices = listOf(
         K.MRP to "MRP", K.QTY to tr("मात्रा (Qty)", "Quantity"), K.RATE to tr("रेट", "Rate"), K.DISC_PCT to tr("डिस्काउंट %", "Discount %"),
         K.DISC_AMT to tr("डिस्काउंट ₹", "Discount ₹"), K.AMOUNT to tr("रकम (Amount, GST से पहले)", "Amount (before GST)"), K.GROSS to tr("Total (मात्रा × रेट)", "Total (qty × rate)"),
