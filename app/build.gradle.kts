@@ -38,6 +38,10 @@ android {
                 keyPassword = "shivtejbill"
             }
             storeType = "pkcs12"
+            // Old-style (v1) signature too: some phone installers still look for it.
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
         }
     }
 
