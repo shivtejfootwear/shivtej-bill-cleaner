@@ -90,7 +90,7 @@ jobs:
 
   # Real on-device OCR on the real invoice photo, on an Android emulator. Only for checking accuracy.
   ocr-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     continue-on-error: true
     steps:
@@ -117,9 +117,10 @@ jobs:
       - name: Run OCR on the emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 30
+          api-level: 29
           arch: x86_64
-          target: google_apis
+          target: default
+          emulator-boot-timeout: 900
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
           script: bash .github/ocr-check.sh
