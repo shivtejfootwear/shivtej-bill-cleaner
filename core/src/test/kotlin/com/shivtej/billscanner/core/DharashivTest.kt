@@ -38,7 +38,7 @@ class DharashivTest {
         assertEquals(listOf(F.SR, F.ARTICLE, F.HSN, F.GST_PCT, F.SIZE, F.MRP, F.QTY, F.RATE, F.DISC_PCT, F.TAXABLE), parsed.columns.map { it.field })
     }
 
-    @Test fun all51LinesOverTwoPages() {
+    fun all51LinesOverTwoPages() {
         assertEquals(parsed.notes.joinToString() + "\n" + parsed.items.joinToString("\n") { it.current.toString() }, 51, parsed.items.size)
         for ((i, l) in (DharashivInvoice.LINES + DharashivInvoice.ASIAN).withIndex()) {
             val it = parsed.items[i]; val v = it.current
@@ -122,6 +122,36 @@ class DharashivTest {
         }
     }
 
+    @Test fun bothPagesInOnePhotoAndWordsReadTwice() {
+        // A screenshot of the 2-page PDF: page 2 below page 1, slightly narrower and shifted, in one image.
+        val p1 = DharashivInvoice.page1(bend = 0.0); val p2 = DharashivInvoice.page2(bend = 0.0)
+        val dy = p1.height + 60
+        val moved = p2.words.map { w -> com.shivtej.billscanner.core.ocr.OcrWord(w.text, com.shivtej.billscanner.core.ocr.Box(
+            (w.box.l * 0.96 + 30).toInt(), (w.box.t * 0.96).toInt() + dy, (w.box.r * 0.96 + 30).toInt(), (w.box.b * 0.96).toInt() + dy)) }
+        // A band of words read twice (overlapping OCR strips).
+        val twice = p1.words.filter { it.box.cy in 900.0..960.0 }
+        val one = com.shivtej.billscanner.core.ocr.OcrPage(p1.width, dy + p2.height, p1.words + twice + moved)
+        val p = InvoiceParser.parse(listOf(one))
+        assertEquals(p.items.joinToString("\n") { "${it.current.sr} ${it.raw}" }, 51, p.items.size)
+        for ((i, l) in (DharashivInvoice.LINES + DharashivInvoice.ASIAN).withIndex()) {
+            val v = p.items[i].current
+            assertEquals("line ${l.sr}: ${p.items[i].raw}", d(l.amount), v.taxable); assertEquals(d(l.mrp), v.mrp); assertEquals(d(l.rate), v.rate)
+        }
+        assertEquals(d("107350.00"), p.header.printedGrandTotal)
+    }
+
+    @Test fun photoStartingInTheMiddleOfTheTable() {
+        val p1 = DharashivInvoice.page1(bend = 0.0); val p2 = DharashivInvoice.page2(bend = 0.0)
+        val cut = 445 + 31 * 8 - 5       // the photo starts at line 9
+        val top = p1.words.filter { it.box.t > cut }.map { w -> com.shivtej.billscanner.core.ocr.OcrWord(w.text, com.shivtej.billscanner.core.ocr.Box(w.box.l, w.box.t - cut, w.box.r, w.box.b - cut)) }
+        val dy = p1.height - cut + 40
+        val moved = p2.words.map { w -> com.shivtej.billscanner.core.ocr.OcrWord(w.text, com.shivtej.billscanner.core.ocr.Box(w.box.l, w.box.t + dy, w.box.r, w.box.b + dy)) }
+        val p = InvoiceParser.parse(listOf(com.shivtej.billscanner.core.ocr.OcrPage(p1.width, dy + p2.height, top + moved)))
+        assertEquals(p.items.joinToString("\n") { "${it.current.sr} ${it.raw}" }, (9..51).toList(), p.items.map { it.current.sr })
+        val l20 = p.items.first { it.current.sr == 20 }.current
+        assertEquals(d("1236.75"), l20.taxable); assertEquals(d("999"), l20.mrp)
+    }
+
     @Test fun flatPhotoToo() {
         val p = InvoiceParser.parse(listOf(DharashivInvoice.page1(bend = 0.0), DharashivInvoice.page2(bend = 0.0)))
         assertEquals(51, p.items.size)
@@ -162,5 +192,27 @@ class LearningTest {
         // Saved OCR reads back the same.
         val back = com.shivtej.billscanner.core.store.OcrCodec.decode(com.shivtej.billscanner.core.store.OcrCodec.encode(pages[0]))
         assertEquals(pages[0], back)
+    }
+}
+
+class CleaningTest {
+    private fun w(t: String) = com.shivtej.billscanner.core.ocr.OcrWord(t, com.shivtej.billscanner.core.ocr.Box(0, 0, t.length * 10, 20))
+    private fun c(t: String) = com.shivtej.billscanner.core.ocr.Layout.clean(listOf(w(t))).map { it.text }
+
+    @Test fun gluedWordsAreSplit() {
+        assertEquals(listOf("754.29", "9.82"), c("754.299.82"))
+        assertEquals(listOf("64029990", "5%"), c("640299905%"))
+        assertEquals(listOf("6X10", "1,249"), c("6X101,249"))
+        assertEquals(listOf("6X10", "999"), c("6X10999"))
+        assertEquals(listOf("11X13", "269"), c("11X13269"))
+        assertEquals(listOf("pair", "1,165.71"), c("pair1,165.71"))
+        assertEquals(listOf("33.", "SS"), c("33.SS"))
+        assertEquals(listOf("64029990", "5%"), c("64029990|5%"))
+        assertEquals(listOf("64029990"), c("64029990|"))
+        assertEquals(emptyList<String>(), c("|"))
+        assertEquals(listOf("6X10"), c("6X10"))
+        assertEquals(listOf("1,295.68"), c("1,295.68"))
+        assertEquals(BigDecimal("2504.44"), InvoiceParser.number("2,504,44"))
+        assertEquals(BigDecimal("-0.33"), InvoiceParser.number("(-)0.33"))
     }
 }

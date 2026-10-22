@@ -182,6 +182,84 @@ object Layout {
         return rows.map { r -> Row(r.sortedBy { it.box.l }, r.map { it.box.cy }.average()) }.sortedBy { it.y }
     }
 
+    // ---------------------------------------------------------------- words the OCR glued together
+
+    private val TWO_DECIMALS = Regex("""^(\d{1,3}(?:,\d{2,3})*\.\d{2})(\d{1,3}(?:,\d{2,3})*\.\d{1,3}%?)$""")
+    private val HSN_GST = Regex("""^(\d{4,8})(\d{1,2}(?:\.\d{1,2})?%)$""")
+    private val UNIT_NUM = Regex("""(?i)^(pairs?|prs?|pcs?|nos?)(\d[\d,]*(?:\.\d{1,2})?%?)$""")
+    private val PCT_NUM = Regex("""^(\d{1,2}(?:\.\d{1,2})?%)(\d[\d,]*(?:\.\d{1,2})?)$""")
+    private val SR_TEXT = Regex("""^(\d{1,3}\.)([A-Za-z].*)$""")
+    private val SIZE_NUM = Regex("""^(\d{1,2})[xX×](\d{1,3})(\d[\d,]*(?:\.\d{1,2})?)?$""")
+    private val VALID_NUM = Regex("""^[1-9]\d{0,2}(?:,\d{2,3})*(?:\.\d{1,2})?$|^[1-9]\d*(?:\.\d{1,2})?$""")
+
+    private fun splitBox(w: OcrWord, parts: List<String>): List<OcrWord> {
+        val total = parts.sumOf { it.length }.coerceAtLeast(1)
+        var x = w.box.l.toDouble()
+        return parts.filter { it.isNotEmpty() }.map { p ->
+            val wd = w.box.w * p.length.toDouble() / total
+            OcrWord(p, Box(x.toInt(), w.box.t, (x + wd).toInt(), w.box.b)).also { x += wd }
+        }
+    }
+
+    /** "6X101,249" → "6X10" + "1,249" (size range, then MRP): the split whose two parts both make sense. */
+    private fun sizeSplit(t: String): List<String>? {
+        val m = Regex("""^(\d{1,2}[xX×])(\d+(?:,\d{3})*(?:\.\d{1,2})?)$""").matchEntire(t) ?: return null
+        val head = m.groupValues[1]; val rest = m.groupValues[2]
+        val options = (1..2).mapNotNull { n ->
+            if (rest.length <= n) null else {
+                val sz = rest.substring(0, n); val num = rest.substring(n)
+                if (VALID_NUM.matches(num) && sz.toInt() in 1..15) Triple(sz, num, n) else null
+            }
+        }
+        if (options.isEmpty()) return null
+        val first = head.dropLast(1).toInt()
+        // A size range usually goes up (6X10, 11X13); prefer that, then the longer size number.
+        val pick = options.sortedWith(compareByDescending<Triple<String, String, Int>> { it.first.toInt() >= first }.thenByDescending { it.third }).first()
+        return listOf(head + pick.first, pick.second)
+    }
+
+    /**
+     * Cleans what the OCR returned: table lines read as "|" are dropped, and words it glued together
+     * ("754.299.82", "640299905%", "6X101,249", "pair1,165.71", "33.SS") are split back.
+     */
+    fun clean(words: List<OcrWord>): List<OcrWord> = words.flatMap { w0 ->
+        var t = w0.text.trim()
+        if (t.all { it == '|' || it == '!' || it == '[' || it == ']' }) return@flatMap emptyList()
+        // Inner pipes are column lines.
+        if ('|' in t) {
+            val parts = t.split('|').filter { it.isNotBlank() }
+            if (parts.isEmpty()) return@flatMap emptyList()
+            if (parts.size > 1) return@flatMap clean(splitBox(w0, parts))
+            t = parts[0].trim()
+        }
+        val w = OcrWord(t, w0.box)
+        TWO_DECIMALS.matchEntire(t)?.let { return@flatMap splitBox(w, listOf(it.groupValues[1], it.groupValues[2])) }
+        HSN_GST.matchEntire(t)?.let { return@flatMap splitBox(w, listOf(it.groupValues[1], it.groupValues[2])) }
+        UNIT_NUM.matchEntire(t)?.let { return@flatMap splitBox(w, listOf(it.groupValues[1], it.groupValues[2])) }
+        PCT_NUM.matchEntire(t)?.let { return@flatMap splitBox(w, listOf(it.groupValues[1], it.groupValues[2])) }
+        SR_TEXT.matchEntire(t)?.let { return@flatMap splitBox(w, listOf(it.groupValues[1], it.groupValues[2])) }
+        sizeSplit(t)?.let { return@flatMap splitBox(w, it) }
+        listOf(w)
+    }
+
+    /** The same word read twice (e.g. overlapping OCR strips): keep one. */
+    fun dedupe(ws: List<OcrWord>): List<OcrWord> {
+        val out = ArrayList<OcrWord>(ws.size)
+        val sorted = ws.sortedBy { it.box.t }
+        for (w in sorted) {
+            var dup = false
+            for (k in out.indices.reversed()) {
+                val o = out[k]
+                if (o.box.b < w.box.t - 2 * max(1, w.box.h)) break
+                if (o.text != w.text) continue
+                val ix = min(o.box.r, w.box.r) - max(o.box.l, w.box.l); val iy = min(o.box.b, w.box.b) - max(o.box.t, w.box.t)
+                if (ix > 0 && iy > 0 && ix.toLong() * iy * 2 > min(o.box.w.toLong() * o.box.h, w.box.w.toLong() * w.box.h)) { dup = true; break }
+            }
+            if (!dup) out += w
+        }
+        return out
+    }
+
     /** Lines of a page: tilt taken out, then chained. */
     fun rows(words: List<OcrWord>): List<Row> = lines(straighten(words))
 }

@@ -83,12 +83,13 @@ object Ocr {
                 val ws = recognise(big, 0, top, scale)
                 if (big !== part) big.recycle()
                 part.recycle()
-                // Keep a word only from the strip where it sits away from the cut.
-                val keepTop = if (s == 0) 0 else s * step - overlap / 2
-                val keepBottom = if (s == strips - 1) bmp.height else (s + 1) * step + overlap / 2
+                // Each word is kept from exactly one strip: the cut lines do not overlap.
+                val keepTop = if (s == 0) 0 else s * step
+                val keepBottom = if (s == strips - 1) bmp.height else (s + 1) * step
                 tiled += ws.filter { it.box.cy >= keepTop && it.box.cy < keepBottom }
             }
-            if (digits(tiled) > digits(whole)) best = tiled
+            val dedup = com.shivtej.billscanner.core.ocr.Layout.dedupe(tiled)
+            if (digits(dedup) > digits(whole)) best = dedup
         }
         OcrPage(bmp.width, bmp.height, best)
     }

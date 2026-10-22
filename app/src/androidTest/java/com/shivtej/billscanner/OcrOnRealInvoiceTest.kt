@@ -30,7 +30,7 @@ class OcrOnRealInvoiceTest {
 
     private fun read(name: String, assets: List<String>) = runBlocking {
         val ins = InstrumentationRegistry.getInstrumentation()
-        val dir = File(ins.targetContext.getExternalFilesDir(null)!!, name).apply { mkdirs() }
+        val dir = File(ins.targetContext.filesDir, "ocrtest/$name").apply { mkdirs() }
         val pages = mutableListOf<OcrPage>()
         val bitmaps = assets.map { a -> ins.context.assets.open(a).use { BitmapFactory.decodeStream(it) } }
         for ((i, bmp) in bitmaps.withIndex()) {
@@ -59,6 +59,8 @@ class OcrOnRealInvoiceTest {
     }
 
     @Test fun patel() = read("patel", listOf("patel_tradelines_g2_2627_1309.jpg"))
+
+    @Test fun dharashivV3617() = read("v3617", listOf("dharashiv_v3617_screenshot.jpg"))
 
     @Test fun dharashiv() = read("dharashiv", listOf("dharashiv_r2395_page1_screenshot.jpg", "dharashiv_r2395_page2_screenshot.jpg"))
 }

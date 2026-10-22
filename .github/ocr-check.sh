@@ -13,6 +13,6 @@ timeout 1200 adb shell am instrument -w -r -e class com.shivtej.billscanner.OcrO
   com.shivtej.billscanner.test/androidx.test.runner.AndroidJUnitRunner > ocr/instrument.txt 2>&1
 adb logcat -d -s OCRTEST:I > ocr/ocr-log.txt 2>&1
 adb logcat -d -t 600 > ocr/logcat-tail.txt 2>&1
-adb pull /sdcard/Android/data/com.shivtej.billscanner/files/. ocr/ >> ocr/setup.txt 2>&1
+adb exec-out run-as com.shivtej.billscanner tar -cf - files/ocrtest > ocr/ocrtest.tar 2>> ocr/setup.txt; (cd ocr && tar -xf ocrtest.tar && rm ocrtest.tar) >> ocr/setup.txt 2>&1
 ls -la ocr >> ocr/setup.txt
 exit 0
