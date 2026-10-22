@@ -10,7 +10,9 @@ import com.shivtej.billscanner.core.model.Invoice
 import com.shivtej.billscanner.core.model.Totals
 import com.shivtej.billscanner.core.model.Warnings
 import com.shivtej.billscanner.core.ocr.InvoiceParser
+import com.shivtej.billscanner.core.ocr.OcrPage
 import com.shivtej.billscanner.core.store.InvoiceCodec
+import com.shivtej.billscanner.core.store.OcrCodec
 import com.shivtej.billscanner.export.Pdf
 import com.shivtej.billscanner.ocr.Ocr
 import kotlinx.coroutines.runBlocking
@@ -19,42 +21,44 @@ import org.junit.runner.RunWith
 import java.io.File
 
 /**
- * Runs the real on-device OCR on the real PATEL TRADELINES photo and writes what it found.
+ * Runs the real on-device OCR on real bill photos and writes what it found.
  * It does not fail on wrong values: the output is for checking accuracy by eye.
  */
 @RunWith(AndroidJUnit4::class)
 class OcrOnRealInvoiceTest {
     private fun log(s: String) = s.chunked(3000).forEach { Log.i("OCRTEST", it) }
 
-    @Test fun readPatelInvoice() = runBlocking {
+    private fun read(name: String, assets: List<String>) = runBlocking {
         val ins = InstrumentationRegistry.getInstrumentation()
-        val bytes = ins.context.assets.open("patel_tradelines_g2_2627_1309.jpg").use { it.readBytes() }
-        val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-        val t0 = System.currentTimeMillis()
-        val page = Ocr.read(bmp)
-        log("OCR words=${page.words.size} size=${page.width}x${page.height} ms=${System.currentTimeMillis() - t0}")
-        val parsed = InvoiceParser.parse(listOf(page))
-        val inv = Invoice("real", System.currentTimeMillis(), parsed.header, parsed.header, parsed.items)
+        val dir = File(ins.targetContext.getExternalFilesDir(null)!!, name).apply { mkdirs() }
+        val pages = mutableListOf<OcrPage>()
+        val bitmaps = assets.map { a -> ins.context.assets.open(a).use { BitmapFactory.decodeStream(it) } }
+        for ((i, bmp) in bitmaps.withIndex()) {
+            val t0 = System.currentTimeMillis()
+            val page = Ocr.read(bmp)
+            log("[$name] page ${i + 1}: words=${page.words.size} size=${page.width}x${page.height} ms=${System.currentTimeMillis() - t0}")
+            File(dir, "ocr_${i + 1}.tsv").writeText(OcrCodec.encode(page))
+            pages += page
+        }
+        val parsed = InvoiceParser.parse(pages)
+        val inv = Invoice(name, System.currentTimeMillis(), parsed.header, parsed.header, parsed.items, columns = parsed.columns)
         val h = inv.header
-        log("HEADER supplier=${h.supplierName} | gstin=${h.supplierGstin} | no=${h.invoiceNo} | date=${h.invoiceDate} | order=${h.orderNo} | buyer=${h.buyerName} | buyerGstin=${h.buyerGstin} | grand=${h.printedGrandTotal} | packing=${h.packing} | page=${h.pageNote}")
+        log("[$name] HEADER supplier=${h.supplierName} | gstin=${h.supplierGstin} | no=${h.invoiceNo} | date=${h.invoiceDate} | buyer=${h.buyerName} | buyerGstin=${h.buyerGstin} | grand=${h.printedGrandTotal} | cgst=${h.cgstAmt} sgst=${h.sgstAmt} | qty=${h.printedQty} sub=${h.printedSubtotal}")
+        log("[$name] COLUMNS " + parsed.columns.joinToString(" | ") { "${it.label}=${it.field}" })
         for (i in inv.items) {
             val v = i.current
-            log("ITEM ${v.sr} | ${i.kind} | ${v.article} | ${v.name} | col=${v.colour} | sizes=${v.sizeText} | hsn=${v.hsn} | qty=${v.qty} | mrp=${v.mrp} | rate=${v.rate} | gross=${v.gross} | disc%=${v.discPct} | discAmt=${v.discAmt} | taxable=${v.taxable} | cgst=${v.cgstPct}/${v.cgstAmt} | sgst=${v.sgstPct}/${v.sgstAmt} | igst=${v.igstPct}/${v.igstAmt} | mrpDisc=${Calc.mrpDiscPct(v)} | needs=${i.needs}")
+            log("[$name] ITEM ${v.sr} | ${v.article} | col=${v.colour} | size=${v.sizeText} | qty=${v.qty} | mrp=${v.mrp} | rate=${v.rate} | disc%=${v.discPct} | amount=${v.taxable} | gst=${v.gstPct} | baitha=${Calc.sittingPct(v, h)} | needs=${i.needs} | raw=${i.raw}")
         }
-        val t = Totals.of(inv)
-        log("TOTALS $t")
-        parsed.notes.forEach { log("NOTE $it") }
-        Warnings.of(inv).forEach { log("WARN ${it.level} ${it.english}") }
-
-        // Raw OCR words too, so the parser can be tuned against the real layout.
-        val dir = ins.targetContext.getExternalFilesDir(null)!!.apply { mkdirs() }
-        File(dir, "ocr_words.tsv").writeText(page.words.joinToString("\n") { "${it.box.l}\t${it.box.t}\t${it.box.r}\t${it.box.b}\t${it.text}" })
+        log("[$name] TOTALS ${Totals.of(inv)}")
+        parsed.notes.forEach { log("[$name] NOTE $it") }
+        Warnings.of(inv).forEach { log("[$name] WARN ${it.level} ${it.english}") }
         File(dir, "invoice.json").writeText(InvoiceCodec.encode(inv))
-        File(dir, "real_invoice.xlsx").outputStream().use { InvoiceExport.xlsx(inv, it) }
-        File(dir, "real_report_landscape.pdf").outputStream().use { Pdf.report(inv, true, it) }
-        File(dir, "real_report_portrait.pdf").outputStream().use { Pdf.report(inv, false, it) }
-        File(dir, "real_target_sheet.pdf").outputStream().use { Pdf.target(inv.copy(defaultTargetPct = java.math.BigDecimal("35")), it) }
-        File(dir, "real_photo.pdf").outputStream().use { Pdf.photos(listOf(bmp), "PATEL TRADELINES G2/2627/1309", it) }
-        log("FILES ${dir.absolutePath}")
+        File(dir, "$name.xlsx").outputStream().use { InvoiceExport.xlsx(inv, it) }
+        File(dir, "${name}_report.pdf").outputStream().use { Pdf.report(inv, true, it) }
+        log("[$name] FILES ${dir.absolutePath}")
     }
+
+    @Test fun patel() = read("patel", listOf("patel_tradelines_g2_2627_1309.jpg"))
+
+    @Test fun dharashiv() = read("dharashiv", listOf("dharashiv_r2395_page1_screenshot.jpg", "dharashiv_r2395_page2_screenshot.jpg"))
 }

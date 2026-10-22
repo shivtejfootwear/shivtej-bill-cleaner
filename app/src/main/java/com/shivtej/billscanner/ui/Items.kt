@@ -62,172 +62,13 @@ import androidx.compose.ui.unit.sp
 import com.shivtej.billscanner.core.model.Calc
 import com.shivtej.billscanner.core.model.Edits
 import com.shivtej.billscanner.core.model.F
+import com.shivtej.billscanner.core.model.Header
 import com.shivtej.billscanner.core.model.Invoice
 import com.shivtej.billscanner.core.model.ItemKind
 import com.shivtej.billscanner.core.model.ItemValues
 import com.shivtej.billscanner.core.model.LineItem
 import com.shivtej.billscanner.core.model.Sizes
 import java.math.BigDecimal
-
-enum class SortBy { SR, ARTICLE, QTY, RATE, DISCOUNT }
-
-@Composable
-fun ItemsScreen(id: String, onBack: () -> Unit) {
-    val ed = rememberEditor(id)
-    val inv = ed.invoice ?: return
-    var q by rememberSaveable { mutableStateOf("") }
-    var sort by rememberSaveable { mutableStateOf(SortBy.SR) }
-    var table by rememberSaveable { mutableStateOf(false) }
-    var editing by remember { mutableStateOf<String?>(null) }
-    ItemsContent(
-        inv, q, { q = it }, sort, { sort = it }, table, { table = !table },
-        onBack = onBack, onOpen = { editing = it },
-        onAdd = { ed.change { Edits.addItem(it, System.currentTimeMillis()) } },
-        onRecalcAll = { ed.change { Edits.recalcAll(it, System.currentTimeMillis()) } },
-        canUndo = ed.canUndo, onUndo = { ed.undo() },
-    )
-    editing?.let { itemId ->
-        val item = inv.items.firstOrNull { it.id == itemId }
-        if (item == null) editing = null else ItemSheet(item, onDismiss = { editing = null },
-            onSave = { v -> ed.change { Edits.updateItem(it, itemId, v, System.currentTimeMillis()) } },
-            onVerified = { on -> ed.change { Edits.setVerified(it, itemId, on, System.currentTimeMillis()) } },
-            onRevert = { ed.change { Edits.revertItem(it, itemId, System.currentTimeMillis()) } },
-            onRecalc = { ed.change { Edits.recalcItem(it, itemId, System.currentTimeMillis()) } },
-            onDuplicate = { ed.change { Edits.duplicateItem(it, itemId, System.currentTimeMillis()) }; editing = null },
-            onDelete = { ed.change { Edits.deleteItem(it, itemId, System.currentTimeMillis()) }; editing = null },
-        )
-    }
-}
-
-fun sorted(items: List<LineItem>, q: String, sort: SortBy): List<LineItem> {
-    val t = q.trim()
-    val f = items.filter { t.isEmpty() || listOf(it.current.article, it.current.name, it.current.colour, it.current.sizeText).any { s -> s.contains(t, true) } }
-    return when (sort) {
-        SortBy.SR -> f
-        SortBy.ARTICLE -> f.sortedBy { it.current.article }
-        SortBy.QTY -> f.sortedByDescending { it.current.qty ?: BigDecimal.ZERO }
-        SortBy.RATE -> f.sortedByDescending { it.current.rate ?: BigDecimal.ZERO }
-        SortBy.DISCOUNT -> f.sortedByDescending { it.current.discPct ?: BigDecimal("-1") }
-    }
-}
-
-@Composable
-fun ItemsContent(
-    inv: Invoice, query: String, onQuery: (String) -> Unit, sort: SortBy, onSort: (SortBy) -> Unit, table: Boolean, onTable: () -> Unit,
-    onBack: () -> Unit, onOpen: (String) -> Unit, onAdd: () -> Unit = {}, onRecalcAll: () -> Unit = {}, canUndo: Boolean = false, onUndo: () -> Unit = {},
-) {
-    val list = sorted(inv.items, query, sort)
-    Column(Modifier.fillMaxSize().background(C.bg)) {
-        TopBar(tr("आर्टिकल", "Articles") + " (${inv.items.size})", onBack) {
-            if (canUndo) TextButton(onClick = onUndo) { Text("Undo", color = C.navy) }
-            IconButton(onClick = onTable) { Icon(if (table) Icons.Outlined.ViewAgenda else Icons.Outlined.TableChart, contentDescription = tr("टेबल", "Table"), tint = C.navy) }
-        }
-        Column(Modifier.padding(horizontal = 14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(Modifier.fillMaxWidth().background(C.card, RoundedCornerShape(12.dp)).border(1.dp, C.line, RoundedCornerShape(12.dp)).padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Outlined.Search, contentDescription = null, tint = C.muted)
-                Box(Modifier.weight(1f).padding(start = 8.dp)) {
-                    if (query.isEmpty()) Text(tr("आर्टिकल, नाम, कलर खोजें", "Search article, name, colour"), fontSize = 14.sp, color = C.muted)
-                    BasicTextField(query, onQuery, singleLine = true, textStyle = TextStyle(fontSize = 15.sp, color = C.ink), modifier = Modifier.fillMaxWidth())
-                }
-            }
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Chip(tr("क्रम", "Order"), sort == SortBy.SR) { onSort(SortBy.SR) }
-                Chip(tr("आर्टिकल", "Article"), sort == SortBy.ARTICLE) { onSort(SortBy.ARTICLE) }
-                Chip(tr("मात्रा", "Qty"), sort == SortBy.QTY) { onSort(SortBy.QTY) }
-                Chip(tr("रेट", "Rate"), sort == SortBy.RATE) { onSort(SortBy.RATE) }
-                Chip(tr("डिस्काउंट", "Discount"), sort == SortBy.DISCOUNT) { onSort(SortBy.DISCOUNT) }
-            }
-        }
-        if (table) ItemTable(list, onOpen, Modifier.weight(1f))
-        else LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(list, key = { it.id }) { ItemCard(it) { onOpen(it.id) } }
-            item {
-                Muted(tr("नारंगी डिब्बा = सप्लायर ने इस आर्टिकल पर बिल में जो डिस्काउंट % छापा। \"MRP पर %\" = MRP और रेट का फ़र्क़ — यह अलग हिसाब है।",
-                    "Orange box = the discount % the supplier printed for this article. \"MRP %\" = gap between MRP and rate — a separate calculation."))
-            }
-        }
-        Row(Modifier.fillMaxWidth().background(C.card).padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            GhostButton(tr("+ लाइन", "+ Line"), onAdd, Modifier.weight(1f), Icons.Outlined.Add)
-            GhostButton(tr("सब का हिसाब", "Recalc all"), onRecalcAll, Modifier.weight(1f), Icons.Outlined.Calculate)
-        }
-    }
-}
-
-@Composable
-fun ItemCard(it: LineItem, onClick: () -> Unit) {
-    val v = it.current
-    val flag = it.needs.isNotEmpty() || Calc.checkLine(v).isNotEmpty()
-    Row(
-        Modifier.fillMaxWidth().background(C.card, RoundedCornerShape(14.dp))
-            .border(if (flag && !it.verified) 1.5.dp else 1.dp, if (it.verified) C.ok else if (flag) C.warn else C.line, RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick).padding(10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.weight(1f)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("${v.sr ?: "•"} · ${v.article.ifEmpty { "?" }}", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = C.navy)
-                Spacer(Modifier.width(6.dp))
-                if (it.kind == ItemKind.CHARGE) Pill(tr("चार्ज", "Charge"), C.navy, C.navySoft)
-                if (it.verified) Pill("✓", C.ok, C.okSoft)
-                if (it.edited.isNotEmpty()) Pill(tr("बदला", "edited"), C.orangeDark, C.orangeSoft)
-            }
-            Text(listOf(v.name, v.colour).filter { it.isNotEmpty() }.joinToString(" · ").ifEmpty { "—" }, fontSize = 12.sp, color = C.muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (v.sizeText.isNotEmpty()) Text(v.sizeText, fontSize = 11.5.sp, color = C.muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Spacer(Modifier.height(4.dp))
-            Row { Cell3("MRP", rs(v.mrp), F.MRP in it.needs); Cell3(tr("रेट", "Rate"), rs(v.rate), F.RATE in it.needs); Cell3(tr("जोड़ी", "Qty"), qtyText(v.qty), F.QTY in it.needs) }
-            Row { Cell3(tr("छूट ₹", "Disc ₹"), num(v.discAmt), F.DISC_AMT in it.needs); Cell3(tr("MRP पर %", "MRP %"), pct(Calc.mrpDiscPct(v)), false); Cell3(tr("कुल", "Total"), rs(Calc.lineTotal(v)), F.TAXABLE in it.needs) }
-        }
-        Spacer(Modifier.width(8.dp))
-        BillDiscountBox(v.discPct, onClick, edited = F.DISC_PCT in it.edited)
-    }
-}
-
-@Composable
-private fun androidx.compose.foundation.layout.RowScope.Cell3(label: String, value: String, warn: Boolean) {
-    Column(Modifier.weight(1f)) {
-        Text(label, fontSize = 10.5.sp, color = C.muted)
-        Text(value, fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold, color = if (warn) C.warn else C.ink, maxLines = 1)
-    }
-}
-
-/** Spreadsheet-style view with the 8 key columns; the bill discount sits right after the rate. */
-@Composable
-fun ItemTable(list: List<LineItem>, onOpen: (String) -> Unit, modifier: Modifier) {
-    val cols = listOf(
-        tr("आर्टिकल नं. और नाम", "Article No. & Name") to 116.dp, "MRP" to 60.dp, tr("असली रेट", "Original Rate") to 64.dp,
-        "Original Bill Discount (%)" to 92.dp, tr("डिस्काउंट ₹", "Original Discount ₹") to 82.dp, tr("MRP पर डिस्काउंट %", "Calc. Discount vs MRP (%)") to 92.dp,
-        tr("मात्रा", "Qty") to 52.dp, tr("लाइन का कुल", "Final Line Total") to 92.dp,
-    )
-    Column(modifier.padding(horizontal = 14.dp, vertical = 8.dp).horizontalScroll(rememberScrollState())) {
-        Row(Modifier.background(C.navy, RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))) {
-            cols.forEachIndexed { i, (h, w) -> TCell(h, w, header = true, orange = i == 3) }
-        }
-        Column(Modifier.verticalScroll(rememberScrollState())) {
-            list.forEach { it ->
-                val v = it.current
-                Row(Modifier.background(C.card).clickable { onOpen(it.id) }) {
-                    TCell("${v.sr ?: ""} ${v.article} ${v.name}".trim(), cols[0].second, left = true)
-                    TCell(num(v.mrp), cols[1].second); TCell(num(v.rate), cols[2].second)
-                    TCell(if (v.discPct == null) "Needs Verification" else pct(v.discPct), cols[3].second, orange = true, warn = v.discPct == null)
-                    TCell(num(v.discAmt), cols[4].second); TCell(pct(Calc.mrpDiscPct(v)), cols[5].second)
-                    TCell(qtyText(v.qty), cols[6].second); TCell(num(Calc.lineTotal(v)), cols[7].second)
-                }
-                Box(Modifier.width(cols.fold(0.dp) { a, c -> a + c.second }).height(1.dp).background(C.line))
-            }
-        }
-    }
-}
-
-@Composable
-private fun TCell(text: String, w: Dp, header: Boolean = false, orange: Boolean = false, warn: Boolean = false, left: Boolean = false) {
-    Text(
-        text, fontSize = if (header) 11.sp else 12.sp, lineHeight = 14.sp,
-        fontWeight = if (header || orange) FontWeight.SemiBold else FontWeight.Normal,
-        color = when { header -> Color.White; warn -> C.warn; orange -> C.orangeDark; else -> C.ink },
-        textAlign = if (left) TextAlign.Start else TextAlign.End, maxLines = 3, overflow = TextOverflow.Ellipsis,
-        modifier = Modifier.width(w).background(if (header && orange) C.orange else if (orange) C.orangeSoft else Color.Transparent).padding(horizontal = 6.dp, vertical = 8.dp),
-    )
-}
 
 // ------------------------------------------------------------------ edit one line
 
@@ -236,6 +77,7 @@ private fun TCell(text: String, w: Dp, header: Boolean = false, orange: Boolean 
 fun ItemSheet(
     item: LineItem, onDismiss: () -> Unit, onSave: (ItemValues) -> Unit, onVerified: (Boolean) -> Unit, onRevert: () -> Unit,
     onRecalc: () -> Unit, onDuplicate: () -> Unit, onDelete: () -> Unit,
+    header: Header = Header(), withGst: Boolean = true, target: BigDecimal? = null, onTarget: (BigDecimal?) -> Unit = {},
 ) {
     val o = item.original
     val c = item.current
@@ -255,12 +97,21 @@ fun ItemSheet(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = C.orange, unfocusedBorderColor = C.orange),
             )
+            val sitting = Calc.sittingPct(preview, header, withGst)
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Mini(tr("डिस्काउंट ₹", "Discount ₹"), num(preview.discAmt), C.navySoft, Modifier.weight(1f))
-                Mini(tr("नेट रेट", "Net rate"), rs(Calc.netRate(preview)), C.orangeSoft, Modifier.weight(1f))
-                Mini(tr("MRP पर %", "MRP %"), pct(Calc.mrpDiscPct(preview)), C.okSoft, Modifier.weight(1f))
+                Mini(tr("नेट रेट / जोड़ी", "Net rate / pair"), rs(Calc.netPerPair(preview)), C.navySoft, Modifier.weight(1f))
+                Mini(if (withGst) tr("GST सहित / जोड़ी", "With GST / pair") else tr("GST बिना", "Before GST"), rs(if (withGst) Calc.landedPerPair(preview, header) else Calc.netPerPair(preview)), C.orangeSoft, Modifier.weight(1f))
+                Mini(tr("बैठा %", "Baitha %"), pct(sitting), C.okSoft, Modifier.weight(1f))
             }
-            Mini(tr("बिल छूट के बाद MRP पर असर वाला %", "Effective discount vs MRP after bill discount"), pct(Calc.effectiveMrpPct(preview)), C.navySoft, Modifier.fillMaxWidth())
+            // The person's target for this one article (empty = the company's / whole bill's).
+            var tgt by remember(item.id, target) { mutableStateOf(item.targetPct?.toPlainString().orEmpty()) }
+            OutlinedTextField(
+                tgt, { tgt = it; onTarget(Calc.bd(it)) }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                label = { Text(tr("इस आर्टिकल का टार्गेट % (ख़ाली = कंपनी वाला)", "Target % for this article (empty = company's)")) },
+                placeholder = { Text(target?.let { pct(it) } ?: "—") }, suffix = { Text("%") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = C.ok, unfocusedBorderColor = C.ok),
+            )
             val drivers = draft.qty != c.qty || draft.rate != c.rate || draft.discPct != c.discPct || draft.cgstPct != c.cgstPct ||
                 draft.sgstPct != c.sgstPct || draft.igstPct != c.igstPct
             val shown = if (drivers) preview else draft

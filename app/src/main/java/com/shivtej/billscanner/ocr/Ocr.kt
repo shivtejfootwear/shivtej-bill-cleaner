@@ -50,12 +50,46 @@ object Ocr {
     fun rotate(bmp: Bitmap, degrees: Int): Bitmap =
         if (degrees % 360 == 0) bmp else Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, Matrix().apply { postRotate(degrees.toFloat()) }, true)
 
-    suspend fun read(bmp: Bitmap): OcrPage = withContext(Dispatchers.Default) {
+    private suspend fun recognise(bmp: Bitmap, dx: Int, dy: Int, k: Double): List<OcrWord> {
         val text = recognizer.process(InputImage.fromBitmap(bmp, 0)).await()
-        val words = text.textBlocks.flatMap { b -> b.lines.flatMap { l -> l.elements } }.mapNotNull { e ->
+        return text.textBlocks.flatMap { b -> b.lines.flatMap { l -> l.elements } }.mapNotNull { e ->
             val r = e.boundingBox ?: return@mapNotNull null
-            OcrWord(e.text, Box(r.left, r.top, r.right, r.bottom))
+            OcrWord(e.text, Box((r.left / k).toInt() + dx, (r.top / k).toInt() + dy, (r.right / k).toInt() + dx, (r.bottom / k).toInt() + dy))
         }
-        OcrPage(bmp.width, bmp.height, words)
+    }
+
+    private fun digits(ws: List<OcrWord>) = ws.sumOf { w -> w.text.count { it.isDigit() } }
+
+    /**
+     * Reads a page. Dense bills (many small lines) are also read in overlapping strips at a larger size —
+     * the OCR needs each letter to be big enough — and the reading with more numbers is kept.
+     */
+    suspend fun read(bmp: Bitmap): OcrPage = withContext(Dispatchers.Default) {
+        val whole = recognise(bmp, 0, 0, 1.0)
+        val heights = whole.map { it.box.h }.sorted()
+        val mh = if (heights.isEmpty()) 0 else heights[heights.size / 2]
+        var best = whole
+        if (mh in 1..27 && bmp.height > 600) {
+            // Strips across the page (lines stay whole), each enlarged so letters are ~32 px tall.
+            val strips = if (bmp.height > 2 * bmp.width) 4 else 3
+            val overlap = (bmp.height * 0.06).toInt()
+            val step = bmp.height / strips
+            val scale = (32.0 / mh).coerceIn(1.0, 2.5)
+            val tiled = mutableListOf<OcrWord>()
+            for (s in 0 until strips) {
+                val top = maxOf(0, s * step - overlap); val bottom = minOf(bmp.height, (s + 1) * step + overlap)
+                val part = Bitmap.createBitmap(bmp, 0, top, bmp.width, bottom - top)
+                val big = if (scale > 1.05) Bitmap.createScaledBitmap(part, (part.width * scale).toInt(), (part.height * scale).toInt(), true) else part
+                val ws = recognise(big, 0, top, scale)
+                if (big !== part) big.recycle()
+                part.recycle()
+                // Keep a word only from the strip where it sits away from the cut.
+                val keepTop = if (s == 0) 0 else s * step - overlap / 2
+                val keepBottom = if (s == strips - 1) bmp.height else (s + 1) * step + overlap / 2
+                tiled += ws.filter { it.box.cy >= keepTop && it.box.cy < keepBottom }
+            }
+            if (digits(tiled) > digits(whole)) best = tiled
+        }
+        OcrPage(bmp.width, bmp.height, best)
     }
 }

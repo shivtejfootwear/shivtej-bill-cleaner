@@ -16,15 +16,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shivtej.billscanner.ui.AddScreen
-import com.shivtej.billscanner.ui.AnalysisScreen
 import com.shivtej.billscanner.ui.BillTheme
 import com.shivtej.billscanner.ui.C
 import com.shivtej.billscanner.ui.ExportScreen
 import com.shivtej.billscanner.ui.HomeScreen
-import com.shivtej.billscanner.ui.ItemsScreen
 import com.shivtej.billscanner.ui.PhotoScreen
 import com.shivtej.billscanner.ui.ProcessingScreen
-import com.shivtej.billscanner.ui.ReviewScreen
+import com.shivtej.billscanner.ui.BillScreen
+import com.shivtej.billscanner.ui.TargetsScreen
 import com.shivtej.billscanner.ui.SettingsScreen
 
 class MainActivity : ComponentActivity() {
@@ -49,13 +48,12 @@ fun Root() {
                 }
                 composable("inv/{id}") { e ->
                     val id = e.arguments!!.getString("id")!!
-                    ReviewScreen(id, onBack = { nav.popBackStack() }, onItems = { nav.navigate("inv/$id/items") }, onAnalysis = { nav.navigate("inv/$id/analysis") },
+                    BillScreen(id, onBack = { nav.popBackStack() }, onTargets = { nav.navigate("inv/$id/targets") },
                         onExport = { nav.navigate("inv/$id/export") }, onPhoto = { nav.navigate("inv/$id/photo") })
                 }
-                composable("inv/{id}/items") { e -> ItemsScreen(e.arguments!!.getString("id")!!, onBack = { nav.popBackStack() }) }
-                composable("inv/{id}/analysis") { e ->
+                composable("inv/{id}/targets") { e ->
                     val id = e.arguments!!.getString("id")!!
-                    AnalysisScreen(id, onBack = { nav.popBackStack() }, onExport = { nav.navigate("inv/$id/export") })
+                    TargetsScreen(id, onBack = { nav.popBackStack() }, onExport = { nav.navigate("inv/$id/export") })
                 }
                 composable("inv/{id}/export") { e -> ExportScreen(e.arguments!!.getString("id")!!, onBack = { nav.popBackStack() }) }
                 composable("inv/{id}/photo") { e -> PhotoScreen(e.arguments!!.getString("id")!!, onBack = { nav.popBackStack() }) }

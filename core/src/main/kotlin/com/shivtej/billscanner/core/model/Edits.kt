@@ -17,6 +17,7 @@ object Edits {
             "discountAmt" to (a.discAmt to b.discAmt), "taxable" to (a.taxable to b.taxable), "cgstPct" to (a.cgstPct to b.cgstPct),
             "cgstAmt" to (a.cgstAmt to b.cgstAmt), "sgstPct" to (a.sgstPct to b.sgstPct), "sgstAmt" to (a.sgstAmt to b.sgstAmt),
             "igstPct" to (a.igstPct to b.igstPct), "igstAmt" to (a.igstAmt to b.igstAmt), "other" to (a.other to b.other), "notes" to (a.notes to b.notes),
+            "gstPct" to (a.gstPct to b.gstPct), "lineTotal" to (a.printedTotal to b.printedTotal),
         )
         return pairs.filter { (_, p) -> show(p.first) != show(p.second) && !(p.first is BigDecimal && p.second is BigDecimal && (p.first as BigDecimal).compareTo(p.second as BigDecimal) == 0) }
             .map { (k, p) -> Change(now, id, k, show(p.first), show(p.second)) }
@@ -29,7 +30,8 @@ object Edits {
     fun updateItem(inv: Invoice, id: String, new: ItemValues, now: Long): Invoice {
         val old = inv.items.firstOrNull { it.id == id } ?: return inv
         val drivers = old.current.qty != new.qty || old.current.rate != new.rate || old.current.discPct != new.discPct ||
-            old.current.cgstPct != new.cgstPct || old.current.sgstPct != new.sgstPct || old.current.igstPct != new.igstPct
+            old.current.cgstPct != new.cgstPct || old.current.sgstPct != new.sgstPct || old.current.igstPct != new.igstPct ||
+            old.current.discAmt != new.discAmt && new.discPct == null
         val v = if (drivers) Calc.recalc(new) else new
         val ch = log(now, id, old.current, v)
         if (ch.isEmpty()) return inv
@@ -60,6 +62,21 @@ object Edits {
     fun setTarget(inv: Invoice, id: String?, pct: BigDecimal?, now: Long): Invoice =
         if (id == null) inv.copy(defaultTargetPct = pct, changes = inv.changes + Change(now, null, "targetPct", show(inv.defaultTargetPct), show(pct)))
         else inv.copy(items = inv.items.map { if (it.id == id) it.copy(targetPct = pct) else it })
+
+    /** Target % for one company / brand group; null removes it. */
+    fun setGroupTarget(inv: Invoice, group: String, pct: BigDecimal?, now: Long): Invoice = inv.copy(
+        groupTargets = if (pct == null) inv.groupTargets - group else inv.groupTargets + (group to pct),
+        changes = inv.changes + Change(now, null, "target:$group", show(inv.groupTargets[group]), show(pct)),
+    )
+
+    /** One % for the whole bill: clears company and line targets. */
+    fun setAllTargets(inv: Invoice, pct: BigDecimal?, now: Long): Invoice = inv.copy(
+        defaultTargetPct = pct, groupTargets = emptyMap(), items = inv.items.map { it.copy(targetPct = null) },
+        changes = inv.changes + Change(now, null, "targetPct", show(inv.defaultTargetPct), show(pct)),
+    )
+
+    fun setSittingWithGst(inv: Invoice, on: Boolean, now: Long): Invoice =
+        inv.copy(sittingWithGst = on, changes = inv.changes + Change(now, null, "sittingWithGst", inv.sittingWithGst.toString(), on.toString()))
 
     fun addItem(inv: Invoice, now: Long): Invoice {
         val id = "m" + now.toString(36) + inv.items.size

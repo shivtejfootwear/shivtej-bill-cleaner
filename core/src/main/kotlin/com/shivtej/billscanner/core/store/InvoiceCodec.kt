@@ -1,6 +1,7 @@
 package com.shivtej.billscanner.core.store
 
 import com.shivtej.billscanner.core.model.Change
+import com.shivtej.billscanner.core.model.Column
 import com.shivtej.billscanner.core.model.F
 import com.shivtej.billscanner.core.model.Header
 import com.shivtej.billscanner.core.model.Invoice
@@ -21,6 +22,9 @@ object InvoiceCodec {
         "defaultTargetPct" to inv.defaultTargetPct?.toPlainString(),
         "changes" to inv.changes.map { linkedMapOf("at" to it.at, "item" to it.itemId, "field" to it.field, "from" to it.from, "to" to it.to) },
         "exportedAt" to inv.exportedAt,
+        "columns" to inv.columns.map { linkedMapOf("label" to it.label, "field" to it.field?.name) },
+        "groupTargets" to LinkedHashMap(inv.groupTargets.mapValues { it.value.toPlainString() }),
+        "sittingWithGst" to inv.sittingWithGst,
     ))
 
     @Suppress("UNCHECKED_CAST")
@@ -35,6 +39,9 @@ object InvoiceCodec {
             defaultTargetPct = (m["defaultTargetPct"] as? String)?.toBigDecimalOrNull(),
             changes = m.list("changes").map { c -> (c as Map<String, Any?>).let { Change(it.lng("at"), it["item"] as? String, it.str("field"), it.str("from"), it.str("to")) } },
             exportedAt = (m["exportedAt"] as? Number)?.toLong(),
+            columns = m.list("columns").map { c -> (c as Map<String, Any?>).let { Column(it.str("label"), (it["field"] as? String)?.let { f -> runCatching { F.valueOf(f) }.getOrNull() }) } },
+            groupTargets = (m.obj("groupTargets") ?: emptyMap()).mapNotNull { (k, v) -> (v as? String)?.toBigDecimalOrNull()?.let { k to it } }.toMap(),
+            sittingWithGst = (m["sittingWithGst"] as? Boolean) ?: true,
         )
     }
 
@@ -48,12 +55,15 @@ object InvoiceCodec {
         "transporter" to h.transporter, "cartons" to h.cartons, "packing" to h.packing, "buyerName" to h.buyerName,
         "buyerGstin" to h.buyerGstin, "printedGrandTotal" to b(h.printedGrandTotal), "overallDiscount" to b(h.overallDiscount),
         "otherCharges" to b(h.otherCharges), "roundOff" to b(h.roundOff), "pageNote" to h.pageNote,
+        "cgstPct" to b(h.cgstPct), "cgstAmt" to b(h.cgstAmt), "sgstPct" to b(h.sgstPct), "sgstAmt" to b(h.sgstAmt),
+        "igstPct" to b(h.igstPct), "igstAmt" to b(h.igstAmt), "printedQty" to b(h.printedQty), "printedSubtotal" to b(h.printedSubtotal),
     )
 
     private fun header(m: Map<String, Any?>) = Header(
         m.s("supplierName"), m.s("supplierAddress"), m.s("supplierGstin"), m.s("supplierContact"), m.s("invoiceNo"),
         m.s("invoiceDate"), m.s("orderNo"), m.s("transporter"), m.s("cartons"), m.s("packing"), m.s("buyerName"),
         m.s("buyerGstin"), m.dec("printedGrandTotal"), m.dec("overallDiscount"), m.dec("otherCharges"), m.dec("roundOff"), m.s("pageNote"),
+        m.dec("cgstPct"), m.dec("cgstAmt"), m.dec("sgstPct"), m.dec("sgstAmt"), m.dec("igstPct"), m.dec("igstAmt"), m.dec("printedQty"), m.dec("printedSubtotal"),
     )
 
     private fun values(v: ItemValues) = linkedMapOf(
@@ -61,7 +71,7 @@ object InvoiceCodec {
         "hsn" to v.hsn, "qty" to b(v.qty), "mrp" to b(v.mrp), "rate" to b(v.rate), "gross" to b(v.gross), "discPct" to b(v.discPct),
         "discAmt" to b(v.discAmt), "taxable" to b(v.taxable), "cgstPct" to b(v.cgstPct), "cgstAmt" to b(v.cgstAmt),
         "sgstPct" to b(v.sgstPct), "sgstAmt" to b(v.sgstAmt), "igstPct" to b(v.igstPct), "igstAmt" to b(v.igstAmt),
-        "other" to b(v.other), "notes" to v.notes,
+        "other" to b(v.other), "notes" to v.notes, "gstPct" to b(v.gstPct), "printedTotal" to b(v.printedTotal),
     )
 
     private fun values(m: Map<String, Any?>) = ItemValues(
@@ -70,11 +80,12 @@ object InvoiceCodec {
         rate = m.dec("rate"), gross = m.dec("gross"), discPct = m.dec("discPct"), discAmt = m.dec("discAmt"), taxable = m.dec("taxable"),
         cgstPct = m.dec("cgstPct"), cgstAmt = m.dec("cgstAmt"), sgstPct = m.dec("sgstPct"), sgstAmt = m.dec("sgstAmt"),
         igstPct = m.dec("igstPct"), igstAmt = m.dec("igstAmt"), other = m.dec("other"), notes = m.str("notes"),
+        gstPct = m.dec("gstPct"), printedTotal = m.dec("printedTotal"),
     )
 
     private fun item(i: LineItem) = linkedMapOf(
         "id" to i.id, "kind" to i.kind.name, "original" to values(i.original), "current" to values(i.current),
-        "needs" to i.needs.map { it.name }, "verified" to i.verified, "targetPct" to b(i.targetPct),
+        "needs" to i.needs.map { it.name }, "verified" to i.verified, "targetPct" to b(i.targetPct), "raw" to i.raw,
     )
 
     @Suppress("UNCHECKED_CAST")
@@ -82,6 +93,6 @@ object InvoiceCodec {
         id = m.str("id"), kind = runCatching { ItemKind.valueOf(m.str("kind")) }.getOrDefault(ItemKind.ARTICLE),
         original = values(m.obj("original") ?: emptyMap()), current = values(m.obj("current") ?: emptyMap()),
         needs = m.list("needs").mapNotNull { n -> runCatching { F.valueOf(n.toString()) }.getOrNull() }.toSet(),
-        verified = m.bool("verified"), targetPct = m.dec("targetPct"),
+        verified = m.bool("verified"), targetPct = m.dec("targetPct"), raw = m.list("raw").map { it.toString() },
     )
 }

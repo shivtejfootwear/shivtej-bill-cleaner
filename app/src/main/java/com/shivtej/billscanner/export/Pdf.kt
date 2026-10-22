@@ -9,6 +9,9 @@ import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import com.shivtej.billscanner.core.export.NEEDS_VERIFICATION
 import com.shivtej.billscanner.core.model.Calc
+import com.shivtej.billscanner.core.model.F
+import com.shivtej.billscanner.core.model.Groups
+import com.shivtej.billscanner.core.model.Target
 import com.shivtej.billscanner.core.model.Invoice
 import com.shivtej.billscanner.core.model.ItemKind
 import com.shivtej.billscanner.core.model.Totals
@@ -28,8 +31,10 @@ object Pdf {
     private const val ORANGE_DARK = 0xFFB45309.toInt()
     private const val LINE = 0xFFD5DCE6.toInt()
     private const val MUTED = 0xFF5D6B7A.toInt()
+    private const val GREEN = 0xFF15803D.toInt()
+    private const val GREEN_SOFT = 0xFFE7F6EC.toInt()
 
-    private class Col(val title: String, val w: Float, val right: Boolean = true, val orange: Boolean = false)
+    private class Col(val title: String, val w: Float, val right: Boolean = true, val orange: Boolean = false, val green: Boolean = false)
 
     private class Writer(val doc: PdfDocument, val w: Int, val h: Int, val footer: String) {
         var page: PdfDocument.Page? = null
@@ -93,7 +98,7 @@ object Pdf {
                 val hp = Paint(bold).apply { textSize = 7.2f; color = Color.WHITE }
                 val hh = 22f
                 for (col in cols) {
-                    fill.color = if (col.orange) ORANGE else NAVY
+                    fill.color = if (col.orange) ORANGE else if (col.green) GREEN else NAVY
                     c!!.drawRect(x, y, x + col.w * k, y + hh, fill)
                     val lines = wrap(col.title, hp, col.w * k - 4f).take(2)
                     lines.forEachIndexed { i, l -> c!!.drawText(fit(l, hp, col.w * k - 4f), x + 2f, y + 9f + i * 8.5f, hp) }
@@ -108,8 +113,8 @@ object Pdf {
                 var x = margin
                 for ((ci, col) in cols.withIndex()) {
                     val cw = col.w * k
-                    if (col.orange) { fill.color = ORANGE_SOFT; c!!.drawRect(x, y, x + cw, y + rowH, fill) }
-                    val p = Paint(if (col.orange) bold else text).apply { textSize = 7.6f; color = if ((ri to ci) in warnCol || col.orange) ORANGE_DARK else 0xFF14202E.toInt() }
+                    if (col.orange || col.green) { fill.color = if (col.green) GREEN_SOFT else ORANGE_SOFT; c!!.drawRect(x, y, x + cw, y + rowH, fill) }
+                    val p = Paint(if (col.orange || col.green) bold else text).apply { textSize = 7.6f; color = if ((ri to ci) in warnCol || col.orange) ORANGE_DARK else if (col.green) GREEN else 0xFF14202E.toInt() }
                     val s = fit(r.getOrElse(ci) { "" }, p, cw - 4f)
                     c!!.drawText(s, if (col.right) x + cw - 2f - p.measureText(s) else x + 2f, y + 9.5f, p)
                     x += cw
@@ -125,45 +130,41 @@ object Pdf {
     private fun n(v: BigDecimal?) = v?.let { Calc.r2(it).toPlainString() } ?: "Not found"
     private fun p(v: BigDecimal?) = v?.let { Calc.r2(it).toPlainString() + "%" } ?: ""
 
-    /** A. Verified data report: built from the reviewed values, not a copy of the supplier's invoice. */
+    private fun weight(f: F?): Float = when (f) {
+        F.SR -> 18f; F.ARTICLE -> 120f; F.HSN -> 42f; F.GST_PCT -> 26f; F.SIZE -> 40f; F.COLOUR -> 50f; F.MRP -> 36f; F.QTY -> 32f
+        F.RATE -> 40f; F.GROSS -> 44f; F.DISC_PCT -> 34f; F.DISC_AMT -> 38f; F.TAXABLE -> 48f; F.TOTAL -> 48f
+        F.CGST_PCT, F.SGST_PCT, F.IGST_PCT -> 26f; F.CGST_AMT, F.SGST_AMT, F.IGST_AMT -> 36f; else -> 40f
+    }
+
+    /** A. Bill report: every column as printed (or as corrected), with the बैठा % beside it. */
     fun report(inv: Invoice, landscape: Boolean, out: OutputStream) {
         val doc = PdfDocument()
         val wr = Writer(doc, if (landscape) 842 else 595, if (landscape) 595 else 842,
-            "Shivtej Bill Scanner AI · Verified data report · generated ${stamp()} · not the supplier's original invoice")
+            "Shivtej Bill Scanner AI · bill report · generated ${stamp()} · not the supplier's original invoice")
         val h = inv.header; val t = Totals.of(inv)
         wr.newPage()
-        wr.line("Invoice Review Report", wr.bold, 15f, NAVY, 6f)
-        wr.line("${h.supplierName ?: "Supplier not found"} · GSTIN ${h.supplierGstin ?: "Not found"}", wr.bold, 10f, NAVY)
-        h.supplierAddress?.let { wr.line(it, size = 8f, color = MUTED) }
-        wr.line("Invoice ${h.invoiceNo ?: "Not found"} · Date ${h.invoiceDate ?: "Not found"} · Order ${h.orderNo ?: "Not found"} · Transport ${h.transporter ?: "Not found"} · Packing ${h.packing ?: "Not found"}" +
-            (h.pageNote?.let { " · $it" } ?: ""), size = 8.5f)
+        wr.line("${h.supplierName ?: "Supplier not found"}", wr.bold, 14f, NAVY, 5f)
+        wr.line("Invoice ${h.invoiceNo ?: "Not found"} · Date ${h.invoiceDate ?: "Not found"} · GSTIN ${h.supplierGstin ?: "Not found"}" + (h.pageNote?.let { " · $it" } ?: ""), size = 8.5f)
         wr.line("Buyer: ${h.buyerName ?: "Not found"} · GSTIN ${h.buyerGstin ?: "Not found"} · Status: ${if (inv.status.name == "VERIFIED") "Verified" else "Not verified yet"}", size = 8.5f, gap = 8f)
-        val cols = if (landscape) listOf(
-            Col("#", 18f, false), Col("Article No. & Name", 120f, false), Col("Colour", 52f, false), Col("Size", 78f, false), Col("Qty", 26f),
-            Col("MRP", 40f), Col("Original Rate", 44f), Col("Original Bill Discount (%)", 54f, orange = true), Col("Discount ₹", 46f),
-            Col("Calc. Disc. vs MRP (%)", 48f), Col("Taxable", 52f), Col("GST ₹", 42f), Col("Final Line Total", 56f), Col("Status", 58f, false),
-        ) else listOf(
-            Col("#", 16f, false), Col("Article No. & Name", 96f, false), Col("Qty", 24f), Col("MRP", 38f), Col("Original Rate", 42f),
-            Col("Original Bill Discount (%)", 52f, orange = true), Col("Discount ₹", 44f), Col("Calc. Disc. vs MRP (%)", 46f), Col("Final Line Total", 52f), Col("Status", 52f, false),
-        )
+        val cols = InvoiceExport.printedColumns(inv)
+        val pcols = cols.map { c -> Col(c.label, weight(c.field), right = c.field != null && c.field !in setOf(F.ARTICLE, F.SIZE, F.COLOUR, F.HSN, F.SR), orange = c.field == F.DISC_PCT) } +
+            Col("Baitha % (on MRP${if (inv.sittingWithGst) ", with GST" else ""})", 46f, green = true)
         val warn = mutableSetOf<Pair<Int, Int>>()
-        val rows = inv.items.mapIndexed { i, it ->
-            val v = it.current
-            val disc = if (v.discPct == null) NEEDS_VERIFICATION.also { warn += i to (if (landscape) 7 else 5) } else p(v.discPct)
-            val name = "${v.article} ${v.name}".trim() + if (it.kind == ItemKind.CHARGE) " (charge)" else ""
-            val status = InvoiceExport.status(it)
-            if (landscape) listOf("${v.sr ?: ""}", name, v.colour, v.sizeText, v.qty?.stripTrailingZeros()?.toPlainString() ?: "", n(v.mrp), n(v.rate), disc, n(v.discAmt),
-                p(Calc.mrpDiscPct(v)), n(v.taxable), Calc.fmt(Calc.taxTotal(v)), n(Calc.lineTotal(v)), status)
-            else listOf("${v.sr ?: ""}", name, v.qty?.stripTrailingZeros()?.toPlainString() ?: "", n(v.mrp), n(v.rate), disc, n(v.discAmt), p(Calc.mrpDiscPct(v)), n(Calc.lineTotal(v)), status)
+        val rows = inv.items.mapIndexed { r, it ->
+            cols.mapIndexed { ci, c ->
+                if (c.field != null && c.field in it.needs) warn += r to ci
+                InvoiceExport.printedText(it, ci, c).ifEmpty { if (c.field == F.DISC_PCT && it.current.discPct == null) NEEDS_VERIFICATION else "" }
+            } + (if (it.kind == ItemKind.CHARGE) "" else p(Calc.sittingPct(it.current, h, inv.sittingWithGst)))
         }
-        wr.table(cols, rows, warn)
+        wr.table(pcols, rows, warn)
         wr.line("Totals", wr.bold, 10f, NAVY, 4f)
-        wr.line("Lines ${t.lines} · Articles ${t.articleLines} · Pairs ${t.qty.toPlainString()} · Before discount ₹${n(t.gross)} · Bill discount ₹${n(t.discount)} · Taxable ₹${n(t.taxable)}")
-        wr.line("CGST ₹${n(t.cgst)} · SGST ₹${n(t.sgst)} · IGST ₹${n(t.igst)} · Other ₹${n(t.other)} · Recalculated total ₹${n(t.grand)} · Printed total ₹${n(t.printedGrand)} · Difference ₹${n(t.difference)}", gap = 8f)
-        val ws = Warnings.of(inv)
+        wr.line("Articles ${t.articleLines} · Pairs ${t.qty.toPlainString()} · Amount before GST ₹${n(t.taxable)} · CGST ₹${n(t.cgst)} · SGST ₹${n(t.sgst)}" +
+            (if (t.igst.signum() != 0) " · IGST ₹${n(t.igst)}" else "") + (h.roundOff?.let { " · Round off ₹${n(it)}" } ?: ""))
+        wr.line("Calculated total ₹${n(t.grand)} · Printed on bill ₹${n(t.printedGrand)} · Difference ₹${n(t.difference)} · Baitha % on the whole bill ${p(Calc.sittingTotal(inv))}", wr.bold, 9f, NAVY, 8f)
+        val ws = Warnings.of(inv).filter { it.level.name != "TIP" }
         if (ws.isNotEmpty()) {
-            wr.line("Verification notes", wr.bold, 10f, NAVY, 4f)
-            ws.forEach { wr.line("• ${it.level.name}: ${it.english}", size = 8f, color = if (it.level.name == "TIP") MUTED else ORANGE_DARK) }
+            wr.line("Points to check", wr.bold, 10f, NAVY, 4f)
+            ws.forEach { wr.line("• ${it.english}", size = 8f, color = ORANGE_DARK) }
         }
         wr.finish(); doc.writeTo(out); doc.close()
     }
@@ -184,29 +185,57 @@ object Pdf {
         wr.finish(); doc.writeTo(out); doc.close()
     }
 
-    /** C. Adjusted / target-rate sheet — the person's own estimate, labelled as such on every page. */
+    /** C. The new bill at the person's target % — their own calculation, labelled as such on every page. */
     fun target(inv: Invoice, out: OutputStream) {
         val doc = PdfDocument()
-        val wr = Writer(doc, 842, 595, "USER-GENERATED ESTIMATE · not the supplier's invoice · Shivtej Bill Scanner AI · ${stamp()}")
+        val wr = Writer(doc, 595, 842, "Buyer's calculation at target % · not the supplier's tax invoice · Shivtej Bill Scanner AI · ${stamp()}")
+        val h = inv.header
+        val sheet = Target.sheet(inv)
         wr.newPage()
-        wr.line("Adjusted / Target-Rate Calculation (user estimate)", wr.bold, 14f, ORANGE, 5f)
-        wr.line("Based on ${inv.header.supplierName ?: "supplier"} invoice ${inv.header.invoiceNo ?: ""} ${inv.header.invoiceDate ?: ""}. The supplier's invoice values are unchanged.", size = 8.5f, color = MUTED, gap = 8f)
-        val cols = listOf(Col("#", 18f, false), Col("Article", 110f, false), Col("Qty", 28f), Col("MRP", 44f), Col("Original Rate", 50f),
-            Col("Original Bill Discount (%)", 58f, orange = true), Col("Calc. Disc. vs MRP (%)", 52f), Col("Target Discount (%)", 52f),
-            Col("Target Rate", 50f), Col("Target − Original Rate", 58f), Col("Value at Target", 62f))
-        var total = BigDecimal.ZERO
-        val rows = inv.items.filter { it.kind == ItemKind.ARTICLE }.map { it ->
-            val v = it.current
-            val tp = it.targetPct ?: inv.defaultTargetPct
-            val tr = Calc.targetRate(v.mrp, tp)
-            val q = v.qty; val rate = v.rate
-            val value = if (tr != null && q != null) Calc.r2(tr * q) else null
-            value?.let { total += it }
-            listOf("${v.sr ?: ""}", "${v.article} ${v.name}".trim(), v.qty?.stripTrailingZeros()?.toPlainString() ?: "", n(v.mrp), n(v.rate),
-                v.discPct?.let { p(it) } ?: NEEDS_VERIFICATION, p(Calc.mrpDiscPct(v)), p(tp), tr?.let { n(it) } ?: "", if (tr != null && rate != null) n(tr - rate) else "", value?.let { n(it) } ?: "")
+        wr.line("New bill at target %", wr.bold, 15f, ORANGE, 5f)
+        wr.line("${h.supplierName ?: "Supplier"} · invoice ${h.invoiceNo ?: ""} · ${h.invoiceDate ?: ""}", wr.bold, 9.5f, NAVY, 3f)
+        val by = Groups.of(inv).joinToString("  ·  ") { g -> "${g.key}: ${(g.target ?: inv.defaultTargetPct)?.let { p(it) } ?: "as billed"}" }
+        wr.line("Target % — $by", size = 8.5f, color = NAVY, gap = 3f)
+        wr.line("Rates worked out from MRP" + (if (inv.sittingWithGst) " (target % includes GST)" else "") + ". The supplier's invoice is unchanged.", size = 8f, color = MUTED, gap = 8f)
+        val cols = listOf(Col("#", 16f, false), Col("Article", 118f, false), Col("Size", 34f, false), Col("MRP", 34f), Col("Pairs", 26f),
+            Col("Baitha % (bill)", 36f, green = true), Col("Target %", 32f, orange = true), Col("New Rate / Pair", 40f), Col("New Amount", 46f), Col("Bill Amount", 46f))
+        val rows = sheet.lines.map { l ->
+            val v = l.item.current
+            listOf("${v.sr ?: ""}", listOf(v.article, v.name, v.colour).filter { it.isNotBlank() }.joinToString(" "), v.sizeText, n(v.mrp), v.qty?.stripTrailingZeros()?.toPlainString() ?: "",
+                p(Calc.sittingPct(v, h, inv.sittingWithGst)), p(l.pct), n(l.net), n(l.amount), n(l.billAmount))
+        } + sheet.untouched.filter { it.current.taxable != null }.map { i ->
+            val v = i.current
+            listOf("${v.sr ?: ""}", listOf(v.article, v.name, v.colour).filter { it.isNotBlank() }.joinToString(" ") + " (as billed)", v.sizeText, n(v.mrp),
+                v.qty?.stripTrailingZeros()?.toPlainString() ?: "", p(Calc.sittingPct(v, h, inv.sittingWithGst)), "—", n(v.rate), n(v.taxable), n(v.taxable))
         }
         wr.table(cols, rows)
-        wr.line("Total value at target rates (before tax): ₹${n(total)}", wr.bold, 10f, NAVY)
+        wr.line("Amount before GST ₹${n(sheet.taxable)}   ·   GST ₹${n(sheet.gst)}   ·   Total ₹${n(sheet.rounded)}", wr.bold, 11f, NAVY, 5f)
+        wr.line("Supplier's bill total ₹${n(sheet.billTotal)}   ·   Difference ₹${n(sheet.difference)}", wr.bold, 10f, if (sheet.difference.signum() < 0) GREEN else ORANGE_DARK, 4f)
         wr.finish(); doc.writeTo(out); doc.close()
+    }
+
+    /** All pages of a PDF stacked into one PNG (for sending as a photo). */
+    fun toPng(ctx: android.content.Context, pdf: ByteArray, out: OutputStream) {
+        val f = java.io.File(ctx.cacheDir, "render.pdf").apply { writeBytes(pdf) }
+        android.os.ParcelFileDescriptor.open(f, android.os.ParcelFileDescriptor.MODE_READ_ONLY).use { fd ->
+            android.graphics.pdf.PdfRenderer(fd).use { r ->
+                val k = 2f
+                val pages = (0 until r.pageCount).map { i ->
+                    r.openPage(i).use { pg ->
+                        val b = Bitmap.createBitmap((pg.width * k).toInt(), (pg.height * k).toInt(), Bitmap.Config.ARGB_8888)
+                        b.eraseColor(Color.WHITE)
+                        pg.render(b, null, null, android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                        b
+                    }
+                }
+                val all = Bitmap.createBitmap(pages.maxOf { it.width }, pages.sumOf { it.height }, Bitmap.Config.ARGB_8888)
+                val cv = Canvas(all)
+                var y = 0f
+                for (b in pages) { cv.drawBitmap(b, 0f, y, null); y += b.height; b.recycle() }
+                all.compress(Bitmap.CompressFormat.PNG, 100, out)
+                all.recycle()
+            }
+        }
+        f.delete()
     }
 }

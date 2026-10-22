@@ -114,16 +114,25 @@ jobs:
       - name: Build test APKs
         run: gradle --no-daemon :app:assembleDebug :app:assembleDebugAndroidTest
 
-      - name: Run OCR on the emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          arch: x86_64
-          target: default
-          emulator-boot-timeout: 900
-          disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
-          script: bash .github/ocr-check.sh
+      - name: Start an emulator and read the real bill photos
+        timeout-minutes: 35
+        run: |
+          set +e
+          mkdir -p ocr
+          ls -la /dev/kvm > ocr/emulator-status.txt 2>&1
+          SDK=$ANDROID_HOME/cmdline-tools/latest/bin
+          IMG="system-images;android-30;google_apis;x86_64"
+          yes | $SDK/sdkmanager --licenses > /dev/null 2>&1
+          $SDK/sdkmanager --install "$IMG" "emulator" "platform-tools" > ocr/sdk.txt 2>&1
+          echo no | $SDK/avdmanager create avd -n t -k "$IMG" -d pixel --force > ocr/avd.txt 2>&1
+          export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
+          nohup emulator -avd t -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none -memory 4096 > ocr/emulator.txt 2>&1 &
+          timeout 600 adb wait-for-device
+          timeout 900 bash -c 'until [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" = "1" ]; do sleep 5; done'
+          echo "boot exit=$?" >> ocr/emulator-status.txt
+          adb shell settings put global window_animation_scale 0
+          bash .github/ocr-check.sh
+          adb emu kill || true
 
       - name: Publish OCR results branch
         if: always()

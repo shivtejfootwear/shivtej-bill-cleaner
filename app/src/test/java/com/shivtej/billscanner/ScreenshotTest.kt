@@ -12,17 +12,15 @@ import com.shivtej.billscanner.core.model.InvoiceStatus
 import com.shivtej.billscanner.core.model.Warnings
 import com.shivtej.billscanner.core.ocr.InvoiceParser
 import com.shivtej.billscanner.ui.AddContent
-import com.shivtej.billscanner.ui.AnalysisContent
+import com.shivtej.billscanner.ui.BillContent
+import com.shivtej.billscanner.ui.TargetsContent
 import com.shivtej.billscanner.ui.BillTheme
 import com.shivtej.billscanner.ui.ExportContent
 import com.shivtej.billscanner.ui.HomeContent
 import com.shivtej.billscanner.ui.HomeFilter
 import com.shivtej.billscanner.ui.ItemSheet
-import com.shivtej.billscanner.ui.ItemsContent
 import com.shivtej.billscanner.ui.ProcessingContent
-import com.shivtej.billscanner.ui.ReviewContent
 import com.shivtej.billscanner.ui.SettingsContent
-import com.shivtej.billscanner.ui.SortBy
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -55,7 +53,7 @@ class ScreenshotTest {
     @Test fun s01_home() {
         val a = invoice()
         val b = Edits.setStatus(invoice(blank = emptySet()).copy(id = "b", createdAt = now - 86_400_000L * 3), InvoiceStatus.VERIFIED, now)
-        shot("01_home") { HomeContent(listOf(a, b), "", {}, HomeFilter.ALL, {}, {}, {}, {}, now) }
+        shot("01_home") { HomeContent(listOf(dharashiv(), a, b), "", {}, HomeFilter.ALL, {}, {}, {}, {}, now) }
     }
 
     @Test fun s01b_home_empty() = shot("01b_home_empty") { HomeContent(emptyList(), "", {}, HomeFilter.ALL, {}, {}, {}, {}, now) }
@@ -73,33 +71,39 @@ class ScreenshotTest {
 
     @Test fun s03b_processing_failed() = shot("03b_processing_failed") { ProcessingContent(ScanStep.FAILED, 0.3f, 1, "Photo could not be read", {}) }
 
-    @Config(qualifiers = "w393dp-h1900dp-xxhdpi")
-    @Test fun s04_review() {
-        val inv = invoice()
-        shot("04_review") { ReviewContent(inv, Warnings.of(inv), null, {}, {}, {}, {}, {}) }
+    private fun dharashiv(targets: Boolean = false): Invoice {
+        val p = InvoiceParser.parse(listOf(DharashivInvoice.page1(), DharashivInvoice.page2()))
+        var inv = Invoice("dh", now, p.header, p.header, p.items, columns = p.columns)
+        if (targets) { inv = Edits.setAllTargets(inv, BigDecimal("35"), now); inv = Edits.setGroupTarget(inv, "ASIAN", BigDecimal("40"), now) }
+        return inv
     }
 
-    @Test fun s05_items_cards() {
-        val inv = invoice()
-        shot("05_items_cards") { ItemsContent(inv, "", {}, SortBy.SR, {}, false, {}, {}, {}) }
+    @Test fun s04_bill_dharashiv() {
+        val inv = dharashiv()
+        shot("04_bill_dharashiv") { BillContent(inv, Warnings.of(inv), null, {}, {}, {}, {}) }
     }
 
-    @Test fun s05b_items_table() {
-        val inv = invoice()
-        shot("05b_items_table") { ItemsContent(inv, "", {}, SortBy.SR, {}, true, {}, {}, {}) }
+    @Test fun s04b_bill_dharashiv_targets() {
+        val inv = dharashiv(targets = true)
+        shot("04b_bill_with_new_rates") { BillContent(inv, Warnings.of(inv), null, {}, {}, {}, {}) }
+    }
+
+    @Test fun s04c_bill_patel() {
+        val inv = invoice().copy(columns = InvoiceParser.parse(listOf(PatelInvoice.page(setOf(5)))).columns)
+        shot("04c_bill_patel_warnings") { BillContent(inv, Warnings.of(inv), null, {}, {}, {}, {}, showWarnings = true) }
     }
 
     @Config(qualifiers = "w393dp-h1700dp-xxhdpi")
     @Test fun s06_item_sheet() {
         val inv = invoice()
         val item = inv.items[4]   // line 5: printed % unreadable -> Needs Verification
-        shot("06_item_sheet") { ItemSheet(item, {}, {}, {}, {}, {}, {}, {}) }
+        shot("06_item_sheet") { ItemSheet(item, {}, {}, {}, {}, {}, {}, {}, header = inv.header) }
     }
 
-    @Config(qualifiers = "w393dp-h1300dp-xxhdpi")
-    @Test fun s07_analysis() {
-        val inv = invoice(target = BigDecimal("35"))
-        shot("07_analysis") { AnalysisContent(inv, listOf(30, 35, 40, 45, 50), {}, {}, {}, {}, {}) }
+    @Config(qualifiers = "w393dp-h1500dp-xxhdpi")
+    @Test fun s07_targets() {
+        val inv = dharashiv(targets = true)
+        shot("07_targets_company_wise") { TargetsContent(inv, listOf(30, 35, 40, 45, 50), {}, {}, {}, { _, _ -> }, {}, {}) }
     }
 
     @Config(qualifiers = "w393dp-h1300dp-xxhdpi")

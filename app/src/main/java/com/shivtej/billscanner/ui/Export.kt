@@ -62,13 +62,16 @@ enum class ExportKind(val ext: String, val mime: String) {
     PDF_REPORT("pdf", "application/pdf"),
     PDF_PHOTO("pdf", "application/pdf"),
     PDF_TARGET("pdf", "application/pdf"),
+    IMAGE_TARGET("png", "image/png"),
     STOCK_CSV("csv", "text/csv"),
+    OCR_TEXT("txt", "text/plain"),
 }
 
 object Files {
     fun name(inv: Invoice, k: ExportKind) = InvoiceExport.fileBase(inv) + when (k) {
         ExportKind.XLSX -> "_Items.xlsx"; ExportKind.PDF_REPORT -> "_Report.pdf"; ExportKind.PDF_PHOTO -> "_Original_Photo.pdf"
-        ExportKind.PDF_TARGET -> "_Target_Estimate.pdf"; ExportKind.STOCK_CSV -> "_Stock.csv"
+        ExportKind.PDF_TARGET -> "_New_Bill_Target.pdf"; ExportKind.IMAGE_TARGET -> "_New_Bill_Target.png"; ExportKind.STOCK_CSV -> "_Stock.csv"
+        ExportKind.OCR_TEXT -> "_Scan_Data.txt"
     }
 
     fun bytes(ctx: Context, inv: Invoice, k: ExportKind, landscape: Boolean): ByteArray {
@@ -82,7 +85,17 @@ object Files {
                 bmps.forEach { it.recycle() }
             }
             ExportKind.PDF_TARGET -> Pdf.target(inv, out)
+            ExportKind.IMAGE_TARGET -> {
+                val pdf = ByteArrayOutputStream().also { Pdf.target(inv, it) }.toByteArray()
+                Pdf.toPng(ctx, pdf, out)
+            }
             ExportKind.STOCK_CSV -> out.write(InvoiceExport.stockCsv(inv).toByteArray(Charsets.UTF_8))
+            ExportKind.OCR_TEXT -> {
+                // What the scanner read, word by word with positions — for improving the reader on a difficult bill.
+                val pages = ctx.container.pages.loadOcr(inv.id)
+                out.write(("Shivtej Bill Scanner AI — scan data\n${inv.header.supplierName ?: ""} ${inv.header.invoiceNo ?: ""}\n\n" +
+                    pages.joinToString("\n") { com.shivtej.billscanner.core.store.OcrCodec.encode(it) }).toByteArray(Charsets.UTF_8))
+            }
         }
         return out.toByteArray()
     }
@@ -164,14 +177,16 @@ fun ExportContent(inv: Invoice, landscape: Boolean, onLandscape: (Boolean) -> Un
             if (inv.status != InvoiceStatus.VERIFIED) Text(tr("⚠ बिल अभी Verified नहीं है — फ़ाइल में \"Not verified yet\" लिखा रहेगा।", "⚠ Invoice not verified yet — files will say \"Not verified yet\"."),
                 fontSize = 13.sp, color = C.warn, modifier = Modifier.fillMaxWidth().background(C.warnSoft, RoundedCornerShape(10.dp)).padding(10.dp))
             message?.let { Text(it, fontSize = 13.sp, color = C.ok, modifier = Modifier.fillMaxWidth().background(C.okSoft, RoundedCornerShape(10.dp)).padding(10.dp)) }
-            ExportRow("XLSX", Color(0xFF13795B), "Excel (.xlsx)", tr("3 शीट: सारांश · आर्टिकल (Original Bill Discount % कॉलम सहित) · साइज़-वार स्टॉक", "3 sheets: summary · items (with Original Bill Discount %) · size-wise stock"), busy == ExportKind.XLSX, { onMake(ExportKind.XLSX, false) }) { onMake(ExportKind.XLSX, true) }
-            ExportRow("PDF", C.err, tr("जाँची हुई रिपोर्ट PDF", "Verified data report PDF"), tr("A4 · हर पेज पर कॉलम हेडर · बिल % कॉलम", "A4 · headers on every page · bill % column"), busy == ExportKind.PDF_REPORT, { onMake(ExportKind.PDF_REPORT, false) }) { onMake(ExportKind.PDF_REPORT, true) }
+            ExportRow("XLSX", Color(0xFF13795B), "Excel (.xlsx)", tr("बिल जैसा छपा + हरा बैठा % + पीला टार्गेट % (Excel में बदल सकते हैं) · कंपनी-वार · नया बिल · स्टॉक", "Bill as printed + green baitha % + yellow target % (editable in Excel) · company-wise · new bill · stock"), busy == ExportKind.XLSX, { onMake(ExportKind.XLSX, false) }) { onMake(ExportKind.XLSX, true) }
+            ExportRow("%", C.orange, tr("नया बिल (आपके %) PDF", "New bill at your % — PDF"), tr("कंपनी-वार %, नया रेट, नई रकम, Total और फ़र्क़", "Company %, new rate, amount, total and difference"), busy == ExportKind.PDF_TARGET, { onMake(ExportKind.PDF_TARGET, false) }) { onMake(ExportKind.PDF_TARGET, true) }
+            ExportRow("PNG", C.orangeDark, tr("नया बिल — फ़ोटो (WhatsApp के लिए)", "New bill — image (for WhatsApp)"), tr("एक लंबी फ़ोटो में पूरा नया बिल", "The whole new bill as one image"), busy == ExportKind.IMAGE_TARGET, { onMake(ExportKind.IMAGE_TARGET, false) }) { onMake(ExportKind.IMAGE_TARGET, true) }
+            ExportRow("PDF", C.err, tr("बिल रिपोर्ट PDF (बैठा % सहित)", "Bill report PDF (with baitha %)"), tr("बिल के सारे कॉलम जैसे छपे + बैठा % · हर पेज पर हेडर", "All bill columns as printed + baitha % · headers on every page"), busy == ExportKind.PDF_REPORT, { onMake(ExportKind.PDF_REPORT, false) }) { onMake(ExportKind.PDF_REPORT, true) }
             Row(Modifier.fillMaxWidth().padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Muted(tr("PDF आड़ा (landscape) — ज़्यादा कॉलम", "Landscape PDF — more columns"), Modifier.weight(1f)); Switch(landscape, onLandscape)
             }
             ExportRow("IMG", C.navy, tr("असली बिल की फ़ोटो PDF", "Original invoice photo PDF"), tr("फ़ोटो जैसी है वैसी, कोई बदलाव नहीं", "The photo as it is, unchanged"), busy == ExportKind.PDF_PHOTO, { onMake(ExportKind.PDF_PHOTO, false) }) { onMake(ExportKind.PDF_PHOTO, true) }
-            ExportRow("%", C.orange, tr("टार्गेट रेट शीट PDF", "Target-rate sheet PDF"), tr("\"आपका अनुमान\" लिखा रहेगा — सप्लायर का बिल नहीं", "Marked as your estimate — not the supplier's invoice"), busy == ExportKind.PDF_TARGET, { onMake(ExportKind.PDF_TARGET, false) }) { onMake(ExportKind.PDF_TARGET, true) }
             ExportRow("CSV", C.navy2, tr("साइज़-वार स्टॉक CSV", "Size-wise stock CSV"), "Article, Colour, Size, Quantity, MRP, Purchase Rate, Supplier, Invoice Number, Invoice Date", busy == ExportKind.STOCK_CSV, { onMake(ExportKind.STOCK_CSV, false) }) { onMake(ExportKind.STOCK_CSV, true) }
+            ExportRow("TXT", C.muted, tr("स्कैन की कच्ची जानकारी", "Raw scan data"), tr("कोई बिल ठीक से न पढ़ा जाए तो यह फ़ाइल भेजें — उससे पढ़ना सुधारा जाएगा", "If a bill is not read well, send this file so the reader can be improved"), busy == ExportKind.OCR_TEXT, { onMake(ExportKind.OCR_TEXT, false) }) { onMake(ExportKind.OCR_TEXT, true) }
             Muted(tr("फ़ाइलें फ़ोन के Download/Shivtej Bills फ़ोल्डर में सेव होती हैं। शेयर से WhatsApp, Gmail, Drive पर भेज सकते हैं।", "Files are saved in Download/Shivtej Bills. Share sends them to WhatsApp, Gmail, Drive."))
             Spacer(Modifier.height(8.dp))
         }

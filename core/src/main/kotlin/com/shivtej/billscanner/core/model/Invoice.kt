@@ -9,6 +9,10 @@ enum class ItemKind { ARTICLE, CHARGE }
 enum class F {
     SR, ARTICLE, NAME, COLOUR, SIZE, HSN, QTY, MRP, RATE, GROSS, DISC_PCT, DISC_AMT, TAXABLE,
     CGST_PCT, CGST_AMT, SGST_PCT, SGST_AMT, IGST_PCT, IGST_AMT, OTHER,
+    /** GST % printed on the line (tax itself charged at the bottom of the bill). */
+    GST_PCT,
+    /** Line amount including tax, when the bill prints one. */
+    TOTAL,
 }
 
 /**
@@ -42,6 +46,10 @@ data class ItemValues(
     val igstAmt: BigDecimal? = null,
     val other: BigDecimal? = null,
     val notes: String = "",
+    /** GST % printed on this line, for bills that charge the tax at the bottom. */
+    val gstPct: BigDecimal? = null,
+    /** Line amount including tax, when printed. */
+    val printedTotal: BigDecimal? = null,
 )
 
 data class LineItem(
@@ -54,8 +62,10 @@ data class LineItem(
     /** Fields the scan could not read reliably. */
     val needs: Set<F> = emptySet(),
     val verified: Boolean = false,
-    /** Target discount % against MRP for the adjusted sheet (null = use the invoice default). */
+    /** Target discount % against MRP for the adjusted sheet (null = company / invoice target). */
     val targetPct: BigDecimal? = null,
+    /** Every cell of this line exactly as printed, in the order of [Invoice.columns]. */
+    val raw: List<String> = emptyList(),
 ) {
     val edited: Set<F> get() = Calc.diff(original, current)
 }
@@ -79,7 +89,20 @@ data class Header(
     val otherCharges: BigDecimal? = null,
     val roundOff: BigDecimal? = null,
     val pageNote: String? = null,
+    /** Tax charged at the bottom of the bill ("Output CGST @2.5%  2,555.93"). */
+    val cgstPct: BigDecimal? = null,
+    val cgstAmt: BigDecimal? = null,
+    val sgstPct: BigDecimal? = null,
+    val sgstAmt: BigDecimal? = null,
+    val igstPct: BigDecimal? = null,
+    val igstAmt: BigDecimal? = null,
+    /** "Total" row of the item table as printed: pairs and amount. */
+    val printedQty: BigDecimal? = null,
+    val printedSubtotal: BigDecimal? = null,
 )
+
+/** One column of the bill's item table, as printed, and what it means (null = kept as text only). */
+data class Column(val label: String, val field: F?)
 
 /** One edit made by the person, kept so it can be reviewed or undone. */
 data class Change(val at: Long, val itemId: String?, val field: String, val from: String, val to: String)
@@ -99,4 +122,10 @@ data class Invoice(
     val defaultTargetPct: BigDecimal? = null,
     val changes: List<Change> = emptyList(),
     val exportedAt: Long? = null,
+    /** The item table's columns exactly as printed on the bill. */
+    val columns: List<Column> = emptyList(),
+    /** Target discount % against MRP per company / brand group (see [Groups]). */
+    val groupTargets: Map<String, BigDecimal> = emptyMap(),
+    /** Whether "बैठा %" counts GST in the landed cost (true = MRP vs rate after discount + GST). */
+    val sittingWithGst: Boolean = true,
 )

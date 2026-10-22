@@ -69,9 +69,10 @@ fun HomeContent(
     val thisMonth = all.filter { it.createdAt >= month }
     val totals = thisMonth.map { Totals.of(it) }
     val buy = totals.fold(BigDecimal.ZERO) { a, t -> a + (t.printedGrand ?: t.grand) }
-    val gross = totals.fold(BigDecimal.ZERO) { a, t -> a + t.gross }
-    val disc = totals.fold(BigDecimal.ZERO) { a, t -> a + t.discount }
-    val avg = if (gross.signum() > 0) Calc.r2(disc.multiply(Calc.HUNDRED).divide(gross, 6, RoundingMode.HALF_UP)) else null
+    // बैठा % of this month's bills, weighted by bill value.
+    val sit = thisMonth.mapNotNull { inv -> Calc.sittingTotal(inv)?.let { it to Totals.of(inv).taxable } }
+    val w = sit.fold(BigDecimal.ZERO) { a, p -> a + p.second }
+    val avg = if (w.signum() > 0) Calc.r2(sit.fold(BigDecimal.ZERO) { a, p -> a + p.first * p.second }.divide(w, 6, RoundingMode.HALF_UP)) else null
     val shown = all.filter { inv ->
         when (filter) {
             HomeFilter.ALL -> true
@@ -117,7 +118,7 @@ fun HomeContent(
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Stat(rs(buy).substringBefore('.'), tr("इस महीने की ख़रीद", "Purchases this month"), Modifier.weight(1f)) {}
-                    Stat(pct(avg), tr("औसत बिल डिस्काउंट", "Avg bill discount"), Modifier.weight(1f)) {}
+                    Stat(pct(avg), tr("औसत बैठा % (MRP पर)", "Avg baitha % on MRP"), Modifier.weight(1f)) {}
                 }
                 Row(
                     Modifier.fillMaxWidth().background(C.card, RoundedCornerShape(14.dp)).border(1.dp, C.line, RoundedCornerShape(14.dp)).padding(12.dp),

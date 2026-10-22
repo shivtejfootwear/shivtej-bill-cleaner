@@ -35,10 +35,10 @@ class ExportTest {
         val bos = ByteArrayOutputStream(); InvoiceExport.xlsx(inv, bos)
         System.getProperty("xlsx.out")?.let { File(it).writeBytes(bos.toByteArray()) }
         val parts = unzip(bos.toByteArray())
-        assertTrue(parts.keys.containsAll(listOf("[Content_Types].xml", "xl/workbook.xml", "xl/styles.xml", "xl/worksheets/sheet1.xml", "xl/worksheets/sheet2.xml", "xl/worksheets/sheet3.xml")))
+        assertTrue(parts.keys.containsAll(listOf("[Content_Types].xml", "xl/workbook.xml", "xl/styles.xml", "xl/worksheets/sheet1.xml", "xl/worksheets/sheet6.xml")))
         val f = DocumentBuilderFactory.newInstance().apply { isNamespaceAware = true }
         for ((name, xml) in parts) f.newDocumentBuilder().parse(ByteArrayInputStream(xml.toByteArray()))  // every part is well-formed XML
-        val items = parts.getValue("xl/worksheets/sheet2.xml")
+        val items = parts.getValue("xl/worksheets/sheet5.xml")
         assertTrue(items.contains("Original Bill Discount (%)"))
         assertTrue(items.contains("Needs Verification"))                      // line 5's % was unreadable
         assertTrue(items.contains("state=\"frozen\"") && items.contains("<autoFilter"))

@@ -39,6 +39,15 @@ object Warnings {
                 "बिल पर \"${h.pageNote}\" लिखा है — बाकी पेज भी जोड़ें।", "The bill says ${h.pageNote}; add the remaining page(s).")
         }
 
+        if (h.pageNote == "continued") out += Warning(Warning.Level.CHECK, null,
+            "बिल पर \"continued\" लिखा है — अगला पेज भी जोड़ें।", "The bill continues on another page; add it.")
+        h.printedQty?.let { pq -> if (pq.compareTo(t.qty) != 0) out += Warning(Warning.Level.CHECK, null,
+            "बिल के Total में ${pq.toPlainString()} जोड़ी छपी है, पर आर्टिकल की जोड़ी ${t.qty.toPlainString()} है — कोई लाइन छूटी तो नहीं?",
+            "The bill total says ${pq.toPlainString()} pairs; lines add up to ${t.qty.toPlainString()}.") }
+        h.printedSubtotal?.let { ps -> if ((ps - t.taxable).abs() > BigDecimal("0.99")) out += Warning(Warning.Level.CHECK, null,
+            "बिल के Total में ₹${Calc.fmt(ps)} छपा है, पर लाइनों का जोड़ ₹${Calc.fmt(t.taxable)} है — फ़र्क़ ₹${Calc.fmt(ps - t.taxable)}।",
+            "Table total ₹${Calc.fmt(ps)} vs lines ₹${Calc.fmt(t.taxable)}.") }
+
         // Lines.
         val seen = HashMap<String, String>()
         for (it in inv.items) {
@@ -53,10 +62,12 @@ object Warnings {
             if (v.mrp != null && v.rate != null && v.rate > v.mrp) out += Warning(Warning.Level.CHECK, it.id,
                 "$name: रेट ₹${Calc.fmt(v.rate)} MRP ₹${Calc.fmt(v.mrp)} से ज़्यादा है — अजीब लग रहा है", "$name: rate above MRP")
             if (v.mrp == null) out += Warning(Warning.Level.CHECK, it.id, "$name: MRP नहीं मिला", "$name: MRP not found")
-            if (v.colour.isEmpty()) out += Warning(Warning.Level.TIP, it.id, "$name: कलर नहीं छपा/पढ़ा गया", "$name: colour missing")
-            val s = Sizes.read(v.sizeText, v.qty)
-            if (s.state == Sizes.State.MISMATCH || s.state == Sizes.State.UNCLEAR) out += Warning(Warning.Level.CHECK, it.id, "$name: ${s.hindi}", "$name: size quantities need checking")
-            if (s.state == Sizes.State.NONE && v.sizeText.isEmpty()) out += Warning(Warning.Level.TIP, it.id, "$name: साइज़ नहीं छपे", "$name: sizes missing")
+            if (v.colour.isEmpty() && inv.columns.none { c -> c.field == F.SIZE }) out += Warning(Warning.Level.TIP, it.id, "$name: कलर नहीं छपा/पढ़ा गया", "$name: colour missing")
+            // Size counts are checked only where the bill prints them per size ("6/2,7/3"); "6X10" alone is a size range.
+            if (v.sizeText.contains('/')) {
+                val s = Sizes.read(v.sizeText, v.qty)
+                if (s.state == Sizes.State.MISMATCH || s.state == Sizes.State.UNCLEAR) out += Warning(Warning.Level.CHECK, it.id, "$name: ${s.hindi}", "$name: size quantities need checking")
+            } else if (v.sizeText.isEmpty() && inv.columns.none { c -> c.field == F.SIZE }) out += Warning(Warning.Level.TIP, it.id, "$name: साइज़ नहीं छपे", "$name: sizes missing")
             val key = "${v.article}|${v.colour}|${v.mrp}"
             seen[key]?.let { other -> out += Warning(Warning.Level.TIP, it.id, "$name: यही आर्टिकल, कलर और MRP लाइन $other में भी है", "$name: same article/colour/MRP as line $other") }
             seen.putIfAbsent(key, name)
@@ -79,5 +90,6 @@ object Warnings {
         F.QTY -> "मात्रा"; F.MRP -> "MRP"; F.RATE -> "रेट"; F.GROSS -> "Total (मात्रा × रेट)"; F.DISC_PCT -> "बिल डिस्काउंट %"
         F.DISC_AMT -> "डिस्काउंट ₹"; F.TAXABLE -> "Taxable"; F.CGST_PCT -> "CGST %"; F.CGST_AMT -> "CGST ₹"
         F.SGST_PCT -> "SGST %"; F.SGST_AMT -> "SGST ₹"; F.IGST_PCT -> "IGST %"; F.IGST_AMT -> "IGST ₹"; F.OTHER -> "दूसरे चार्ज"
+        F.GST_PCT -> "GST %"; F.TOTAL -> "लाइन का कुल"
     }
 }

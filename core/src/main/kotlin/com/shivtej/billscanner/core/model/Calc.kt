@@ -85,6 +85,11 @@ object Calc {
         if (v.qty != null && v.rate != null) cmp(F.GROSS, v.gross, v.qty * v.rate)
         if (v.gross != null && v.discPct != null) cmp(F.DISC_AMT, v.discAmt, v.gross * v.discPct / HUNDRED)
         if (v.gross != null && v.discAmt != null) cmp(F.TAXABLE, v.taxable, v.gross - v.discAmt)
+        // Bills without a "Total" column: Amount = qty x rate less the discount.
+        if (v.gross == null && v.qty != null && v.rate != null && v.taxable != null) {
+            if (v.discPct != null) cmp(F.TAXABLE, v.taxable, v.qty * v.rate * (HUNDRED - v.discPct) / HUNDRED)
+            else if (v.discAmt != null) cmp(F.TAXABLE, v.taxable, v.qty * v.rate - v.discAmt)
+        }
         if (v.taxable != null) {
             v.cgstPct?.let { cmp(F.CGST_AMT, v.cgstAmt, v.taxable * it / HUNDRED) }
             v.sgstPct?.let { cmp(F.SGST_AMT, v.sgstAmt, v.taxable * it / HUNDRED) }
@@ -107,6 +112,56 @@ object Calc {
         n(F.CGST_PCT, a.cgstPct, b.cgstPct); n(F.CGST_AMT, a.cgstAmt, b.cgstAmt); n(F.SGST_PCT, a.sgstPct, b.sgstPct)
         n(F.SGST_AMT, a.sgstAmt, b.sgstAmt); n(F.IGST_PCT, a.igstPct, b.igstPct); n(F.IGST_AMT, a.igstAmt, b.igstAmt)
         n(F.OTHER, a.other, b.other)
+    }
+
+    // ------------------------------------------------------------ बैठा % (what the article really costs against MRP)
+
+    /** GST % of the whole bill when tax is charged at the bottom (CGST + SGST, or IGST). */
+    fun billGstPct(h: Header): BigDecimal? = when {
+        h.igstPct != null -> h.igstPct
+        h.cgstPct != null && h.sgstPct != null -> h.cgstPct + h.sgstPct
+        else -> null
+    }
+
+    /** GST % that applies to this line. */
+    fun gstPct(v: ItemValues, h: Header): BigDecimal? = v.gstPct
+        ?: if (v.cgstPct != null && v.sgstPct != null) v.cgstPct + v.sgstPct else v.igstPct ?: billGstPct(h)
+
+    /** Cost of one pair after every discount on the bill, before GST. */
+    fun netPerPair(v: ItemValues): BigDecimal? {
+        val q = v.qty
+        if (v.taxable != null && q != null && q.signum() > 0) return v.taxable.divide(q, 6, RoundingMode.HALF_UP)
+        return netRate(v) ?: v.rate
+    }
+
+    /** Cost of one pair including GST (what lands in the shop). */
+    fun landedPerPair(v: ItemValues, h: Header): BigDecimal? {
+        val net = netPerPair(v) ?: return null
+        val g = gstPct(v, h) ?: return net
+        return net * (HUNDRED + g) / HUNDRED
+    }
+
+    /**
+     * बैठा % — the discount the shop really gets against MRP:
+     * ((MRP − cost per pair) ÷ MRP) × 100, with cost including GST when [withGst].
+     */
+    fun sittingPct(v: ItemValues, h: Header, withGst: Boolean = true): BigDecimal? {
+        val mrp = v.mrp ?: return null
+        if (mrp.signum() <= 0) return null
+        val cost = (if (withGst) landedPerPair(v, h) else netPerPair(v)) ?: return null
+        return r2((mrp - cost).multiply(HUNDRED).divide(mrp, 10, RoundingMode.HALF_UP))
+    }
+
+    /** बैठा % of the whole bill, weighted by MRP value. */
+    fun sittingTotal(inv: Invoice): BigDecimal? {
+        var mrpV = BigDecimal.ZERO; var costV = BigDecimal.ZERO
+        for (i in inv.items) {
+            if (i.kind != ItemKind.ARTICLE) continue
+            val v = i.current; val q = v.qty ?: continue; val m = v.mrp ?: continue
+            val c = (if (inv.sittingWithGst) landedPerPair(v, inv.header) else netPerPair(v)) ?: continue
+            mrpV += m * q; costV += c * q
+        }
+        return if (mrpV.signum() > 0) r2((mrpV - costV).multiply(HUNDRED).divide(mrpV, 10, RoundingMode.HALF_UP)) else null
     }
 
     fun fmt(v: BigDecimal?): String = v?.let { r2(it).toPlainString() } ?: ""
@@ -137,7 +192,14 @@ data class Totals(
             fun sum(f: (ItemValues) -> BigDecimal?) = vs.fold(z) { a, v -> a + (f(v) ?: z) }
             val other = sum { it.other } + (inv.header.otherCharges ?: z)
             val taxable = sum { it.taxable }
-            val cgst = sum { it.cgstAmt }; val sgst = sum { it.sgstAmt }; val igst = sum { it.igstAmt }
+            var cgst = sum { it.cgstAmt }; var sgst = sum { it.sgstAmt }; var igst = sum { it.igstAmt }
+            // Tax charged once at the bottom of the bill.
+            if (cgst.signum() == 0 && sgst.signum() == 0 && igst.signum() == 0) {
+                val h = inv.header
+                cgst = h.cgstAmt ?: h.cgstPct?.let { Calc.r2(taxable * it / Calc.HUNDRED) } ?: z
+                sgst = h.sgstAmt ?: h.sgstPct?.let { Calc.r2(taxable * it / Calc.HUNDRED) } ?: z
+                igst = h.igstAmt ?: h.igstPct?.let { Calc.r2(taxable * it / Calc.HUNDRED) } ?: z
+            }
             val grand = Calc.r2(taxable + cgst + sgst + igst + other + (inv.header.roundOff ?: z) - (inv.header.overallDiscount ?: z))
             return Totals(
                 lines = inv.items.size,

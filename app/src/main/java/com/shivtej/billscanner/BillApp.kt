@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import com.shivtej.billscanner.core.model.Invoice
 import com.shivtej.billscanner.core.ocr.InvoiceParser
 import com.shivtej.billscanner.core.ocr.OcrPage
+import com.shivtej.billscanner.core.ocr.TaughtLayouts
 import com.shivtej.billscanner.data.BillDb
 import com.shivtej.billscanner.data.InvoiceRepo
 import com.shivtej.billscanner.data.PageStore
@@ -63,16 +64,39 @@ class Container(val ctx: Context, db: BillDb) {
                     bmp.recycle()
                     progress = 0.1f + 0.6f * (i + 1) / files.size
                 }
+                withContext(Dispatchers.IO) { pages.saveOcr(id, ocr) }
                 step = ScanStep.FIELDS; progress = 0.8f
-                val parsed = withContext(Dispatchers.Default) { InvoiceParser.parse(ocr) }
+                val parsed = withContext(Dispatchers.Default) { InvoiceParser.parse(ocr, TaughtLayouts(prefs.taught)) }
                 step = ScanStep.CHECK; progress = 0.92f
-                val inv = Invoice(id, System.currentTimeMillis(), parsed.header, parsed.header, parsed.items, files)
+                val inv = Invoice(id, System.currentTimeMillis(), parsed.header, parsed.header, parsed.items, files, columns = parsed.columns)
                 repo.save(inv)
                 id
             }.onSuccess { id -> scannedId = id; step = ScanStep.DONE; progress = 1f; pending.clear() }
                 .onFailure { scanError = it.message ?: it.toString(); step = ScanStep.FAILED }
         }
     }
+}
+
+/**
+ * Teaches what one printed column of this supplier's bills means, and reads the bill again with it.
+ * Next bills from the same supplier use it straight away. Returns the re-read invoice (null if the
+ * OCR of this bill was not kept).
+ */
+suspend fun Container.teachColumn(inv: Invoice, label: String, kind: InvoiceParser.Kind): Invoice? {
+    val key = TaughtLayouts.key(inv.header) ?: TaughtLayouts.key(inv.headerOriginal) ?: return null
+    val all = prefs.taught.toMutableMap()
+    all[key] = (all[key] ?: emptyMap()) + (TaughtLayouts.norm(label) to kind)
+    prefs.taught = all
+    val ocr = withContext(Dispatchers.IO) { pages.loadOcr(inv.id) }
+    if (ocr.isEmpty()) return null
+    val p = withContext(Dispatchers.Default) { InvoiceParser.parse(ocr, TaughtLayouts(all)) }
+    val now = System.currentTimeMillis()
+    val again = inv.copy(
+        headerOriginal = p.header, header = p.header, items = p.items, columns = p.columns, status = com.shivtej.billscanner.core.model.InvoiceStatus.DRAFT,
+        changes = inv.changes + com.shivtej.billscanner.core.model.Change(now, null, "column:$label", "", kind.name),
+    )
+    repo.save(again)
+    return again
 }
 
 class BillApp : Application() {

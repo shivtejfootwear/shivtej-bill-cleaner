@@ -78,6 +78,13 @@ class PageStore(private val ctx: Context) {
         }
     }
 
+    /** What the OCR read on each page, so the bill can be read again later without the OCR. */
+    fun saveOcr(invoiceId: String, pages: List<com.shivtej.billscanner.core.ocr.OcrPage>) =
+        pages.forEachIndexed { i, p -> File(dir(invoiceId), "ocr_${i + 1}.tsv").writeText(com.shivtej.billscanner.core.store.OcrCodec.encode(p)) }
+
+    fun loadOcr(invoiceId: String): List<com.shivtej.billscanner.core.ocr.OcrPage> =
+        (1..50).map { File(dir(invoiceId), "ocr_$it.tsv") }.takeWhile { it.exists() }.map { com.shivtej.billscanner.core.store.OcrCodec.decode(it.readText()) }
+
     fun deleteAll(invoiceId: String) { File(ctx.filesDir, "invoices/$invoiceId").deleteRecursively() }
 }
 
@@ -94,4 +101,11 @@ class Prefs(ctx: Context) {
     var pdfLandscape: Boolean
         get() = p.getBoolean("pdf_land", true)
         set(v) { p.edit().putBoolean("pdf_land", v).apply() }
+
+    /** Column meanings the person taught, per supplier: "supplier\u001Fheading\u001FKIND" lines. */
+    var taught: Map<String, Map<String, com.shivtej.billscanner.core.ocr.InvoiceParser.Kind>>
+        get() = (p.getString("taught", "") ?: "").lines().mapNotNull { l ->
+            val x = l.split('\u001F'); if (x.size != 3) null else runCatching { Triple(x[0], x[1], com.shivtej.billscanner.core.ocr.InvoiceParser.Kind.valueOf(x[2])) }.getOrNull()
+        }.groupBy { it.first }.mapValues { (_, v) -> v.associate { it.second to it.third } }
+        set(v) { p.edit().putString("taught", v.flatMap { (s, m) -> m.map { (h, k) -> "$s\u001F$h\u001F${k.name}" } }.joinToString("\n")).apply() }
 }
