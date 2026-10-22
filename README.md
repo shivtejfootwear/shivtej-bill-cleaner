@@ -20,4 +20,4 @@
 - `app/` — Android ऐप (Jetpack Compose, Room)।
 - GitHub Actions हर push पर: tests + screenshots (`ci-results` branch), APK (Releases में), और emulator पर असली फ़ोटो का OCR (`ci-ocr` branch)।
 
-ऐप की पहचान (`com.shivtej.billcleaner`) और key पुराने Bill Cleaner वाली ही है, इसलिए नया ऐप उसी के ऊपर इंस्टॉल होता है।
+यह अलग ऐप है (`com.shivtej.billscanner`) — फ़ोन में पुराना Bill Cleaner वैसा ही रहता है, दोनों साथ चलते हैं। पुराने Bill Cleaner का कोड git history में और उसके APK Releases (v1.0.x) में सुरक्षित हैं।

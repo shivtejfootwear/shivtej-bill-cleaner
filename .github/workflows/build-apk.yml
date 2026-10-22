@@ -85,7 +85,7 @@ jobs:
           name: Shivtej Bill Scanner AI 2.0.${{ github.run_number }}
           files: Shivtej-Bill-Scanner-AI-2.0.${{ github.run_number }}.apk
           body: |
-            फ़ोन में डाउनलोड करके खोलें। पुराने Bill Cleaner ऐप के ऊपर इंस्टॉल हो जाएगा।
+            फ़ोन में डाउनलोड करके खोलें। यह अलग ऐप है — पुराना Bill Cleaner वैसा ही रहेगा। अगली बार नया APK इसी Bill Scanner के ऊपर इंस्टॉल होगा (डेटा सुरक्षित)।
             Commit ${{ github.sha }}
 
   # Real on-device OCR on the real invoice photo, on an Android emulator. Only for checking accuracy.
@@ -126,12 +126,12 @@ jobs:
             adb install -r app/build/outputs/apk/debug/app-debug.apk
             adb install -r app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
             adb logcat -c
-            adb shell am instrument -w -e class com.shivtej.billscanner.OcrOnRealInvoiceTest com.shivtej.billcleaner.test/androidx.test.runner.AndroidJUnitRunner > instrument.txt 2>&1 || true
+            adb shell am instrument -w -e class com.shivtej.billscanner.OcrOnRealInvoiceTest com.shivtej.billscanner.test/androidx.test.runner.AndroidJUnitRunner > instrument.txt 2>&1 || true
             mkdir -p ocr
             adb logcat -d -s OCRTEST:I > ocr/ocr-log.txt || true
             adb logcat -d -t 400 > ocr/logcat-tail.txt || true
             cp instrument.txt ocr/ || true
-            adb pull /sdcard/Android/data/com.shivtej.billcleaner/files/. ocr/ || true
+            adb pull /sdcard/Android/data/com.shivtej.billscanner/files/. ocr/ || true
 
       - name: Publish OCR results branch
         if: always()

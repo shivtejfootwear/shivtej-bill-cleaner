@@ -14,8 +14,8 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        // Same id and key as the earlier Bill Cleaner app, so this installs as its update.
-        applicationId = "com.shivtej.billcleaner"
+        // Its own id: installs as a separate app next to the old Bill Cleaner (which stays untouched).
+        applicationId = "com.shivtej.billscanner"
         minSdk = 26
         targetSdk = 35
         versionCode = 100 + buildNumber
