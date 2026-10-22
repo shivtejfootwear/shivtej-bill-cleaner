@@ -50,6 +50,8 @@ fun BillTheme(lang: String, content: @Composable () -> Unit) {
         primary = C.navy, onPrimary = Color.White, secondary = C.orange, onSecondary = Color.White,
         background = C.bg, surface = C.card, onSurface = C.ink, onBackground = C.ink, outline = C.line,
         primaryContainer = C.navySoft, secondaryContainer = C.orangeSoft, surfaceVariant = Color(0xFFF0F3F8), error = C.err,
+        surfaceContainerHighest = Color(0xFFE6EBF2), surfaceContainerHigh = Color(0xFFEEF2F7), surfaceContainer = Color(0xFFF3F6FA),
+        surfaceContainerLow = Color.White, surfaceContainerLowest = Color.White, onSurfaceVariant = C.muted, outlineVariant = C.line,
     )
     CompositionLocalProvider(LocalLang provides lang) { MaterialTheme(colorScheme = scheme, content = content) }
 }

@@ -194,8 +194,8 @@ private fun androidx.compose.foundation.layout.RowScope.Cell3(label: String, val
 @Composable
 fun ItemTable(list: List<LineItem>, onOpen: (String) -> Unit, modifier: Modifier) {
     val cols = listOf(
-        tr("आर्टिकल नं. और नाम", "Article No. & Name") to 170.dp, "MRP" to 70.dp, tr("असली रेट", "Original Rate") to 78.dp,
-        "Original Bill Discount (%)" to 96.dp, tr("डिस्काउंट ₹", "Original Discount ₹") to 82.dp, tr("MRP पर डिस्काउंट %", "Calc. Discount vs MRP (%)") to 92.dp,
+        tr("आर्टिकल नं. और नाम", "Article No. & Name") to 116.dp, "MRP" to 60.dp, tr("असली रेट", "Original Rate") to 64.dp,
+        "Original Bill Discount (%)" to 92.dp, tr("डिस्काउंट ₹", "Original Discount ₹") to 82.dp, tr("MRP पर डिस्काउंट %", "Calc. Discount vs MRP (%)") to 92.dp,
         tr("मात्रा", "Qty") to 52.dp, tr("लाइन का कुल", "Final Line Total") to 92.dp,
     )
     Column(modifier.padding(horizontal = 14.dp, vertical = 8.dp).horizontalScroll(rememberScrollState())) {
@@ -265,7 +265,13 @@ fun ItemSheet(
                 draft.sgstPct != c.sgstPct || draft.igstPct != c.igstPct
             val shown = if (drivers) preview else draft
             val checks = Calc.checkLine(shown)
-            if (checks.isEmpty() && shown.gross != null) Text(
+            val g = shown.gross; val da = shown.discAmt
+            if (shown.discPct == null) Text(
+                "⚑ " + tr("छपा डिस्काउंट % नहीं पढ़ा गया।", "The printed discount % was not read.") +
+                    (if (g != null && da != null && g.signum() != 0) " ₹${num(da)} ÷ ₹${num(g)} = ${pct(Calc.r2(da * BigDecimal(100) / g))} " +
+                        tr("बनता है — बिल फ़ोटो में देखकर ही भरें।", "— check the photo before filling it in.") else ""),
+                fontSize = 12.5.sp, color = C.warn, modifier = Modifier.fillMaxWidth().background(C.warnSoft, RoundedCornerShape(10.dp)).padding(8.dp),
+            ) else if (checks.isEmpty() && shown.gross != null) Text(
                 "✓ " + tr("मिलान", "Check") + ": ${qtyText(shown.qty)} × ${num(shown.rate)} = ${num(shown.gross)} · ${pct(shown.discPct)} = ${num(shown.discAmt)}",
                 fontSize = 12.5.sp, color = C.ok, modifier = Modifier.fillMaxWidth().background(C.okSoft, RoundedCornerShape(10.dp)).padding(8.dp),
             ) else checks.forEach { ch ->
