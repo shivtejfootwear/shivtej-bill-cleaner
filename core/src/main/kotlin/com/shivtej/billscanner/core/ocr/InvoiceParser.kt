@@ -81,6 +81,11 @@ object InvoiceParser {
         pages.forEachIndexed { i, p ->
             val r = parsePage(p, items.size, memory, i)
             if (r.footerNumbers.isNotEmpty()) footerNumbers = r.footerNumbers
+            // A line that goes on to the next page: its colour / sizes printed at the top of that page.
+            if (r.lead.isNotEmpty() && items.isNotEmpty()) {
+                val last = items.removeAt(items.lastIndex)
+                items += continued(last, r.lead, columns)
+            }
             header = merge(header, r.header, i == pages.lastIndex)
             items += r.items
             if (columns.isEmpty()) columns = r.columns
@@ -133,6 +138,21 @@ object InvoiceParser {
         val healed = Heal.byColumns(items, columns)
         if (healed.fixed > 0) notes += "बिल के बाकी आर्टिकल देखकर ${healed.fixed} लाइनें खुद ठीक कीं (जैसे सब पर एक ही डिस्काउंट %/GST %, और हिसाब पूरा बैठा)"
         return ParsedInvoice(header, healed.items, notes, columns)
+    }
+
+    /** "Golden 5/1" at the top of the next page: colour and sizes of the previous page's last line. */
+    private fun continued(item: LineItem, lead: List<String>, columns: List<Column>): LineItem {
+        var v = item.current
+        for (l in lead) {
+            val m = Regex("""^([A-Za-z][A-Za-z .&/-]*?)\s+(\S*\d.*)$""").find(l)
+            val colour = m?.groupValues?.get(1)?.trim() ?: l.takeIf { it.all { c -> c.isLetter() || c == ' ' } }
+            val size = m?.groupValues?.get(2)?.replace(" ", "")
+            if (!colour.isNullOrBlank() && v.colour.isBlank()) v = v.copy(colour = colour)
+            if (!size.isNullOrBlank()) v = v.copy(sizeText = listOf(v.sizeText, (colour?.let { "$it " } ?: "") + size).filter { it.isNotBlank() }.joinToString(" | "))
+        }
+        val di = columns.indexOfFirst { it.field == F.ARTICLE }
+        val raw = item.raw.toMutableList().also { if (di in it.indices) it[di] = (it[di] + " " + lead.joinToString(" ")).trim() }
+        return item.copy(current = v, original = v, raw = raw)
     }
 
     private fun merge(a: Header, b: Header, last: Boolean) = Header(
@@ -214,7 +234,9 @@ object InvoiceParser {
     // ================================================================ one page
 
     private data class PageResult(val header: Header, val items: List<LineItem>, val notes: List<String>, val columns: List<Column>,
-                                  val footerNumbers: List<BigDecimal> = emptyList())
+                                  val footerNumbers: List<BigDecimal> = emptyList(),
+                                  /** Text lines at the top of the table before its first article: the rest of the previous page's last line. */
+                                  val lead: List<String> = emptyList())
 
     private fun headerScore(r: Row): Int {
         val roles = r.words.mapNotNull { role(it.text) }.filter { it in MAIN }.toSet()
@@ -224,7 +246,8 @@ object InvoiceParser {
 
     private class Band(val start: Int, val best: Int, val end: Int)
 
-    private class TableResult(val items: List<LineItem>, val footer: Footer, val cols: List<Col>, val footerNumbers: List<BigDecimal>)
+    private class TableResult(val items: List<LineItem>, val footer: Footer, val cols: List<Col>, val footerNumbers: List<BigDecimal>,
+                              val lead: List<String> = emptyList())
 
     private fun parsePage(page: OcrPage, startIndex: Int, memory: LayoutMemory?, pageNo: Int = 0): PageResult {
         val base = Layout.dedupe(Layout.clean(page.words))
@@ -257,6 +280,7 @@ object InvoiceParser {
                 above.words.count { role(it.text) in MAIN } >= 2 && above.words.count { role(it.text) != null } * 2 >= above.words.size) bandStart = best - 1
             var bandEnd = best
             while (bandEnd + 1 < rows.size && bandEnd - best < 3 && rows[bandEnd + 1].y - rows[bandEnd].y < 2.2 * mh && !looksLikeData(rows[bandEnd + 1]) &&
+                rows[bandEnd + 1].words.any { role(it.text) != null } &&
                 rows[bandEnd + 1].words.none { w -> w.text.trim('.').toIntOrNull()?.let { it in 1..999 } == true && w.box.l < rows[best].words.first().box.l + 3 * mh }) bandEnd++
             return Band(bandStart, best, bandEnd)
         }
@@ -317,7 +341,7 @@ object InvoiceParser {
             val whole = readFooter(footerZone(rows), emptyList(), Bounds(DoubleArray(0)), mh)
             if (whole.grand != null || whole.cgstAmt != null || whole.igstAmt != null) footer = whole
         }
-        if (items.isEmpty()) notes += "टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी"
+        if (items.isEmpty() && footer.grand == null && footer.subtotal == null) notes += "टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी"
         val cols = results.firstOrNull { it.items.isNotEmpty() }?.cols ?: results.first().cols
         return PageResult(
             header.copy(
@@ -327,6 +351,7 @@ object InvoiceParser {
                 pageNote = pageNote(rows),
             ),
             items, notes, cols.map { Column(it.label, fieldOf(it.kind)) }, results.flatMap { it.footerNumbers },
+            results.firstOrNull()?.lead.orEmpty(),
         )
     }
 
@@ -403,6 +428,7 @@ object InvoiceParser {
         fun numericOf(cells: Map<Int, List<OcrWord>>) = cells.filter { (ci, ws) -> cols[ci].kind in NUMERIC && number(ws.joinToString(" ") { it.text }) != null }.keys
         // The numbers of a line the photo split in two may come just before its text part.
         var pending: Map<Int, List<OcrWord>>? = null
+        val lead = mutableListOf<String>()
         for ((idx, pair) in assigned.withIndex()) {
             val (_, cells) = pair
             val numericCells = numericOf(cells).size
@@ -414,7 +440,8 @@ object InvoiceParser {
                     pending = null; lastItemRowIdx = idx
                 }
                 blocks.isNotEmpty() && idx <= lastStart && numericCells >= 3 && blockNums.containsAll(numericOf(cells)) && starts.getOrElse(idx + 1) { false } -> pending = cells
-                blocks.isEmpty() -> {}
+                // Text before the first article ("Golden 5/1"): the end of the last line of the page before.
+                blocks.isEmpty() -> if (numericCells == 0 && idx < 4) lead += cells.values.flatten().sortedBy { it.box.l }.joinToString(" ") { it.text }.trim()
                 // A lone number under the amount columns after the last item = the table total box.
                 idx > lastStart && cells.keys.none { cols[it].kind == Kind.DESC || cols[it].kind == Kind.SR || cols[it].kind == Kind.HSN } &&
                     cells.values.flatten().all { isNum(it.text) } && cells.values.flatten().size in 1..2 && numericCells >= 1 -> {
@@ -472,9 +499,9 @@ object InvoiceParser {
         val keep = cols.indices.filter { ci -> cols[ci].kind != Kind.OTHER || items.isEmpty() || items.count { it.raw.getOrNull(ci)?.isNotBlank() == true } * 3 > items.size }
         if (keep.size < cols.size) {
             val kept = keep.map { cols[it] }
-            return TableResult(items.map { it.copy(raw = keep.map { ci -> it.raw.getOrElse(ci) { "" } }) }, footer, kept, numbers)
+            return TableResult(items.map { it.copy(raw = keep.map { ci -> it.raw.getOrElse(ci) { "" } }) }, footer, kept, numbers, lead.filter { it.isNotEmpty() })
         }
-        return TableResult(items, footer, cols, numbers)
+        return TableResult(items, footer, cols, numbers, lead.filter { it.isNotEmpty() })
     }
 
     /** "12.", "12)", "3(", "41/": a serial number with the dot or line next to it misread. */
@@ -1185,7 +1212,11 @@ object InvoiceParser {
             if (stop) break
             val t = r.text
             val ns = nums(r)
-            if (Regex("""(?i)in\s*words|rupees|only\b""").containsMatchIn(t) && !Regex("""(?i)grand|net""").containsMatchIn(t)) continue
+            if (Regex("""(?i)in\s*words|rupees|only\b""").containsMatchIn(t) && !Regex("""(?i)grand|net""").containsMatchIn(t)) {
+                // "Amount in words : … Only   ₹ 26012.00": the total printed at the end of the same line.
+                Regex("""₹\s*([\d,]+\.\d{2})""").find(t)?.let { m -> number(m.groupValues[1])?.let { g -> grand = grand?.let { maxOf(it, g) } ?: g } }
+                continue
+            }
             if (Regex("""(?i)bank|a/c|ifs|terms|declaration|signatory|hsn\s*/?\s*sac""").containsMatchIn(t)) { if (grand != null) stop = true; continue }
             if (ns.isEmpty()) continue
             val lastBig = ns.lastOrNull { (w, v) -> !w.text.contains('%') && !(w.text.startsWith("@")) && v.abs() >= BigDecimal.ONE }?.second
@@ -1200,11 +1231,14 @@ object InvoiceParser {
                 Regex("""(?i)grand\s*total|net\s*(amount|payable|total|amt)|amount\s*payable|total\s*amount|invoice\s*(total|value|amount)|bill\s*amount|₹|\brs\.?\s*\d""").containsMatchIn(t) &&
                     !Regex("""(?i)taxable""").containsMatchIn(t) -> grand = ns.maxOf { it.second }.let { g -> grand?.let { maxOf(it, g) } ?: g }
                 Regex("""(?i)^\s*(sub\s*-?\s*)?total(\b|(?=\d))""").containsMatchIn(t) && sub == null -> {
-                    if (qtyCol >= 0) {
-                        val cells = assign(r, cols, bounds, mh)
-                        qty = cells[qtyCol]?.let { number(cellText(it)) } ?: qty
-                    }
-                    sub = ns.maxOf { it.second }
+                    // Under the table's own columns: pairs, the taxable total, and the tax amounts of a bill with GST per line.
+                    val cells = if (cols.isNotEmpty()) assign(r, cols, bounds, mh) else emptyMap()
+                    fun at(vararg k: Kind) = cols.indexOfFirst { it.kind in k }.takeIf { it >= 0 }?.let { ci -> cells[ci]?.let { number(cellText(it)) } }
+                    if (qtyCol >= 0) qty = at(Kind.QTY) ?: qty
+                    sub = at(Kind.TAXABLE) ?: ns.maxOf { it.second }
+                    if (ca == null) ca = at(Kind.CGST_AMT)
+                    if (sa == null) sa = at(Kind.SGST_AMT)
+                    if (ia == null) ia = at(Kind.IGST_AMT)
                 }
                 CHARGE.containsMatchIn(t.trim()) || Regex("""(?i)\b(freight|transport(ation)?|packing|forwarding|cartage|hamali|courier)\b""").containsMatchIn(t) ->
                     other = (other ?: BigDecimal.ZERO) + ns.last().second

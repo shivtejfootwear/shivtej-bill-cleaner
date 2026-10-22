@@ -64,7 +64,7 @@ object Warnings {
             if (v.mrp == null) out += Warning(Warning.Level.CHECK, it.id, "$name: MRP नहीं मिला", "$name: MRP not found")
             else if (v.taxable != null && v.qty != null && Calc.sittingPct(v, h, inv.sittingWithGst) == null) out += Warning(Warning.Level.CHECK, it.id,
                 "$name: MRP ₹${Calc.fmt(v.mrp)} और रकम ₹${Calc.fmt(v.taxable)} आपस में नहीं बैठते — कोई नंबर गलत पढ़ा गया, जाँचें", "$name: MRP and amount do not fit — a number was misread")
-            if (v.colour.isEmpty() && inv.columns.none { c -> c.field == F.SIZE }) out += Warning(Warning.Level.TIP, it.id, "$name: कलर नहीं छपा/पढ़ा गया", "$name: colour missing")
+            // Colour is not needed for the bill: never asked about.
             // Size counts are checked only where the bill prints them per size ("6/2,7/3"); "6X10" alone is a size range.
             if (v.sizeText.contains('/')) {
                 val s = Sizes.read(v.sizeText, v.qty)

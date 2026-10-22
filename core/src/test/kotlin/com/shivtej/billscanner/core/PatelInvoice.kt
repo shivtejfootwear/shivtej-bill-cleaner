@@ -102,4 +102,23 @@ object PatelInvoice {
         // OCR returns words in its own block order, not reading order.
         return OcrPage(1600, y + 400, b.words.shuffled(java.util.Random(7)))
     }
+
+    /** Page 2 of 2: only the end of line 11 ("Golden 5/1"), the table total, tax, round off and the bill total. */
+    fun page2(): OcrPage {
+        val b = Builder()
+        b.at(SR, 25, "Sr"); b.at(160, 25, "Description Of Goods"); b.at(HSN, 25, "HSN"); b.at(QTY, 25, "Qty"); b.at(RATE, 28, "Rate")
+        b.at(TOTAL + 20, 35, "Total"); b.at(DP + 20, 35, "Discount"); b.at(TAX, 38, "Taxable"); b.at(CP + 20, 40, "CGST"); b.at(SP + 20, 40, "SGST")
+        b.at(SR, 50, "No."); b.at(HSN, 52, "Code"); b.at(QTY, 52, "in"); b.at(RATE, 53, "/Pair(₹)"); b.at(TAX + 10, 60, "Value")
+        b.at(QTY, 75, "Pairs"); b.at(DP + 10, 68, "%"); b.at(DA + 10, 68, "Amount"); b.at(CP + 5, 72, "%"); b.at(CA + 10, 72, "Amount")
+        b.at(SP + 5, 72, "%"); b.at(SA + 10, 72, "Amount")
+        b.at(DESC, 110, "Golden"); b.at(DESC + 380 - 33, 110, "5/1")
+        b.at(DESC + 20, 150, "Total"); b.at(QTY, 150, "134"); b.at(TOTAL, 150, "25526.32"); b.at(DA, 150, "765.79"); b.at(TAX, 150, "24760.53")
+        b.at(CA, 150, "619.02"); b.at(SA, 150, "619.02")
+        b.at(CA, 185, "ROff"); b.at(SA, 185, "13.43")
+        b.at(40, 1300, "Amount in words : Rs.Twenty Six Thousand Twelve Only"); b.at(1300, 1300, "₹"); b.at(1340, 1300, "26012.00")
+        b.at(40, 1340, "Our Bankers :"); b.at(40, 1370, "Bank Name:- Federal Bank"); b.at(40, 1400, "A/C No:-16365500001481")
+        b.at(40, 1430, "Branch & IFS Code:- Barshi & FDRL0001636")
+        b.at(40, 1520, "Page 2 of 2"); b.at(1000, 1520, "For PATEL TRADELINES")
+        return OcrPage(1600, 1700, b.words.shuffled(java.util.Random(8)))
+    }
 }

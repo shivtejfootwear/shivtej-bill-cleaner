@@ -143,6 +143,9 @@ class OcrOnRealInvoiceTest {
 
     @Test fun patel() = read("patel", listOf("patel_tradelines_g2_2627_1309.jpg"))
 
+    /** Both pages: page 2 has only the end of line 11 ("Golden 5/1") and the totals. */
+    @Test fun patelTwoPages() = read("patel2", listOf("patel_tradelines_g2_2627_1309.jpg", "patel_tradelines_g2_2627_1309_page2.jpg"))
+
     @Test fun dharashivV3617() = read("v3617", listOf("dharashiv_v3617_screenshot.jpg"))
 
     @Test fun dharashiv() = read("dharashiv", listOf("dharashiv_r2395_page1_screenshot.jpg", "dharashiv_r2395_page2_screenshot.jpg"))

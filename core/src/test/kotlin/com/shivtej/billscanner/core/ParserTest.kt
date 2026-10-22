@@ -124,3 +124,16 @@ class ParserTest {
         assertEquals(Sizes.State.NONE, Sizes.read("", d("1")).state)
     }
 }
+
+class NextPageTest {
+    @Test fun theEndOfALineOnTheNextPageJoinsItAndTheTotalsAreRead() {
+        val p = InvoiceParser.parse(listOf(PatelInvoice.page(), PatelInvoice.page2()))
+        assertEquals(11, p.items.size)                                   // page 2 adds no article
+        val l11 = p.items[10].current
+        assertEquals("Golden", l11.colour)
+        assertTrue(l11.sizeText, l11.sizeText.contains("5/1"))
+        assertEquals(0, p.header.printedQty!!.compareTo(java.math.BigDecimal(134)))
+        assertEquals(0, p.header.cgstAmt!!.compareTo(java.math.BigDecimal("619.02")))
+        assertEquals(0, p.header.printedGrandTotal!!.compareTo(java.math.BigDecimal("26012.00")))
+    }
+}
