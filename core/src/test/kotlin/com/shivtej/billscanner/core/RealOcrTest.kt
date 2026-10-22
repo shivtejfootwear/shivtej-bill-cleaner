@@ -1,0 +1,72 @@
+package com.shivtej.billscanner.core
+
+import com.shivtej.billscanner.core.model.Invoice
+import com.shivtej.billscanner.core.model.Totals
+import com.shivtej.billscanner.core.ocr.InvoiceParser
+import com.shivtej.billscanner.core.ocr.OcrPage
+import com.shivtej.billscanner.core.store.OcrCodec
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
+import java.math.BigDecimal
+
+/**
+ * What the phone's own OCR (ML Kit, on an Android emulator) really returned for real bills, read by the parser.
+ * These are the real problems: lost serial numbers, glued words ("640299905%6X10", "pair1,165.719.82"),
+ * lost decimal points ("745 %"), a bent photo, a second page inside one screenshot, a stamp beside the table.
+ */
+class RealOcrTest {
+    private fun page(name: String): OcrPage = OcrCodec.decode(javaClass.classLoader!!.getResource("real/$name")!!.readText())
+    private fun bd(s: String) = BigDecimal(s.replace(",", ""))
+
+    @Test fun dharashivV3617ScreenshotOfTwoPages() {
+        val p = InvoiceParser.parse(listOf(page("v3617_1.tsv")))
+        assertEquals(54, p.items.size)
+        assertEquals((1..54).toList(), p.items.map { it.current.sr })
+        assertEquals("V-3617", p.header.invoiceNo)
+        assertEquals("DHARASHIV FOOTWEAR PVT LTD", p.header.supplierName)
+        assertTrue(p.header.buyerName!!.startsWith("Shivtej Footwear"))
+        // Lines 46–50 are partly covered by an app button in the screenshot: they must be flagged, every other line exact.
+        for (it in p.items) {
+            val sr = it.current.sr!!
+            if (sr in 46..50) assertTrue("line $sr should be flagged", it.needs.isNotEmpty())
+            else assertTrue("line $sr: ${it.needs} ${it.raw}", it.needs.isEmpty())
+        }
+        val l21 = p.items[20].current          // "745%" read without its point
+        assertEquals(0, l21.discPct!!.compareTo(bd("7.45"))); assertEquals(0, l21.taxable!!.compareTo(bd("2147.18")))
+        val l6 = p.items[5].current            // "1.29 5.68" = 1,295.68
+        assertEquals(0, l6.taxable!!.compareTo(bd("1295.68")))
+        val l3 = p.items[2].current            // "640299905%6X10" = HSN + GST + size
+        assertEquals("64029990", l3.hsn); assertEquals("6X10", l3.sizeText); assertEquals(0, l3.gstPct!!.compareTo(BigDecimal(5)))
+        assertEquals("11X13", p.items[36].current.sizeText)
+    }
+
+    @Test fun dharashivR2395BentPhoto() {
+        val p = InvoiceParser.parse(listOf(page("dharashiv_r2395_1.tsv"), page("dharashiv_r2395_2.tsv")))
+        val inv = Invoice("d", 0, p.header, p.header, p.items, columns = p.columns)
+        // Page 1: all 50 lines, serial numbers the photo lost filled in, every value as printed.
+        assertEquals((1..50).toList(), p.items.map { it.current.sr })
+        for ((i, l) in DharashivInvoice.LINES.withIndex()) {
+            val v = p.items[i].current
+            assertEquals("line ${l.sr} qty", l.qty, v.qty!!.toInt())
+            assertEquals("line ${l.sr} mrp", 0, v.mrp!!.compareTo(bd(l.mrp)))
+            assertEquals("line ${l.sr} rate", 0, v.rate!!.compareTo(bd(l.rate)))
+            assertEquals("line ${l.sr} disc", 0, v.discPct!!.compareTo(bd(l.disc)))
+            assertEquals("line ${l.sr} amount", 0, v.taxable!!.compareTo(bd(l.amount)))
+        }
+        // Page 2 is a crooked photo: its one line (ASIAN) is not read, but the totals are, so the gap shows.
+        assertEquals(0, p.header.printedGrandTotal!!.compareTo(bd("107350.00")))
+        assertEquals(0, p.header.cgstAmt!!.compareTo(bd("2555.93")))
+        assertEquals(0, Totals.of(inv).difference!!.abs().compareTo(bd("956.56")))
+    }
+
+    @Test fun patelWithStampAndGluedSerial() {
+        val p = InvoiceParser.parse(listOf(page("patel_1309_1.tsv")))
+        assertEquals("PATEL TRADELINES", p.header.supplierName)
+        assertEquals((1..11).toList(), p.items.map { it.current.sr })
+        assertEquals(0, p.items.filter { it.kind == com.shivtej.billscanner.core.model.ItemKind.ARTICLE }.fold(BigDecimal.ZERO) { a, i -> a + i.current.qty!! }.compareTo(BigDecimal(134)))   // = "Packing/Cartoon: (134)"
+        assertEquals("1251", p.items[2].current.article)      // "31251-Paralite…" = serial 3 + article 1251
+        assertTrue(p.columns.none { it.label.contains("PROPRIETOR") })
+        assertTrue(p.items.filter { it.current.sr != 11 }.all { it.needs.isEmpty() })
+    }
+}

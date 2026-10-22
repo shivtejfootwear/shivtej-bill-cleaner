@@ -22,6 +22,7 @@ import com.shivtej.billscanner.ui.AddScreen
 import com.shivtej.billscanner.ui.BillTheme
 import com.shivtej.billscanner.ui.C
 import com.shivtej.billscanner.ui.ExportScreen
+import com.shivtej.billscanner.ui.FullBillScreen
 import com.shivtej.billscanner.ui.HomeScreen
 import com.shivtej.billscanner.ui.PhotoScreen
 import com.shivtej.billscanner.ui.ProcessingScreen

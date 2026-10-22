@@ -38,6 +38,9 @@ object InvoiceParser {
     private val NUM = Regex("""^[(\-]?(?:₹|rs\.?)?(\d{1,3}(?:,\d{2,3})+|\d+)(?:\.(\d{1,3}))?\)?[,.:;]?$""", RegexOption.IGNORE_CASE)
     private val MRP = Regex("""(?i)M\s*\.?\s*R\s*\.?\s*P\s*\.?\s*[:.;]?\s*(?:Rs\.?|₹)?\s*(\d{1,6}(?:\.\d{1,2})?)""")
     private val DATE = Regex("""\b(\d{1,2}[-/. ](?:[A-Za-z0][A-Za-z]{2,8}|\d{1,2})[-/. ]\d{2,4})\b""")
+    /** Words that are labels on a bill, never a name. */
+    private val LABELS = Regex("""(?i)^\s*(address|invoice|date|state|place|gstin|party|dc\s*no|eway|pay\s*mode|due|mobile|phone|contact)\b""")
+    private val DOTTED = Regex("""^\d{1,3}(\.\d{3})+\.\d{2}$""")
     private val UNITS = setOf("pair", "pairs", "prs", "pr", "pcs", "pc", "nos", "no", "set", "sets", "%", "pkt", "box", "dz", "doz")
     private val STOP = Regex("""(?i)\b(continued|amount\s*(rs\.?)?\s*in\s*words|rupees|e\s*&\s*o\s*e|our\s+bankers|bank\s+(name|details)|terms\s*(&|and)?\s*conditions|declaration|authori[sz]ed\s+signatory|output\s*[cs]gst|sub\s*-?\s*total|grand\s*total|round\s*off)\b""")
     private val CHARGE = Regex("""(?i)^(freight|transport|packing|forwarding|cartage|hamali|courier|insurance|postage|loading)""")
@@ -152,7 +155,7 @@ object InvoiceParser {
         if (n.startsWith("disc")) return Role.DISC
         if (n.startsWith("descr")) return Role.DESC
         if (n.startsWith("amount")) return Role.AMOUNT
-        if (n.startsWith("srno") || n == "sr") return Role.SR
+        if (n.startsWith("srno") || n == "sr" || n == "sno" || n == "slno" || n == "sn") return Role.SR
         return null
     }
 
@@ -195,10 +198,19 @@ object InvoiceParser {
 
         val scores = rows.map { headerScore(it) }
         val top = scores.maxOrNull() ?: 0
-        if (top < 3) {
-            val header = readHeader(rows, rows.size, mh, words)
-            return PageResult(header.copy(pageNote = pageNote(rows)), emptyList(), listOf("आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला"), emptyList())
+        // A page without an item table may still hold the bill's totals (the last page of a long bill).
+        fun noTable(): PageResult {
+            val h = readHeader(rows, rows.size, mh, words)
+            val f = readFooter(footerZone(rows), emptyList(), Bounds(DoubleArray(0)), mh)
+            return PageResult(
+                h.copy(pageNote = pageNote(rows), printedGrandTotal = f.grand, roundOff = f.roundOff, otherCharges = f.other, overallDiscount = f.discount,
+                    cgstPct = f.cgstPct, cgstAmt = f.cgstAmt, sgstPct = f.sgstPct, sgstAmt = f.sgstAmt, igstPct = f.igstPct, igstAmt = f.igstAmt,
+                    printedQty = f.qty, printedSubtotal = f.subtotal),
+                emptyList(), listOf("आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला"), emptyList(),
+                rows.flatMap { r -> r.words.mapNotNull { w -> number(w.text) } },
+            )
         }
+        if (top < 3) return noTable()
         fun looksLikeData(r: Row) = r.words.count { isNum(it.text) && (number(it.text)!! > BigDecimal(99) || it.text.contains('.')) } >= 2
         fun band(best: Int): Band {
             var bandStart = best
@@ -212,19 +224,35 @@ object InvoiceParser {
         }
         // One photo can hold more than one table heading (e.g. a screenshot of a 2-page PDF): each part is read with its own.
         val bands = mutableListOf<Band>()
+        fun mainRoles(r: Row) = r.words.mapNotNull { role(it.text) }.filter { it in MAIN }.toSet()
+        val bestRow = scores.indexOf(top)
         for (i in rows.indices) {
-            if (scores[i] < maxOf(3, top - 1)) continue
+            // The same heading printed again lower down (page 2 in the same photo), even if partly misread or covered.
+            val repeat = scores[i] >= 3 && i != bestRow && Role.DESC in mainRoles(rows[i]) && (mainRoles(rows[i]) intersect mainRoles(rows[bestRow])).size >= 3 &&
+                rows.getOrNull(i + 1)?.let { looksLikeData(it) || rows.getOrNull(i + 2)?.let(::looksLikeData) == true } == true
+            if (scores[i] < maxOf(3, top - 1) && !repeat) continue
             if (bands.isNotEmpty() && i <= bands.last().end + 1) continue
-            bands += band(i)
+            val b = band(i)
+            // An item table has a description, quantity or serial column; the HSN/tax summary under a Tally bill has none.
+            val bandRoles = (b.start..b.end).flatMap { mainRoles(rows[it]) }.toSet()
+            if (bandRoles.none { it == Role.DESC || it == Role.QTY || it == Role.SR }) continue
+            bands += b
         }
+        if (bands.isEmpty()) return noTable()
         val header = readHeader(rows, bands.first().start, mh, words)
         val results = mutableListOf<TableResult>()
         var next = startIndex
         // Article lines above the first heading (the photo starts in the middle of a table).
         val pre = rows.subList(0, bands.first().start)
-        for ((k, b) in bands.withIndex()) {
-            val body = rows.subList(b.end + 1, bands.getOrNull(k + 1)?.start ?: rows.size)
-            val r = readTable(rows.subList(b.start, b.end + 1), body, mh, memory, header, next)
+        // A heading that reads worse than the best one on the page uses the best one's words (same bill, same columns).
+        val bestBand = bands.maxByOrNull { scores[it.best] }!!
+        fun headingOf(b: Band) = if (scores[b.best] < scores[bestBand.best] - 1) bestBand else b
+        for ((k, b0) in bands.withIndex()) {
+            val b = headingOf(b0)
+            val body = rows.subList(b0.end + 1, bands.getOrNull(k + 1)?.start ?: rows.size)
+            // Same heading as a table already read: its columns mean what they meant there.
+            val known = if (b !== b0 || (k > 0 && results.isNotEmpty())) results.lastOrNull { it.items.size >= 5 }?.cols?.associate { it.label to it.kind } else null
+            val r = readTable(rows.subList(b.start, b.end + 1), body, mh, memory, header, next, known = known)
             if (k == 0 && pre.size >= 3) {
                 val before = readTable(rows.subList(b.start, b.end + 1), pre, mh, memory, header, next, requireSerialRun = true)
                 if (before.items.size >= 3) { results += before; next += before.items.size }
@@ -235,8 +263,13 @@ object InvoiceParser {
         val items = results.flatMap { it.items }
         val f = results.map { it.footer }
         fun <T> last(g: (Footer) -> T?): T? = f.lastOrNull { g(it) != null }?.let(g)
-        val footer = Footer(last { it.qty }, last { it.subtotal }, last { it.grand }, last { it.roundOff }, last { it.other }, last { it.discount },
+        var footer = Footer(last { it.qty }, last { it.subtotal }, last { it.grand }, last { it.roundOff }, last { it.other }, last { it.discount },
             last { it.cgstPct }, last { it.cgstAmt }, last { it.sgstPct }, last { it.sgstAmt }, last { it.igstPct }, last { it.igstAmt })
+        // No totals under the table (e.g. a crooked last page where the heading was not found): look for them anywhere on the page.
+        if (footer.grand == null && footer.subtotal == null && footer.cgstAmt == null && footer.igstAmt == null) {
+            val whole = readFooter(footerZone(rows), emptyList(), Bounds(DoubleArray(0)), mh)
+            if (whole.grand != null || whole.cgstAmt != null || whole.igstAmt != null) footer = whole
+        }
         if (items.isEmpty()) notes += "टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी"
         val cols = results.firstOrNull { it.items.isNotEmpty() }?.cols ?: results.first().cols
         return PageResult(
@@ -252,20 +285,21 @@ object InvoiceParser {
 
     /** Reads one item table: [band] = its heading lines, [body] = the lines below it (until the next heading). */
     private fun readTable(band: List<Row>, body: List<Row>, mh: Double, memory: LayoutMemory?, header: Header, startIndex: Int,
-                          requireSerialRun: Boolean = false): TableResult {
+                          requireSerialRun: Boolean = false, known: Map<String, Kind>? = null): TableResult {
         // Read as the heading says, and once more moved to where the lines fit their headings best;
         // keep the reading under which the bill's arithmetic works out on more lines.
-        val first = readTableAt(band, body, mh, memory, header, startIndex, requireSerialRun, 0.0)
+        val first = readTableAt(band, body, mh, memory, header, startIndex, requireSerialRun, 0.0, known)
         val dx = bestOffset(body.take(60), columns(band, mh), mh)
         if (dx == 0.0) return first
-        val second = readTableAt(band, body, mh, memory, header, startIndex, requireSerialRun, dx)
+        val second = readTableAt(band, body, mh, memory, header, startIndex, requireSerialRun, dx, known)
         fun good(t: TableResult) = t.items.count { val v = it.current; v.qty != null && v.taxable != null && v.mrp != null && (v.rate != null) && Calc.checkLine(v).isEmpty() }
         return if (good(second) > good(first)) second else first
     }
 
     private fun readTableAt(band: List<Row>, body: List<Row>, mh: Double, memory: LayoutMemory?, header: Header, startIndex: Int,
-                            requireSerialRun: Boolean, offset: Double): TableResult {
+                            requireSerialRun: Boolean, offset: Double, known: Map<String, Kind>? = null): TableResult {
         var cols = columns(band, mh)
+        if (known != null) for (c in cols) known[c.label]?.let { c.kind = it; c.locked = true }
         // What the person taught for this supplier's columns comes first.
         if (memory != null) for (c in cols) memory.kindFor(header, c.label)?.let { c.kind = it; c.locked = true }
 
@@ -294,12 +328,28 @@ object InvoiceParser {
         val srCol = cols.indexOfFirst { it.kind == Kind.SR }
         val blocks = mutableListOf<MutableList<Map<Int, List<OcrWord>>>>()
         fun startsItem(cells: Map<Int, List<OcrWord>>): Boolean {
-            val sr = if (srCol >= 0) cells[srCol]?.let { ws -> ws.joinToString("") { it.text }.trim('.', ')', ' ').toIntOrNull()?.takeIf { it in 1..9999 } } else null
+            val sr = if (srCol >= 0) cells[srCol]?.let { ws -> serialOf(ws.joinToString("") { it.text }) } else null
             val numericCells = cells.count { (ci, ws) -> cols[ci].kind in NUMERIC && number(ws.joinToString(" ") { it.text }) != null }
             val hasText = cells.any { (ci, ws) -> cols[ci].kind == Kind.DESC && ws.isNotEmpty() }
-            return if (srCol >= 0) sr != null && (numericCells >= (if (requireSerialRun) 3 else 1) || (!requireSerialRun && hasText)) else numericCells >= 2 && hasText
+            // A full line of numbers with its description is an article even when the photo lost its serial number.
+            val fullLine = !requireSerialRun && hasText && numericCells >= 3
+            return if (srCol >= 0) (sr != null && (numericCells >= (if (requireSerialRun) 3 else 1) || (!requireSerialRun && hasText))) || fullLine
+            else numericCells >= 2 && hasText
         }
-        val starts = assigned.map { startsItem(it.second) }
+        // A line without a serial number counts only inside the run of numbered lines, or when its own arithmetic works.
+        val serialAt = assigned.indexOfLast { (_, c) -> srCol >= 0 && c[srCol]?.let { ws -> serialOf(ws.joinToString("") { it.text }) } != null }
+        fun fits(cells: Map<Int, List<OcrWord>>): Boolean {
+            fun v(k: Kind) = cols.indexOfFirst { it.kind == k }.takeIf { it >= 0 }?.let { ci -> number(cellText(cells[ci])) }
+            val q = v(Kind.QTY) ?: return false; val r = v(Kind.RATE) ?: return false
+            val t = v(Kind.TAXABLE) ?: v(Kind.AMOUNT) ?: v(Kind.GROSS) ?: return false
+            val d = v(Kind.DISC_PCT) ?: BigDecimal.ZERO
+            val e = q * r * (BigDecimal(100) - d) / BigDecimal(100)
+            return (e - t).abs() <= BigDecimal("0.06") + t.abs() * BigDecimal("0.002") || (q * r - t).abs() <= BigDecimal("0.06")
+        }
+        val starts = assigned.mapIndexed { idx, (_, cells) ->
+            val hasSr = srCol >= 0 && cells[srCol]?.let { ws -> serialOf(ws.joinToString("") { it.text }) } != null
+            startsItem(cells) && (srCol < 0 || hasSr || idx < serialAt || fits(cells))
+        }
         val lastStart = starts.lastIndexOf(true)
         var lastItemRowIdx = -1
         fun numericOf(cells: Map<Int, List<OcrWord>>) = cells.filter { (ci, ws) -> cols[ci].kind in NUMERIC && number(ws.joinToString(" ") { it.text }) != null }.keys
@@ -326,12 +376,51 @@ object InvoiceParser {
                 else -> { blocks.last() += cells; lastItemRowIdx = idx }
             }
         }
-        val items = blocks.mapIndexed { k, b -> readItem(b, cols, startIndex + k + 1) }
+        val items = blocks.mapIndexed { k, b -> readItem(b, cols, startIndex + k + 1) }.toMutableList()
+        // Text with numbers but no serial, pairs, MRP or rate (bank details, a tax summary) is not an article.
+        val junk = items.indices.filter { k -> items[k].current.let { it.sr == null && it.qty == null && it.mrp == null && it.rate == null } }.toSet()
+        if (junk.isNotEmpty()) {
+            val keepAt = items.indices.filter { it !in junk }
+            val kb = keepAt.map { blocks[it] }; val ki = keepAt.map { items[it] }
+            blocks.clear(); blocks.addAll(kb); items.clear(); items.addAll(ki)
+        }
+        // Serial numbers the photo lost: the one between its neighbours, or glued to the description ("31251-…" = 3 + 1251-…).
+        if (srCol >= 0) for (k in items.indices.toList() + items.indices.reversed()) {
+            if (items[k].current.sr != null) continue
+            val prev = items.getOrNull(k - 1)?.current?.sr
+            val next = items.getOrNull(k + 1)?.current?.sr
+            val expect = when {
+                prev != null && (next == null || next == prev + 2) -> prev + 1
+                prev == null && next != null && next > 1 -> next - 1
+                else -> continue
+            }
+            val b = blocks[k]
+            val descCol = cols.indexOfFirst { it.kind == Kind.DESC }
+            val w = if (descCol >= 0) b.first()[descCol]?.firstOrNull() else null
+            val restText = w?.text?.takeIf { it.startsWith("$expect") }?.substring(expect.toString().length)?.trimStart('.', '/', ',', ')', '|')
+            val glued = w != null && w.box.l < cols[srCol].r + mh && restText != null && restText.length >= 2
+            items[k] = if (glued) {
+                val rest = OcrWord(restText!!, w!!.box)
+                val first = b.first().toMutableMap()
+                first[srCol] = listOf(OcrWord("$expect.", w.box))
+                first[descCol] = listOf(rest) + b.first()[descCol]!!.drop(1)
+                readItem(listOf(first) + b.drop(1), cols, startIndex + k + 1)
+            } else items[k].let { it.copy(current = it.current.copy(sr = expect), original = it.original.copy(sr = expect)) }
+        }
         val footRows = body.drop(footerAt)
         val footer = readFooter(footRows, cols, bounds, mh)
         val numbers = footRows.flatMap { r -> r.words.mapNotNull { w -> number(w.text) } }
+        // A heading word with (almost) nothing under it, e.g. a stamp beside the table: not a column of the bill.
+        val keep = cols.indices.filter { ci -> cols[ci].kind != Kind.OTHER || items.isEmpty() || items.count { it.raw.getOrNull(ci)?.isNotBlank() == true } * 3 > items.size }
+        if (keep.size < cols.size) {
+            val kept = keep.map { cols[it] }
+            return TableResult(items.map { it.copy(raw = keep.map { ci -> it.raw.getOrElse(ci) { "" } }) }, footer, kept, numbers)
+        }
         return TableResult(items, footer, cols, numbers)
     }
+
+    /** "12.", "12)", "3(", "41/": a serial number with the dot or line next to it misread. */
+    private fun serialOf(t: String): Int? = t.trim().trimEnd('.', ')', '(', ',', '/', '|', ':', ' ').trimStart('(').toIntOrNull()?.takeIf { it in 1..9999 }
 
     private fun hasSerial(r: Row, cols: List<Col>, mh: Double): Boolean {
         val sr = cols.firstOrNull { it.kind == Kind.SR } ?: return false
@@ -421,6 +510,16 @@ object InvoiceParser {
                 rs.contains(Role.VALUE) -> Kind.AMOUNT
                 else -> Kind.OTHER
             }
+        }
+        // A lone "%" heading just before a tax or discount amount ("CGST" printed over the amount only) is that tax's %.
+        for (i in 0 until cols.size - 1) {
+            val c = cols[i]
+            if (c.kind != Kind.OTHER || norm(c.label) != "%") continue
+            c.kind = when (cols[i + 1].kind) {
+                Kind.CGST_AMT -> Kind.CGST_PCT; Kind.SGST_AMT -> Kind.SGST_PCT; Kind.IGST_AMT -> Kind.IGST_PCT; Kind.DISC_AMT -> Kind.DISC_PCT
+                else -> Kind.OTHER
+            }
+            if (c.kind != Kind.OTHER) c.label = cols[i + 1].label.split(' ').first() + " %"
         }
         // A heading like "Sr" may be missing: the first column holding small numbers is found later; a missing
         // description heading is the widest text column next to Sr.
@@ -717,7 +816,8 @@ object InvoiceParser {
 
     private fun cellText(ws: List<OcrWord>?) = ws?.joinToString(" ") { it.text }?.trim().orEmpty()
 
-    private fun readItem(block: List<Map<Int, List<OcrWord>>>, cols: List<Col>, index: Int): LineItem {
+    private fun readItem(block0: List<Map<Int, List<OcrWord>>>, cols: List<Col>, index: Int): LineItem {
+        val block = shiftCrowded(block0, cols)
         val first = block.first()
         // A line split in two by the photo still gives its numbers: take each from the first line that has it.
         fun firstNum(k: Kind): BigDecimal? = cols.indexOfFirst { it.kind == k }.takeIf { it >= 0 }?.let { ci -> block.firstNotNullOfOrNull { number(cellText(it[ci])) } }
@@ -726,7 +826,7 @@ object InvoiceParser {
         fun textOf(k: Kind, sep: String = "\n"): String = cols.withIndex().filter { it.value.kind == k }.joinToString(sep) { (ci, _) -> block.mapNotNull { cellText(it[ci]).ifEmpty { null } }.joinToString(sep) }.trim()
 
         val srCol = cols.indexOfFirst { it.kind == Kind.SR }
-        var sr = if (srCol >= 0) cellText(first[srCol]).trim('.', ')', ' ').toIntOrNull() else null
+        var sr = if (srCol >= 0) serialOf(cellText(first[srCol])) else null
         // Description lines (and anything in an unnamed column on its left).
         var descLines = cols.withIndex().filter { it.value.kind == Kind.DESC }.flatMap { (ci, _) -> block.map { cellText(it[ci]) } }.filter { it.isNotEmpty() }.toMutableList()
         if (sr == null && descLines.isNotEmpty()) {
@@ -778,7 +878,8 @@ object InvoiceParser {
             name = ""
             sizeText = restLines.joinToString(" | ")
         }
-        textOf(Kind.SIZE, " ").takeIf { it.isNotEmpty() }?.let { sizeText = it.trimEnd('.') }
+        // "11X1 3": a size range the photo broke in two.
+        textOf(Kind.SIZE, " ").takeIf { it.isNotEmpty() }?.let { sizeText = it.trimEnd('.').replace(Regex("""\b(\d{1,2}[xX×]1)\s([0-5])\b"""), "$1$2") }
         textOf(Kind.COLOUR, " ").takeIf { it.isNotEmpty() }?.let { colour = it }
 
         val kind = if (CHARGE.containsMatchIn(article.ifEmpty { codeToken }) || CHARGE.containsMatchIn(firstLine)) ItemKind.CHARGE else ItemKind.ARTICLE
@@ -797,6 +898,20 @@ object InvoiceParser {
             if (!dTxt.contains('%') && v.discPct!! > BigDecimal(100) && base != null) v = v.copy(discAmt = v.discPct, discPct = null)
         }
 
+        // ---- a decimal point the photo lost or misread ("745 %" for 7.45 %, "1.29 5.68" for 1,295.68):
+        // the reading that makes the line's own arithmetic work is taken, and the printed cell shown that way.
+        val raw = cols.indices.map { ci -> block.mapNotNull { cellText(it[ci]).ifEmpty { null } }.joinToString(" ") }.toMutableList()
+        if (v.taxable == null || Calc.checkLine(v).isNotEmpty()) repairDecimals(v, cols, raw)?.let { v = it }
+        // "640299905" + "%": the GST % glued to an 8-digit HSN code.
+        val hc = cols.indexOfFirst { it.kind == Kind.HSN }; val gc = cols.indexOfFirst { it.kind == Kind.GST_PCT }
+        if (hc >= 0 && gc >= 0 && v.gstPct == null && Regex("""^\d{9,10}$""").matches(v.hsn)) {
+            val g = v.hsn.substring(8).toBigDecimal()
+            if (g.signum() > 0 && g <= BigDecimal(28)) {
+                v = v.copy(hsn = v.hsn.substring(0, 8), gstPct = g)
+                raw[hc] = v.hsn; raw[gc] = "${g.toPlainString()} %"
+            }
+        }
+
         // ---- what is missing or does not add up
         val has = cols.map { it.kind }.toSet()
         val needs = mutableSetOf<F>()
@@ -807,6 +922,12 @@ object InvoiceParser {
         if (v.discAmt == null && Kind.DISC_AMT in has) needs += F.DISC_AMT
         if (v.taxable == null) needs += F.TAXABLE
         if (v.mrp == null && kind == ItemKind.ARTICLE) needs += F.MRP
+        // Amount per pair far from the MRP (a part of the number lost): one of the two is misread.
+        val q0 = v.qty; val t0 = v.taxable; val m0 = v.mrp
+        if (kind == ItemKind.ARTICLE && q0 != null && t0 != null && m0 != null && q0.signum() > 0 && m0.signum() > 0) {
+            val perPair = t0.divide(q0, 4, java.math.RoundingMode.HALF_UP)
+            if (perPair < m0 * BigDecimal("0.05") || perPair > m0 * BigDecimal("1.3")) { needs += F.TAXABLE; needs += F.MRP }
+        }
         if (article.isEmpty()) needs += F.ARTICLE
         if (kind == ItemKind.ARTICLE && colour.isEmpty() && Kind.SIZE !in has) needs += F.COLOUR
         if ((Kind.CGST_PCT in has || Kind.SGST_PCT in has) && (v.cgstPct == null || v.sgstPct == null)) { needs += F.CGST_PCT; needs += F.SGST_PCT }
@@ -820,8 +941,72 @@ object InvoiceParser {
             }
         }
         // Every cell as printed, in column order.
-        val raw = cols.indices.map { ci -> block.mapNotNull { cellText(it[ci]).ifEmpty { null } }.joinToString(" ") }
         return LineItem("i$index", kind, v, v, needs, raw = raw)
+    }
+
+    /**
+     * Two numbers in one number column with the column beside it empty ("12 389.33" under Rate, nothing under Qty):
+     * the line leaned into the next column, so the extra number goes back to the empty one.
+     */
+    private fun shiftCrowded(block: List<Map<Int, List<OcrWord>>>, cols: List<Col>): List<Map<Int, List<OcrWord>>> {
+        val rows = block.map { it.toMutableMap() }
+        fun empty(ci: Int) = rows.all { it[ci].isNullOrEmpty() }
+        for (r in rows) for (ci in cols.indices) {
+            if (cols[ci].kind !in NUMERIC) continue
+            val ws = r[ci] ?: continue
+            val nums = ws.filter { isNum(it.text) && it.text.lowercase().trim('.', ':') !in UNITS }
+            if (nums.size != 2 || ws.size > 3) continue
+            if (ci > 0 && cols[ci - 1].kind in NUMERIC && empty(ci - 1)) {
+                val moved = ws.takeWhile { it !== nums[1] }
+                r[ci - 1] = moved; r[ci] = ws.drop(moved.size)
+            } else if (ci + 1 < cols.size && cols[ci + 1].kind in NUMERIC && empty(ci + 1)) {
+                val keep = ws.takeWhile { it !== nums[1] }
+                r[ci] = keep; r[ci + 1] = ws.drop(keep.size)
+            }
+        }
+        return rows
+    }
+
+    /**
+     * Tries the readings of a misread number that fix the line: one field at a time, only with the digits printed.
+     * Returns the fixed values (and puts the corrected text in [raw]), or null when no single fix makes the line add up.
+     */
+    private fun repairDecimals(v: ItemValues, cols: List<Col>, raw: MutableList<String>): ItemValues? {
+        fun ok(c: ItemValues) = c.qty != null && c.rate != null && c.taxable != null && Calc.checkLine(c).isEmpty()
+        class Try(val values: ItemValues, val col: Int, val text: String)
+        val tries = mutableListOf<Try>()
+        fun col(k: Kind) = cols.indexOfFirst { it.kind == k }
+        val digits = Regex("""\d[\d,.]*""")
+        // Disc % without its point: 745 → 7.45, 982 → 9.82.
+        val dc = col(Kind.DISC_PCT)
+        val d = v.discPct
+        if (dc >= 0 && d != null && d >= BigDecimal(100) && d.stripTrailingZeros().scale() <= 0) for (k in listOf(2, 1)) {
+            val nd = d.movePointLeft(k)
+            tries += Try(v.copy(discPct = nd), dc, digits.replaceFirst(raw[dc], nd.toPlainString()))
+        }
+        // Amounts: "1.29 5.68" / "1.295.68" = 1,295.68; a lost point ("129568" = 1,295.68).
+        for (k in listOf(Kind.TAXABLE, Kind.AMOUNT, Kind.RATE, Kind.MRP, Kind.GROSS)) {
+            val ci = col(k).takeIf { it >= 0 } ?: continue
+            val tx = raw[ci].trim()
+            fun set(x: BigDecimal) = when (k) {
+                Kind.TAXABLE, Kind.AMOUNT -> v.copy(taxable = x); Kind.RATE -> v.copy(rate = x); Kind.MRP -> v.copy(mrp = x); else -> v.copy(gross = x)
+            }
+            val joined = tx.replace(" ", "")
+            if (DOTTED.matches(joined)) {
+                val t = joined.substring(0, joined.lastIndexOf('.')).replace(".", ",") + joined.substring(joined.lastIndexOf('.'))
+                tries += Try(set(BigDecimal(t.replace(",", ""))), ci, t)
+            }
+            val cur = number(tx)
+            if (cur != null && !tx.contains('.') && cur >= BigDecimal(100)) {
+                val x = cur.movePointLeft(2)
+                tries += Try(set(x), ci, x.toPlainString())
+            }
+        }
+        val good = tries.filter { ok(it.values) }
+        if (good.size != 1 && good.map { it.values }.distinct().size != 1) return null
+        val g = good.first()
+        raw[g.col] = g.text
+        return g.values
     }
 
     /** "1180-Paralite-Gents-EVA-6X10" -> article 1180, name "Paralite Gents EVA 6X10", brand Paralite. */
@@ -843,6 +1028,12 @@ object InvoiceParser {
     private fun nums(r: Row): List<Pair<OcrWord, BigDecimal>> {
         // Join "₹" / "Rs." with the following number, and "1,02,237" split by OCR is left as is.
         return r.words.mapNotNull { w -> number(w.text)?.let { w to it } }
+    }
+
+    /** Rows from the first total / tax line down (where the bill's totals are when no table heading was found). */
+    private fun footerZone(rows: List<Row>): List<Row> {
+        val at = rows.indexOfFirst { Regex("""(?i)^\s*(sub\s*-?\s*)?total|\b(output\s*)?[cs]gst\b|\bigst\b|round\s*off""").containsMatchIn(it.text) }
+        return if (at < 0) emptyList() else rows.drop(at)
     }
 
     private fun readFooter(rows: List<Row>, cols: List<Col>, bounds: Bounds, mh: Double): Footer {
@@ -872,7 +1063,7 @@ object InvoiceParser {
                 }
                 Regex("""(?i)grand\s*total|net\s*(amount|payable|total|amt)|amount\s*payable|total\s*amount|invoice\s*(total|value|amount)|bill\s*amount|₹|\brs\.?\s*\d""").containsMatchIn(t) &&
                     !Regex("""(?i)taxable""").containsMatchIn(t) -> grand = ns.maxOf { it.second }.let { g -> grand?.let { maxOf(it, g) } ?: g }
-                Regex("""(?i)^\s*(sub\s*-?\s*)?total\b""").containsMatchIn(t) && sub == null -> {
+                Regex("""(?i)^\s*(sub\s*-?\s*)?total(\b|(?=\d))""").containsMatchIn(t) && sub == null -> {
                     if (qtyCol >= 0) {
                         val cells = assign(r, cols, bounds, mh)
                         qty = cells[qtyCol]?.let { number(cellText(it)) } ?: qty
@@ -949,10 +1140,12 @@ object InvoiceParser {
         val supplierGstin = gstins.firstOrNull { it.second != buyerGstin }?.second
         val firstGstinRow = gstins.firstOrNull { it.second == supplierGstin }?.first ?: tableStart
         val midX = (top.flatMap { it.words }.maxOfOrNull { it.box.r } ?: 0) / 2.0
-        val skip = Regex("""(?i)invoice|tax|original|duplicate|triplicate|distributor|gstin|bill|subject|jurisdiction|e-?mail|mobile|phone|state|debit|credit|memo|copy|estimate|quotation|challan|manager|proprietor|signator|signature|receiver|partner|authori|for\s""")
+        val skip = Regex("""(?i)invoice|tax|original|duplicate|triplicate|distributor|gstin|bill|subject|jurisdiction|e-?mail|mobile|phone|state|debit|credit|memo|copy|estimate|quotation|challan|manager|proprietor|signator|signature|receiver|partner|authori|for\s|packing|packed|cart(o|oo)n|transport|order|consignee|delivery|dispatch""")
         // The supplier's name is usually printed largest.
         val phrases = top.flatMap { r -> r.segments(gap) }.map { s -> s.joinToString(" ") { it.text } to s.map { it.box.h }.sorted()[s.size / 2] }
-        val tallest = phrases.filter { (s, _) -> s.count { it.isLetter() } >= 8 && s.trim().contains(' ') && !skip.containsMatchIn(s) && !BUYER.containsMatchIn(s) }.maxByOrNull { it.second }
+        val nameZone = if (gstins.isNotEmpty()) top.take(firstGstinRow + 1) else top
+        val zonePhrases = nameZone.flatMap { r -> r.segments(gap) }.map { s -> s.joinToString(" ") { it.text } to s.map { it.box.h }.sorted()[s.size / 2] }
+        val tallest = (zonePhrases.ifEmpty { phrases }).filter { (s, _) -> s.count { it.isLetter() } >= 8 && s.trim().contains(' ') && !skip.containsMatchIn(s) && !BUYER.containsMatchIn(s) }.maxByOrNull { it.second }
         val supplierName = tallest?.takeIf { it.second >= 1.25 * mh }?.first
             ?: top.take(firstGstinRow).flatMap { r -> r.segments(gap).map { s -> s.joinToString(" ") { it.text } } }
                 .firstOrNull { s -> s.length >= 5 && s.none { it.isLowerCase() } && s.count { it.isLetter() } >= 5 && !skip.containsMatchIn(s) }
@@ -965,16 +1158,21 @@ object InvoiceParser {
             .filter { s -> s.isNotEmpty() && !Regex("""(?i)^gstin|cin\s*:|pan\b|e-?mail|website|^state\b|jurisdiction""").containsMatchIn(s) }
         // Buyer: "Buyer : Shivtej Footwear....Akluj" on the same line, or the line below the label.
         val buyerName = if (consigneeAt >= 0) {
-            val seg = top[consigneeAt].segments(gap).map { s -> s.joinToString(" ") { it.text } }.firstOrNull { BUYER.containsMatchIn(it) }.orEmpty()
-            val rest = BUYER.find(seg)?.let { seg.substring(it.range.last + 1) }.orEmpty()
+            val segsHere = top[consigneeAt].segments(gap).map { s -> s.joinToString(" ") { it.text } }
+            val at = segsHere.indexOfFirst { BUYER.containsMatchIn(it) }
+            val seg = segsHere.getOrNull(at).orEmpty()
+            // "Buyer" and ": Shivtej Footwear…" may be apart on the line: take what follows the label on the same line.
+            val sameLine = BUYER.find(seg)?.let { seg.substring(it.range.last + 1) }.orEmpty().trim().trimStart(':', '.', '-').trim()
+                .ifEmpty { segsHere.drop(at + 1).firstOrNull { it.trim().trimStart(':').trim().count(Char::isLetter) >= 3 && !LABELS.containsMatchIn(it) }.orEmpty() }
+            val rest = sameLine
                 .replace(Regex("""(?i)^[\s&:.\-]*((delivery|billing|shipping)\s*)?((address|name|details)\b)?[\s.:\-]*"""), "")
                 .replace(Regex("""\.{2,}"""), " ").replace(Regex("""\s+"""), " ").trim()
-            if (rest.count { it.isLetter() } >= 3 && gstin(rest) == null) rest
-            else top.getOrNull(consigneeAt + 1)?.segments(gap)?.firstOrNull()?.joinToString(" ") { it.text }
+            if (rest.count { it.isLetter() } >= 3 && gstin(rest) == null) rest.trimStart(':', ' ')
+            else top.getOrNull(consigneeAt + 1)?.segments(gap)?.firstOrNull()?.joinToString(" ") { it.text }?.takeIf { !LABELS.containsMatchIn(it) }
         } else null
         val contact = Regex("""(?i)(contact|mobile|mob|phone|ph|tel|cell)\.?\s*(no)?\.?\s*[:.]?\s*(\+?91[\s-]?)?(\d[\d ]{7,12}\d)""")
             .find(top.take(if (consigneeAt >= 0) consigneeAt else top.size).joinToString("\n") { it.text })?.groupValues?.get(4)?.replace(" ", "")
-        val invoiceNo = (after(Regex("""(?i)invoice\s*(no|number|#)\.?\s*:?""")) ?: after(Regex("""(?i)\b(inv|bill|memo|voucher)\.?\s*(no|number|#)\.?\s*:?""")))
+        val invoiceNo = (after(Regex("""(?i)\bin[vy][o0][il1|]?c[e3]\s*(no|number|#)\.?\s*:?""")) ?: after(Regex("""(?i)\b(inv|bill|memo|voucher)\.?\s*(no|number|#)\.?\s*:?""")))
             ?.split(' ')?.firstOrNull { t -> t.any(Char::isDigit) }?.trim(',', ';')
         val dateText = after(Regex("""(?i)(invoice\s*|bill\s*)?date\s*:?"""))
         val date = (dateText?.let { DATE.find(it)?.value } ?: DATE.find(all)?.value)?.replace(Regex("""(?<=[-/. ])0(?=[a-z]{2})"""), "O")

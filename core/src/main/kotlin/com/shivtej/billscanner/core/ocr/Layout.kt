@@ -186,9 +186,13 @@ object Layout {
 
     private val TWO_DECIMALS = Regex("""^(\d{1,3}(?:,\d{2,3})*\.\d{2})(\d{1,3}(?:,\d{2,3})*\.\d{1,3}%?)$""")
     private val HSN_GST = Regex("""^(\d{4,8})(\d{1,2}(?:\.\d{1,2})?%)$""")
-    private val UNIT_NUM = Regex("""(?i)^(pairs?|prs?|pcs?|nos?)(\d[\d,]*(?:\.\d{1,2})?%?)$""")
+    private val UNIT_NUM = Regex("""(?i)^(pairs?|prs?|pcs?|nos?)(\d[\d,.]*%?)$""")
     private val PCT_NUM = Regex("""^(\d{1,2}(?:\.\d{1,2})?%)(\d[\d,]*(?:\.\d{1,2})?)$""")
     private val SR_TEXT = Regex("""^(\d{1,3}\.)([A-Za-z].*)$""")
+    /** "5%6X10", "640299905%7X10": a % glued to the size after it. */
+    private val PCT_SIZE = Regex("""^(.*\d%)(\d{1,2}[xX×]\d.*)$""")
+    /** "%6X10", "%11X13329": the % of the GST column glued in front of the next cell. */
+    private val LEAD_PCT = Regex("""^(%)(\d.*)$""")
     private val SIZE_NUM = Regex("""^(\d{1,2})[xX×](\d{1,3})(\d[\d,]*(?:\.\d{1,2})?)?$""")
     private val VALID_NUM = Regex("""^[1-9]\d{0,2}(?:,\d{2,3})*(?:\.\d{1,2})?$|^[1-9]\d*(?:\.\d{1,2})?$""")
 
@@ -208,7 +212,8 @@ object Layout {
         val options = (1..2).mapNotNull { n ->
             if (rest.length <= n) null else {
                 val sz = rest.substring(0, n); val num = rest.substring(n)
-                if (VALID_NUM.matches(num) && sz.toInt() in 1..15) Triple(sz, num, n) else null
+                // The number after the size is an MRP: at least two digits ("11X13" is a size, not "11X1" + 3).
+                if (VALID_NUM.matches(num) && num.count(Char::isDigit) >= 2 && sz.toInt() in 1..15) Triple(sz, num, n) else null
             }
         }
         if (options.isEmpty()) return null
@@ -233,12 +238,11 @@ object Layout {
             t = parts[0].trim()
         }
         val w = OcrWord(t, w0.box)
-        TWO_DECIMALS.matchEntire(t)?.let { return@flatMap splitBox(w, listOf(it.groupValues[1], it.groupValues[2])) }
-        HSN_GST.matchEntire(t)?.let { return@flatMap splitBox(w, listOf(it.groupValues[1], it.groupValues[2])) }
-        UNIT_NUM.matchEntire(t)?.let { return@flatMap splitBox(w, listOf(it.groupValues[1], it.groupValues[2])) }
-        PCT_NUM.matchEntire(t)?.let { return@flatMap splitBox(w, listOf(it.groupValues[1], it.groupValues[2])) }
-        SR_TEXT.matchEntire(t)?.let { return@flatMap splitBox(w, listOf(it.groupValues[1], it.groupValues[2])) }
-        sizeSplit(t)?.let { return@flatMap splitBox(w, it) }
+        // Each split part is cleaned again: "pair1,165.719.82" → "pair" + "1,165.719.82" → "1,165.71" + "9.82".
+        fun again(parts: List<String>) = if (parts.size > 1 && parts.all { it.isNotEmpty() }) clean(splitBox(w, parts)) else listOf(w)
+        for (re in listOf(PCT_SIZE, TWO_DECIMALS, HSN_GST, UNIT_NUM, PCT_NUM, LEAD_PCT, SR_TEXT))
+            re.matchEntire(t)?.let { return@flatMap again(listOf(it.groupValues[1], it.groupValues[2])) }
+        sizeSplit(t)?.let { return@flatMap again(it) }
         listOf(w)
     }
 
