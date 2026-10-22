@@ -62,6 +62,13 @@ jobs:
           echo "run=${{ github.run_number }} sha=${{ github.sha }} outcome=${{ steps.build.outcome }}" > results/run.txt
           cp app/build/outputs/apk/release/app-release.apk "results/Shivtej-Bill-Scanner-AI-2.0.${{ github.run_number }}.apk" 2>/dev/null || true
 
+      - name: Check the APK (signature and package)
+        if: always()
+        run: |
+          BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          A=app/build/outputs/apk/release/app-release.apk
+          { echo "build-tools: $BT"; $BT/apksigner verify --verbose --print-certs $A; echo "apksigner exit=$?"; $BT/aapt2 dump badging $A | head -20; $BT/zipalign -c -P 16 -v 4 $A | tail -3; echo "zipalign exit=$?"; } > results/apk-check.txt 2>&1 || true
+
       - name: Publish results branch
         if: always()
         run: |
@@ -121,10 +128,12 @@ jobs:
           mkdir -p ocr
           ls -la /dev/kvm > ocr/emulator-status.txt 2>&1
           SDK=$ANDROID_HOME/cmdline-tools/latest/bin
+          export ANDROID_AVD_HOME=$HOME/.android/avd; mkdir -p $ANDROID_AVD_HOME
           IMG="system-images;android-30;google_apis;x86_64"
           yes | $SDK/sdkmanager --licenses > /dev/null 2>&1
           $SDK/sdkmanager --install "$IMG" "emulator" "platform-tools" > ocr/sdk.txt 2>&1
           echo no | $SDK/avdmanager create avd -n t -k "$IMG" -d pixel --force > ocr/avd.txt 2>&1
+          $SDK/avdmanager list avd >> ocr/avd.txt 2>&1; ls -la $ANDROID_AVD_HOME >> ocr/avd.txt
           export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
           nohup emulator -avd t -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none -memory 4096 > ocr/emulator.txt 2>&1 &
           timeout 600 adb wait-for-device
