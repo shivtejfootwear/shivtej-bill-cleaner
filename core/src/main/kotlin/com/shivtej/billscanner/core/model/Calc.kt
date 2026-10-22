@@ -138,7 +138,7 @@ object Calc {
 
     /** Cost of one pair including GST (what lands in the shop). */
     fun landedPerPair(v: ItemValues, h: Header): BigDecimal? {
-        val net = netPerPair(v) ?: return null
+        val net = (netPerPair(v) ?: return null).let { n -> h.costFactor?.let { n * it } ?: n }
         val g = gstPct(v, h) ?: return net
         return net * (HUNDRED + g) / HUNDRED
     }
@@ -150,7 +150,7 @@ object Calc {
     fun sittingPct(v: ItemValues, h: Header, withGst: Boolean = true): BigDecimal? {
         val mrp = v.mrp ?: return null
         if (mrp.signum() <= 0) return null
-        val cost = (if (withGst) landedPerPair(v, h) else netPerPair(v)) ?: return null
+        val cost = (if (withGst) landedPerPair(v, h) else netPerPair(v)?.let { n -> h.costFactor?.let { n * it } ?: n }) ?: return null
         val p = r2((mrp - cost).multiply(HUNDRED).divide(mrp, 10, RoundingMode.HALF_UP))
         // A cost above MRP by a lot, or almost nothing, means a misread number — shown as "check", never as a %.
         return if (p < BigDecimal(-30) || p > BigDecimal(95)) null else p

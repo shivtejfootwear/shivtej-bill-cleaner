@@ -108,6 +108,11 @@ data class Header(
     /** "Total" row of the item table as printed: pairs and amount. */
     val printedQty: BigDecimal? = null,
     val printedSubtotal: BigDecimal? = null,
+    /**
+     * Bill-level discounts and charges spread over the lines (e.g. "LESS 2% special", "LESS 4% prompt payment",
+     * "ADD 0.10% insurance"): what each rupee of a line really costs. Null = none.
+     */
+    val costFactor: BigDecimal? = null,
 )
 
 /** One column of the bill's item table, as printed, and what it means (null = kept as text only). */

@@ -423,7 +423,7 @@ private fun GridRow(
             DataCell(if (item.kind == ItemKind.CHARGE) "" else pct(s), 62.dp, Tone.GREEN, true, warn = s == null && item.kind == ItemKind.ARTICLE)
             if (anyTarget) DataCell(line?.let { pct(it.pct) + if (item.targetPct != null) "*" else "" } ?: "—", 60.dp, Tone.TARGET, true)
             // Lines without our % keep the bill amount (shown plain).
-            if (anyTarget) DataCell(line?.let { num(Target.newShown(inv, it)) } ?: Target.billShown(inv, item)?.let { num(it) }.orEmpty(), 84.dp, if (line != null) Tone.TARGET else Tone.NORMAL, true, bold = line != null)
+            if (anyTarget) DataCell(line?.let { num(Target.newShown(inv, it)) } ?: Target.keptShown(inv, item)?.let { num(it) }.orEmpty(), 84.dp, if (line != null) Tone.TARGET else Tone.NORMAL, true, bold = line != null)
         }
     }
 }

@@ -74,6 +74,9 @@ object Target {
     /** A line's amount the way this bill prints it (with GST on an inclusive bill). */
     fun billShown(inv: Invoice, item: LineItem): BigDecimal? = if (inclusive(inv)) item.current.printedTotal ?: item.current.taxable else item.current.taxable
 
+    /** A line kept as billed, in the new bill: its share after the bill's own LESS / ADD lines (when the bill has them). */
+    fun keptShown(inv: Invoice, item: LineItem): BigDecimal? = billShown(inv, item)?.let { x -> inv.header.costFactor?.let { Calc.r2(x * it) } ?: x }
+
     /** The new amount the way this bill prints amounts. */
     fun newShown(inv: Invoice, l: Line): BigDecimal = if (inclusive(inv)) l.amountWithGst else l.amount
 
@@ -138,19 +141,23 @@ object Target {
         var taxable = z
         var fixedTax = z
         for (l in lines) { taxable += l.amount; byRate.merge(gstRate(inv, l.item).stripTrailingZeros(), l.amount, BigDecimal::add) }
+        val factor = inv.header.costFactor
         for (i in untouched) {
-            val t = i.current.taxable ?: continue
+            // With discounts on the whole bill, a line kept as billed costs its share after them.
+            val t = (i.current.taxable ?: continue).let { x -> factor?.let { Calc.r2(x * it) } ?: x }
             taxable += t
             val own = if (targetable(inv, i)) null else ownTax(i)
             if (own != null) fixedTax += own else byRate.merge(gstRate(inv, i).stripTrailingZeros(), t, BigDecimal::add)
         }
         var gst = byRate.entries.fold(fixedTax) { a, (g, amt) -> a + Calc.r2(amt.multiply(g).divide(Calc.HUNDRED, 10, RoundingMode.HALF_UP)) }
         val bill = Totals.of(inv)
-        var total = Calc.r2(taxable + gst + (inv.header.otherCharges ?: z) - (inv.header.overallDiscount ?: z))
+        // The new rates are final (MRP × (100 − %)): the bill's own discounts and charges are already in the shares above.
+        val extra = if (factor != null) z else (inv.header.otherCharges ?: z) - (inv.header.overallDiscount ?: z)
+        var total = Calc.r2(taxable + gst + extra)
         if (inclusive(inv)) {
             // Amounts with GST added up, as the bill does; the GST is what they include.
-            val withGst = lines.fold(z) { a, l -> a + l.amountWithGst } + untouched.fold(z) { a, i -> a + (i.current.printedTotal ?: i.current.taxable ?: z) }
-            total = Calc.r2(withGst + (inv.header.otherCharges ?: z) - (inv.header.overallDiscount ?: z))
+            val withGst = lines.fold(z) { a, l -> a + l.amountWithGst } + untouched.fold(z) { a, i -> a + (keptShown(inv, i) ?: z) }
+            total = Calc.r2(withGst + extra)
             gst = total - taxable
         }
         return Sheet(lines, untouched, Calc.r2(taxable), Calc.r2(gst), total, total.setScale(0, RoundingMode.HALF_UP).setScale(2), bill.printedGrand ?: bill.grand)

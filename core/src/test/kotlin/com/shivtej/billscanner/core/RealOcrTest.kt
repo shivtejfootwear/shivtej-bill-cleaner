@@ -70,6 +70,38 @@ class RealOcrTest {
         assertTrue(p.items.filter { it.current.sr != 11 }.all { it.needs.isEmpty() })
     }
 
+    /**
+     * LAKHANI FOOTWEAR (Crystal Reports PDF, 1972/26-27/R266): Old MRP and New MRP columns, cartons and pairs columns,
+     * bill-level "LESS : per carton / 2% special / 4% prompt payment" and "ADD : insurance" lines, IGST, then an HSN tax summary.
+     */
+    @Test fun lakhaniOldAndNewMrpCartonsAndBillDiscounts() {
+        val p = InvoiceParser.parse(listOf(page("lakhani_1972_1.tsv")))
+        assertEquals((1..9).toList(), p.items.map { it.current.sr })
+        assertEquals("1972/26-27/R266", p.header.invoiceNo)
+        assertEquals("06AAACL3112H1Z2", p.header.supplierGstin)
+        assertTrue(p.header.buyerName.orEmpty(), p.header.buyerName!!.contains("SHIVTEJ FOOTWEAR"))
+        for (it in p.items) {
+            val v = it.current
+            assertTrue("line ${v.sr}: ${it.needs}", it.needs.isEmpty())
+            assertEquals("line ${v.sr}: pairs, not cartons", 12, v.qty!!.toInt())
+            assertTrue("line ${v.sr}: colour stays out of HSN", v.hsn!!.all(Char::isDigit))
+        }
+        // New MRP, never the old one.
+        assertEquals(0, p.items[0].current.mrp!!.compareTo(bd("1899.00")))
+        assertEquals(0, p.items[5].current.mrp!!.compareTo(bd("1749.00")))
+        assertEquals(0, p.items[8].current.mrp!!.compareTo(bd("1949.00")))
+        assertEquals("7*10", p.items[0].current.sizeText)
+        // The bill total, not the HSN summary's taxable value.
+        assertEquals(0, p.header.printedGrandTotal!!.compareTo(bd("106153.00")))
+        assertEquals(0, p.header.igstAmt!!.compareTo(bd("5054.87")))
+        // Bill-level discounts and charges spread over every line: lines 108972 → 101097.78 before tax.
+        val f = p.header.costFactor!!
+        assertEquals(0, (bd("108972.00") * f).setScale(2, java.math.RoundingMode.HALF_UP).compareTo(bd("101097.78")))
+        val inv = Invoice("l", 0, p.header, p.header, p.items, columns = p.columns)
+        val t = Totals.of(inv)
+        assertTrue("difference ${t.difference}", t.difference == null || t.difference!!.abs() <= BigDecimal.ONE)
+    }
+
     @Test fun sameBillAddedTwiceKeepsOneCopy() {
         val pg = page("v3617_1.tsv")
         val p = InvoiceParser.parse(listOf(pg, pg))

@@ -71,7 +71,7 @@ object Warnings {
                 val s = Sizes.read(v.sizeText, v.qty)
                 if (s.state == Sizes.State.MISMATCH || s.state == Sizes.State.UNCLEAR) out += Warning(Warning.Level.CHECK, it.id, "$name: ${s.hindi}", "$name: size quantities need checking")
             } else if (v.sizeText.isEmpty() && inv.columns.none { c -> c.field == F.SIZE }) out += Warning(Warning.Level.TIP, it.id, "$name: साइज़ नहीं छपे", "$name: sizes missing")
-            val key = "${v.article}|${v.colour}|${v.mrp}"
+            val key = "${v.article}|${v.colour}|${v.sizeText}|${v.mrp}"
             seen[key]?.let { other -> out += Warning(Warning.Level.TIP, it.id, "$name: यही आर्टिकल, कलर और MRP लाइन $other में भी है", "$name: same article/colour/MRP as line $other") }
             seen.putIfAbsent(key, name)
             // Same article from the same supplier at a different rate before.

@@ -58,6 +58,7 @@ object InvoiceCodec {
         "otherCharges" to b(h.otherCharges), "roundOff" to b(h.roundOff), "pageNote" to h.pageNote,
         "cgstPct" to b(h.cgstPct), "cgstAmt" to b(h.cgstAmt), "sgstPct" to b(h.sgstPct), "sgstAmt" to b(h.sgstAmt),
         "igstPct" to b(h.igstPct), "igstAmt" to b(h.igstAmt), "printedQty" to b(h.printedQty), "printedSubtotal" to b(h.printedSubtotal),
+        "costFactor" to b(h.costFactor),
     )
 
     private fun header(m: Map<String, Any?>) = Header(
@@ -65,6 +66,7 @@ object InvoiceCodec {
         m.s("invoiceDate"), m.s("orderNo"), m.s("transporter"), m.s("cartons"), m.s("packing"), m.s("buyerName"),
         m.s("buyerGstin"), m.dec("printedGrandTotal"), m.dec("overallDiscount"), m.dec("otherCharges"), m.dec("roundOff"), m.s("pageNote"),
         m.dec("cgstPct"), m.dec("cgstAmt"), m.dec("sgstPct"), m.dec("sgstAmt"), m.dec("igstPct"), m.dec("igstAmt"), m.dec("printedQty"), m.dec("printedSubtotal"),
+        costFactor = m.dec("costFactor"),
     )
 
     private fun values(v: ItemValues) = linkedMapOf(

@@ -153,7 +153,9 @@ object InvoiceExport {
                 it.kind == ItemKind.CHARGE || rateOnly -> Cell.Text("")
                 else -> Cell.Text("MRP जाँचें", St.WARN)
             }
-            val billNum = bill?.toPlainString() ?: "0"
+            // With discounts on the whole bill, a line kept as billed costs its share after them.
+            val kept = Target.keptShown(inv, it)
+            val billNum = kept?.toPlainString() ?: "0"
             val amountCell: Cell = if (canTarget) {
                 val mrp = v.mrp!!.toPlainString(); val q = v.qty!!.toPlainString()
                 val rate = when {
@@ -163,8 +165,8 @@ object InvoiceExport {
                     inv.sittingWithGst -> "ROUND($mrp*(100-$tc$r)/(100+$g),2)"
                     else -> "ROUND($mrp*(100-$tc$r)/100,2)"
                 }
-                Cell.Formula("IF($tc$r=\"\",$billNum,ROUND($rate*$q,2))", tl?.let { l -> Target.newShown(inv, l) } ?: bill ?: BigDecimal.ZERO, St.MONEY)
-            } else bill?.let { x -> Cell.Num(x, St.MONEY) } ?: Cell.Text("")
+                Cell.Formula("IF($tc$r=\"\",$billNum,ROUND($rate*$q,2))", tl?.let { l -> Target.newShown(inv, l) } ?: kept ?: BigDecimal.ZERO, St.MONEY)
+            } else kept?.let { x -> Cell.Num(x, St.MONEY) } ?: Cell.Text("")
             s.row(cols.mapIndexed { ci, c -> printedCell(inv, it, ci, c) } + listOf(sitCell, targetCell, amountCell))
         }
         val last = first + inv.items.size - 1
@@ -195,7 +197,7 @@ object InvoiceExport {
         line((if (incl) "GST included " else "GST ") + "(CGST ${Calc.fmt(t.cgst)} + SGST ${Calc.fmt(t.sgst)}${if (t.igst.signum() != 0) " + IGST ${Calc.fmt(t.igst)}" else ""})",
             billCol to Cell.Num(gstBill, St.BOLD_MONEY),
             n + 2 to Cell.Formula(gstFormula, sheet.gst, St.BOLD_MONEY))
-        val extra = (h.otherCharges ?: BigDecimal.ZERO) - (h.overallDiscount ?: BigDecimal.ZERO)
+        val extra = if (h.costFactor != null) BigDecimal.ZERO else (h.otherCharges ?: BigDecimal.ZERO) - (h.overallDiscount ?: BigDecimal.ZERO)
         h.roundOff?.let { ro -> line("Round off", billCol to Cell.Num(ro, St.BOLD_MONEY)) }
         line("Grand Total" + if (t.printedGrand != null) " (printed on bill)" else " (calculated)",
             billCol to Cell.Num(t.printedGrand ?: t.grand, St.BOLD_MONEY),

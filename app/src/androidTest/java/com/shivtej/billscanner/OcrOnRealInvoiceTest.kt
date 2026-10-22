@@ -100,6 +100,18 @@ class OcrOnRealInvoiceTest {
         report("pdf_digital", dir, read.map { it.words })
     }
 
+    /** A real supplier PDF (LAKHANI FOOTWEAR, Crystal Reports): its own text, words split the way the app does it. */
+    @Test fun lakhaniPdf() = runBlocking {
+        val ins = InstrumentationRegistry.getInstrumentation()
+        val dir = File(ins.targetContext.filesDir, "ocrtest/lakhani_pdf").apply { mkdirs() }
+        val f = File(dir, "lakhani_1972.pdf")
+        ins.context.assets.open("lakhani_1972.pdf").use { i -> f.outputStream().use { i.copyTo(it) } }
+        val read = PdfBill.read(ins.targetContext, f)
+        log("[lakhani_pdf] pages=${read.size} fromText=${read.map { it.fromText }} words=${read.map { it.words.words.size }}")
+        read.forEachIndexed { i, r -> File(dir, "ocr_${i + 1}.tsv").writeText(OcrCodec.encode(r.words)) }
+        report("lakhani_pdf", dir, read.map { it.words })
+    }
+
     /** A PDF that is only a scanned picture: rendered and read with the OCR. */
     @Test fun pdfScanned() = runBlocking {
         val ins = InstrumentationRegistry.getInstrumentation()

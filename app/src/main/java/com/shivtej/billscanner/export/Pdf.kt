@@ -161,7 +161,7 @@ object Pdf {
                 if (c.field != null && c.field in it.needs) warn += r to ci
                 InvoiceExport.printedText(inv, it, ci, c).ifEmpty { if (c.field == F.DISC_PCT && it.current.discPct == null && F.DISC_PCT in it.needs) NEEDS_VERIFICATION else "" }
             } + (if (it.kind == ItemKind.CHARGE) "" else p(Calc.sittingPct(it.current, h, inv.sittingWithGst))) +
-                (if (!sheet.any) emptyList() else lines[it.id]?.let { l -> listOf(p(l.pct), n(Target.newShown(inv, l))) } ?: listOf("—", Target.billShown(inv, it)?.let { x -> n(x) } ?: ""))
+                (if (!sheet.any) emptyList() else lines[it.id]?.let { l -> listOf(p(l.pct), n(Target.newShown(inv, l))) } ?: listOf("—", Target.keptShown(inv, it)?.let { x -> n(x) } ?: ""))
         }
         wr.table(pcols, rows, warn)
         wr.line("Totals", wr.bold, 10f, NAVY, 4f)
