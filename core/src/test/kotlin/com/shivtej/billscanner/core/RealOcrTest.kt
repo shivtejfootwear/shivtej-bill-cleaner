@@ -97,4 +97,25 @@ class RealOcrTest {
         val back = com.shivtej.billscanner.core.store.InvoiceCodec.decode(com.shivtej.billscanner.core.store.InvoiceCodec.encode(inv))
         assertEquals(inv.items.map { it.at }, back.items.map { it.at })
     }
+
+    @Test fun aLineThatSlidSidewaysIsDealtAgainByWhatItsWordsLookLike() {
+        // Line 53 (GP 4258 CAMEL … 319 | 8 pair | 213.33 | 7.45 % | 1,579.50) with everything after the description
+        // moved one column to the left, as on the phone: HSN under GST, "8 pair 213.33" under Qty, "7.45% 1,579.50" under Rate.
+        val pg = page("v3617_1.tsv")
+        val y = pg.words.first { it.text == "4258" }.box.cy
+        val moved = pg.copy(words = pg.words.map { w ->
+            if (kotlin.math.abs(w.box.cy - y) < 12 && w.box.l > 500) w.copy(box = w.box.copy(l = w.box.l - 70, r = w.box.r - 70)) else w
+        })
+        val l = InvoiceParser.parse(listOf(moved)).items.first { it.current.sr == 53 }
+        assertTrue("${l.needs} ${l.raw}", l.needs.isEmpty())
+        assertEquals(0, l.current.qty!!.compareTo(BigDecimal(8)))
+        assertEquals(0, l.current.rate!!.compareTo(bd("213.33")))
+        assertEquals(0, l.current.taxable!!.compareTo(bd("1579.50")))
+        assertEquals(0, l.current.mrp!!.compareTo(BigDecimal(319)))
+    }
+
+    @Test fun bankAndSignatureLinesAreNeverArticles() {
+        val p = InvoiceParser.parse(listOf(page("dharashiv_r2395_1.tsv"), page("dharashiv_r2395_2.tsv")))
+        assertTrue(p.items.none { com.shivtej.billscanner.core.ocr.InvoiceParser.NOT_ARTICLE.containsMatchIn(it.raw.joinToString(" ")) })
+    }
 }

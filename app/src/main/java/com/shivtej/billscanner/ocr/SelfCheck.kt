@@ -32,7 +32,10 @@ object SelfCheck {
     suspend fun run(
         pages: List<OcrPage>, sources: List<Source?>, parse: (List<OcrPage>) -> ParsedInvoice,
         onProgress: (Int, Int) -> Unit = { _, _ -> },
+        budgetMs: Long = 15_000,
     ): Result = withContext(Dispatchers.Default) {
+        // Kept quick: the person is waiting. Lines a finger or an icon covered cannot be read anyway.
+        val deadline = System.currentTimeMillis() + budgetMs
         val cur = pages.toMutableList()
         var parsed = parse(cur)
         val bad = parsed.items.filter { it.needs.isNotEmpty() && it.current.sr != null && it.at != null && sources.getOrNull(it.at!!.page) != null }.take(60)
@@ -51,7 +54,9 @@ object SelfCheck {
             val top = (a.t - mh / 2).coerceAtLeast(0); val bottom = (a.b + mh / 2).coerceAtMost(bmp.height)
             if (bottom - top < 6) continue
             val before = good(parsed)
-            search@ for (look in Look.values()) for (letter in listOf(40, 30)) {
+            if (System.currentTimeMillis() > deadline) break
+            search@ for ((look, letter) in listOf(Look.GREY to 40, Look.BLACK_WHITE to 36, Look.SHARP to 30)) {
+                if (System.currentTimeMillis() > deadline) break@search
                 val words = readStrip(bmp, top, bottom, mh, letter, look) ?: continue
                 // This band's words replaced by the new reading of it.
                 val inBand = { w: OcrWord -> w.box.cy >= a.t.toDouble() && w.box.cy <= a.b.toDouble() }

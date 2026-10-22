@@ -56,4 +56,18 @@ class LearningFromFixesTest {
         val sure = inv.items.first { it.needs.isEmpty() }
         assertEquals(l, Learning.fromDelete(l, inv, sure))
     }
+
+    @Test fun aWrongNumberTypedInTheWrongBoxTeachesNothing() {
+        val spoiled = spoil(page(), "74002", "289", "2B9")
+        val p = InvoiceParser.parse(listOf(spoiled))
+        val inv = Invoice("a", 0, p.header, p.header, p.items, columns = p.columns)
+        val l2 = inv.items.first { it.current.sr == 2 }
+        // Our target 35 typed into Disc. % by mistake: the line no longer adds up, nothing is learnt.
+        val (l, lessons) = Learning.fromEdit(Learnt(), inv, l2, l2.current.copy(discPct = BigDecimal(35)))
+        assertTrue(lessons.isEmpty()); assertEquals(Learnt(), l)
+        // And a wrong lesson already saved ("7.45 %" = 35) can never spoil a line that reads right.
+        val bad = Learnt(fixes = mapOf("27AAFCD3805J1ZO" to mapOf(com.shivtej.billscanner.core.model.F.DISC_PCT to mapOf("7.45 %" to "35", "7.45%" to "35"))))
+        val (next, _) = Learning.apply(bad, InvoiceParser.parse(listOf(page())))
+        assertTrue(next.items.filter { it.current.sr != null && it.current.sr!! < 46 }.all { it.current.discPct!!.compareTo(BigDecimal("7.45")) == 0 })
+    }
 }

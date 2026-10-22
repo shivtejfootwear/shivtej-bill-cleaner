@@ -43,6 +43,8 @@ object InvoiceParser {
     private val LABELS = Regex("""(?i)^\s*(address|invoice|date|state|place|gstin|party|dc\s*no|eway|pay\s*mode|due|mobile|phone|contact)\b""")
     /** Words of the lines under an item table (tax, totals, bank, signature): such a line is not an article. */
     private val FOOTERISH = Regex("""(?i)\b(c\s*gst|s\s*gst|igst|utgst|hsn|taxable|total|round|bank|branch|a\s*[/l1i]\s*c|ifsc?|e\s*&\s*o|rupees|in\s*words|signatory|declaration)\b|\bfor\s*:""")
+    /** Words that never belong to an article line (bank details, signature, the page's own labels). */
+    val NOT_ARTICLE = Regex("""(?i)\b(bank|a\s*[/l1i]\s*c\s*(no|number)|account\s*no|ifsc?|branch|signature|signatory|declaration|jurisdiction|e\s*&\s*o\s*e|party'?s|total\s+\d)|\bfor\s*:""")
     /** Text this app prints on its own files (a photo PDF shared back into the app): never part of a bill. */
     private val OWN_TEXT = Regex("""(?i)(original\s+invoice\s+photo|copy\s+for\s+refere|shivtej\s+bill\s+scanner|not\s+an\s+official\s+digital|not\s+the\s+supplier'?s\s+original).*$""")
     private val DOTTED = Regex("""^\d{1,3}(\.\d{3})+\.\d{2}$""")
@@ -380,7 +382,7 @@ object InvoiceParser {
             val text = cells.values.flatten().joinToString(" ") { it.text }
             val fullLine = !requireSerialRun && hasText && numericCells >= 3 && !FOOTERISH.containsMatchIn(text)
             return if (srCol >= 0) (sr != null && (numericCells >= (if (requireSerialRun) 3 else 1) || (!requireSerialRun && hasText))) || fullLine
-            else numericCells >= 2 && hasText
+            else numericCells >= 2 && hasText && !FOOTERISH.containsMatchIn(text)
         }
         // A line without a serial number counts only inside the run of numbered lines, or when its own arithmetic works.
         val serialAt = assigned.indexOfLast { (_, c) -> srCol >= 0 && c[srCol]?.let { ws -> serialOf(ws.joinToString("") { it.text }) } != null }
@@ -423,8 +425,13 @@ object InvoiceParser {
             }
         }
         val items = blocks.mapIndexed { k, b -> readItem(b, cols, startIndex + k + 1) }.toMutableList()
-        // Text with numbers but no serial, pairs, MRP or rate (bank details, a tax summary) is not an article.
-        val junk = items.indices.filter { k -> items[k].current.let { it.sr == null && it.qty == null && it.mrp == null && it.rate == null } }.toSet()
+        // Text with numbers but no serial, pairs, MRP or rate (bank details, a tax summary) is not an article;
+        // nor a line that names a bank, account, IFSC, signature… without adding up as an article.
+        val junk = items.indices.filter { k ->
+            val it = items[k]; val v = it.current
+            (v.sr == null && v.qty == null && v.mrp == null && v.rate == null) ||
+                (NOT_ARTICLE.containsMatchIn(it.raw.joinToString(" ") + " " + v.article) && !Heal.proven(v))
+        }.toSet()
         if (junk.isNotEmpty()) {
             val keepAt = items.indices.filter { it !in junk }
             val kb = keepAt.map { blocks[it] }; val ki = keepAt.map { items[it] }
@@ -867,7 +874,53 @@ object InvoiceParser {
 
     private fun cellText(ws: List<OcrWord>?) = ws?.joinToString(" ") { it.text }?.trim().orEmpty()
 
+    /**
+     * One line. When its numbers do not add up, the words right of the description are dealt to the columns again
+     * by what they look like (HSN, GST %, size, then the numbers in order) — a line that slid sideways in the photo.
+     */
     private fun readItem(block0: List<Map<Int, List<OcrWord>>>, cols: List<Col>, index: Int): LineItem {
+        val first = readItemOnce(block0, cols, index)
+        if (first.kind != ItemKind.ARTICLE || (first.needs.isEmpty() && Heal.proven(first.current))) return first
+        val moved = reflow(block0, cols) ?: return first
+        val again = readItemOnce(moved, cols, index)
+        return if (Heal.proven(again.current) && again.needs.size <= first.needs.size) again else first
+    }
+
+    private fun reflow(block: List<Map<Int, List<OcrWord>>>, cols: List<Col>): List<Map<Int, List<OcrWord>>>? {
+        val row = block.first()
+        val descAt = cols.indexOfLast { it.kind == Kind.DESC }.takeIf { it >= 0 } ?: return null
+        val targets = (descAt + 1 until cols.size).filter { cols[it].kind != Kind.OTHER }
+        if (targets.size < 3) return null
+        // Words right of the description, in reading order; a unit or % stays with its number.
+        val ws = row.filterKeys { it > descAt }.values.flatten().sortedBy { it.box.l }
+        val tokens = mutableListOf<MutableList<OcrWord>>()
+        for (w in ws) {
+            val lw = w.text.lowercase().trim('.', ':')
+            if (tokens.isNotEmpty() && (lw in UNITS || w.text == "%")) tokens.last() += w else tokens += mutableListOf(w)
+        }
+        fun text(t: List<OcrWord>) = t.joinToString(" ") { it.text }
+        fun fits(k: Kind, t: String): Boolean = when (k) {
+            Kind.HSN -> Regex("""^\d{4,8}$""").matches(t)
+            Kind.GST_PCT, Kind.CGST_PCT, Kind.SGST_PCT, Kind.IGST_PCT -> Regex("""^\d{1,2}(\.\d{1,2})?\s*%$""").matches(t)
+            Kind.SIZE -> Regex("""^\d{1,2}\s*[xX×]\s*\d{1,2}\.?$""").matches(t) || (t.contains('/') && t.any(Char::isDigit))
+            Kind.COLOUR -> t.any(Char::isLetter) && number(t) == null
+            Kind.QTY -> number(t)?.let { it.signum() > 0 && it.stripTrailingZeros().scale() <= 0 } == true
+            Kind.DISC_PCT -> number(t) != null       // "745 %" too: its point is put back by the repair
+            in NUMERIC -> number(t) != null
+            else -> false
+        }
+        val out = row.filterKeys { it <= descAt }.toMutableMap()
+        var i = 0
+        for (ci in targets) {
+            if (i >= tokens.size) break
+            if (fits(cols[ci].kind, text(tokens[i]))) { out[ci] = tokens[i]; i++ }
+        }
+        if (i < tokens.size) return null      // something left over: not a simple slide
+        if (out == row) return null
+        return listOf(out) + block.drop(1)
+    }
+
+    private fun readItemOnce(block0: List<Map<Int, List<OcrWord>>>, cols: List<Col>, index: Int): LineItem {
         val block = shiftCrowded(block0, cols)
         val first = block.first()
         // A line split in two by the photo still gives its numbers: take each from the first line that has it.

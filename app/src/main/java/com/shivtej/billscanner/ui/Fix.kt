@@ -141,6 +141,16 @@ fun FixContent(
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             learnt?.let { Text(it, fontSize = 13.sp, color = C.navy, modifier = Modifier.fillMaxWidth().background(C.navySoft, RoundedCornerShape(10.dp)).padding(8.dp)) }
             Text("${v.sr ?: ""}. ${v.article} ${v.colour}".trim(), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = C.navy)
+            // Bank details, signature, tax summary…: not an article — say so plainly and offer to remove it.
+            val allText = item.raw.joinToString(" ") + " " + v.article
+            if (com.shivtej.billscanner.core.ocr.InvoiceParser.NOT_ARTICLE.containsMatchIn(allText)) Column(
+                Modifier.fillMaxWidth().background(C.errSoft, RoundedCornerShape(12.dp)).padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(tr("यह बैंक / खाता नंबर / IFSC / हस्ताक्षर / टैक्स की लाइन है — आर्टिकल नहीं। इसे हटा दें, app याद रखेगा।",
+                    "This is bank / account / IFSC / signature / tax text — not an article. Remove it; the app will remember."),
+                    fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = C.err)
+                BigButton(tr("🗑 हटाएँ (आर्टिकल नहीं है)", "🗑 Remove (not an article)"), onDelete, Modifier.fillMaxWidth())
+            }
             if (strip != null) {
                 Muted(tr("बिल में यह लाइन (टैप = बड़ा / छोटा):", "This line on the bill (tap = bigger / smaller):"))
                 Box(Modifier.fillMaxWidth().border(1.dp, C.line, RoundedCornerShape(8.dp)).horizontalScroll(rememberScrollState()).clickable { big = !big }) {
@@ -164,9 +174,11 @@ fun FixContent(
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 box(tr("रेट", "Rate"), rate, com.shivtej.billscanner.core.model.F.RATE in needs, { rate = it }, Modifier.weight(1f))
-                box("Disc. %", disc, com.shivtej.billscanner.core.model.F.DISC_PCT in needs, { disc = it }, Modifier.weight(1f))
+                box(tr("बिल का Disc. %", "Bill's Disc. %"), disc, com.shivtej.billscanner.core.model.F.DISC_PCT in needs || (Calc.bd(disc)?.let { it >= BigDecimal(100) } == true), { disc = it }, Modifier.weight(1f))
             }
             box(tr("रकम (Amount, बिल जैसी)", "Amount (as on the bill)"), amount, com.shivtej.billscanner.core.model.F.TAXABLE in needs, { amount = it }, Modifier.fillMaxWidth())
+            Muted(tr("Disc. % में वही भरें जो बिल पर छपा है। अपना % (35, 40…) यहाँ नहीं — वह \"% लगाएँ\" में डालें।",
+                "Disc. % = what the bill prints. Your own % (35, 40…) goes in \"Set %\", not here."))
             // Live check of the line's own arithmetic.
             val (msg, fg, bg) = when {
                 adds -> Triple(tr("✓ हिसाब मिला: ${qtyText(q)} × ${num(r)} − ${pct(draft.discPct)} = ${num(draft.taxable)}", "✓ Adds up"), C.ok, C.okSoft)

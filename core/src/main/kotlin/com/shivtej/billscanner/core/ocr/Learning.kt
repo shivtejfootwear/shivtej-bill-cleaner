@@ -81,12 +81,17 @@ object Learning {
         val s = supplier(inv.header) ?: supplier(inv.headerOriginal) ?: return l to emptyList()
         // Only a line the scan itself doubted teaches anything (a number changed on purpose on a line that added up does not).
         if (old.needs.isEmpty() && Heal.proven(old.original)) return l to emptyList()
+        // …and only when what the person typed makes the line add up (a % typed in the wrong box teaches nothing).
+        val mrpOk = new.mrp != null && com.shivtej.billscanner.core.model.Calc.sittingPct(new, inv.header) != null
+        if (!Heal.proven(new) && !mrpOk) return l to emptyList()
         val lessons = mutableListOf<String>()
         val fixes = l.fixes.mapValues { (_, m) -> m.mapValues { it.value.toMutableMap() }.toMutableMap() }.toMutableMap()
         val swaps = l.swaps.toMutableMap()
         for (f in NUMBERS) {
             val was = get(old.original, f); val now = get(new, f) ?: continue
             if (was != null && was.compareTo(now) == 0) continue
+            if (f in ARITH && !Heal.proven(new)) continue
+            if (f == F.MRP && !mrpOk) continue
             val ci = inv.columns.indexOfFirst { it.field == f }
             val raw = old.raw.getOrNull(ci)?.takeIf { ci >= 0 && it.isNotBlank() } ?: continue
             fixes.getOrPut(s) { mutableMapOf() }.getOrPut(f) { mutableMapOf() }[norm(raw)] = now.stripTrailingZeros().toPlainString()
@@ -144,6 +149,10 @@ object Learning {
                     InvoiceParser.number(t)?.let { v = set(v, f, it) }
                 }
             }
+            // A learnt number is kept only if the line then adds up (a wrong lesson can never spoil a bill).
+            if (!Heal.proven(v)) v = v.copy(qty = item.current.qty, rate = item.current.rate, discPct = item.current.discPct,
+                taxable = item.current.taxable, gross = item.current.gross, discAmt = item.current.discAmt)
+            if (v.mrp != item.current.mrp && v.mrp != null && com.shivtej.billscanner.core.model.Calc.sittingPct(v, p.header) == null) v = v.copy(mrp = item.current.mrp)
             // A misread MRP: the article's MRP from this supplier's earlier bills.
             val known = mrps[articleKey(v)]?.toBigDecimalOrNull()
             if (known != null && (F.MRP in item.needs || v.mrp == null)) v = v.copy(mrp = known)
