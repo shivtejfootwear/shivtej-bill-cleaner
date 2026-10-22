@@ -78,14 +78,14 @@ fun AddScreen(onBack: () -> Unit, onStart: () -> Unit) {
     }
     val scanLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { r ->
         if (r.resultCode == Activity.RESULT_OK) {
-            GmsDocumentScanningResult.fromActivityResultIntent(r.data)?.pages?.forEach { c.pending += PendingPage(it.imageUri) }
+            GmsDocumentScanningResult.fromActivityResultIntent(r.data)?.pages?.forEach { c.addPending(PendingPage(it.imageUri)) }
         }
     }
-    val pick = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris -> uris.forEach { c.pending += PendingPage(it) } }
+    val pick = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris -> uris.forEach { c.addPending(PendingPage(it)) } }
     val pickPdf = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
         uris.forEach { u ->
             runCatching { ctx.contentResolver.takePersistableUriPermission(u, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) }
-            c.pending += PendingPage(u, pdf = true)
+            c.addPending(PendingPage(u, pdf = true))
         }
     }
     AddContent(

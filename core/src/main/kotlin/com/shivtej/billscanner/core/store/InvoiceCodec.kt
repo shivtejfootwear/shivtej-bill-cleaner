@@ -8,6 +8,7 @@ import com.shivtej.billscanner.core.model.Invoice
 import com.shivtej.billscanner.core.model.InvoiceStatus
 import com.shivtej.billscanner.core.model.ItemKind
 import com.shivtej.billscanner.core.model.ItemValues
+import com.shivtej.billscanner.core.model.LineAt
 import com.shivtej.billscanner.core.model.LineItem
 import java.math.BigDecimal
 
@@ -86,6 +87,7 @@ object InvoiceCodec {
     private fun item(i: LineItem) = linkedMapOf(
         "id" to i.id, "kind" to i.kind.name, "original" to values(i.original), "current" to values(i.current),
         "needs" to i.needs.map { it.name }, "verified" to i.verified, "targetPct" to b(i.targetPct), "raw" to i.raw,
+        "at" to i.at?.let { listOf(it.page, it.l, it.t, it.r, it.b, it.pageW, it.pageH) },
     )
 
     @Suppress("UNCHECKED_CAST")
@@ -94,5 +96,7 @@ object InvoiceCodec {
         original = values(m.obj("original") ?: emptyMap()), current = values(m.obj("current") ?: emptyMap()),
         needs = m.list("needs").mapNotNull { n -> runCatching { F.valueOf(n.toString()) }.getOrNull() }.toSet(),
         verified = m.bool("verified"), targetPct = m.dec("targetPct"), raw = m.list("raw").map { it.toString() },
+        at = m.list("at").mapNotNull { (it as? Number)?.toInt() ?: it.toString().toDoubleOrNull()?.toInt() }.takeIf { it.size == 7 }
+            ?.let { LineAt(it[0], it[1], it[2], it[3], it[4], it[5], it[6]) },
     )
 }

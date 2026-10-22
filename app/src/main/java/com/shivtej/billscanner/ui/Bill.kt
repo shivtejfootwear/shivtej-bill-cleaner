@@ -113,6 +113,8 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
 
     editing?.let { itemId ->
         val item = inv.items.firstOrNull { it.id == itemId }
+        // The printed line from the bill's own photo/PDF page, shown above the fields while fixing it.
+        val strip by produceState<Bitmap?>(null, itemId) { value = withContext(Dispatchers.IO) { item?.let { lineStrip(inv, it) } } }
         if (item == null) editing = null else ItemSheet(
             item, onDismiss = { editing = null },
             onSave = { v -> ed.change { Edits.updateItem(it, itemId, v, System.currentTimeMillis()) } },
@@ -123,6 +125,7 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
             onDelete = { ed.change { Edits.deleteItem(it, itemId, System.currentTimeMillis()) }; editing = null },
             header = inv.header, withGst = inv.sittingWithGst, target = Target.pct(inv, item.copy(targetPct = null)),
             onTarget = { p -> ed.change { Edits.setTarget(it, itemId, p, System.currentTimeMillis()) } },
+            strip = strip,
         )
     }
     teach?.let { ci ->
@@ -255,7 +258,7 @@ fun BillContent(
                 if (open.isNotEmpty()) {
                     Text((if (showW) "▾ " else "▸ ") + tr("${open.size} जगह जाँचें", "${open.size} to check"), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = C.warn,
                         modifier = Modifier.fillMaxWidth().clickable { showW = !showW }.padding(vertical = 4.dp))
-                    if (showW) Column(Modifier.heightIn(max = 220.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(4.dp)) { open.forEach { WarningRow(it) } }
+                    if (showW) Column(Modifier.heightIn(max = 220.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(4.dp)) { open.forEach { WarningRow(it, onOpen = onRow) } }
                 }
             }
         }
@@ -402,3 +405,19 @@ private fun GridRow(
         }
     }
 }
+
+/** The strip of the bill page holding [item] (with a little of the lines around it), or null if not known. */
+fun lineStrip(inv: Invoice, item: LineItem): Bitmap? = runCatching {
+    val a = item.at ?: return null
+    val path = inv.pages.getOrNull(a.page) ?: return null
+    val page = com.shivtej.billscanner.ocr.Ocr.loadBitmap(java.io.File(path))
+    // The scan's size and this picture's must be the same page the same way up.
+    val k = page.width.toDouble() / a.pageW
+    if (a.pageW <= 0 || kotlin.math.abs(page.height / k - a.pageH) > a.pageH * 0.03) { page.recycle(); return null }
+    val h = (a.b - a.t).coerceAtLeast(10)
+    val top = ((a.t - h * 0.9) * k).toInt().coerceIn(0, page.height - 1)
+    val bottom = ((a.b + h * 0.9) * k).toInt().coerceIn(top + 1, page.height)
+    val out = Bitmap.createBitmap(page, 0, top, page.width, bottom - top)
+    if (out !== page) page.recycle()
+    out
+}.getOrNull()

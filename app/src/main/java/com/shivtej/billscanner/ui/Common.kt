@@ -122,11 +122,15 @@ fun BillDiscountBox(pct: BigDecimal?, onClick: () -> Unit, edited: Boolean = fal
 }
 
 @Composable
-fun WarningRow(w: Warning) {
+fun WarningRow(w: Warning, onOpen: ((String) -> Unit)? = null) {
     val (fg, bg) = when (w.level) { Warning.Level.ERROR -> C.err to C.errSoft; Warning.Level.CHECK -> C.warn to C.warnSoft; Warning.Level.TIP -> C.navy to C.navySoft }
+    val id = w.itemId
     Text(
-        (when (w.level) { Warning.Level.ERROR -> "⛔ "; Warning.Level.CHECK -> "⚠ "; Warning.Level.TIP -> "💡 " }) + tr(w.hindi, w.english),
-        fontSize = 13.sp, color = fg, modifier = Modifier.fillMaxWidth().background(bg, RoundedCornerShape(10.dp)).padding(10.dp),
+        (when (w.level) { Warning.Level.ERROR -> "⛔ "; Warning.Level.CHECK -> "⚠ "; Warning.Level.TIP -> "💡 " }) + tr(w.hindi, w.english) +
+            if (id != null && onOpen != null) tr("  ✎ ठीक करें", "  ✎ fix") else "",
+        fontSize = 13.sp, color = fg,
+        modifier = Modifier.fillMaxWidth().background(bg, RoundedCornerShape(10.dp))
+            .then(if (id != null && onOpen != null) Modifier.clickable { onOpen(id) } else Modifier).padding(10.dp),
     )
 }
 

@@ -69,4 +69,32 @@ class RealOcrTest {
         assertTrue(p.columns.none { it.label.contains("PROPRIETOR") })
         assertTrue(p.items.filter { it.current.sr != 11 }.all { it.needs.isEmpty() })
     }
+
+    @Test fun sameBillAddedTwiceKeepsOneCopy() {
+        val pg = page("v3617_1.tsv")
+        val p = InvoiceParser.parse(listOf(pg, pg))
+        assertEquals((1..54).toList(), p.items.map { it.current.sr })
+        assertTrue(p.notes.any { it.contains("दो बार") })
+    }
+
+    @Test fun lostPairsAndLostPointTogetherAreWorkedOut() {
+        // Line 32 (WLR 78041 PLUM: 12 pair, 213.33, "745 %", 2,369.24) with the "12" of "12 pair" lost as well.
+        val pg = page("v3617_1.tsv")
+        val y = pg.words.first { it.text == "78041" }.box.cy
+        val lost = pg.copy(words = pg.words.filterNot { it.text == "12" && kotlin.math.abs(it.box.cy - y) < 12 })
+        val l = InvoiceParser.parse(listOf(lost)).items.first { it.current.sr == 32 }
+        assertEquals(0, l.current.qty!!.compareTo(BigDecimal(12)))
+        assertEquals(0, l.current.discPct!!.compareTo(bd("7.45")))
+        assertTrue(l.needs.isEmpty())
+    }
+
+    @Test fun eachLineKnowsWhereItIsOnThePhoto() {
+        val pg = page("v3617_1.tsv")
+        val p = InvoiceParser.parse(listOf(pg))
+        val at = p.items[31].at!!                                    // line 32: "32. WLR 78041 PLUM … 2,369.24" at y≈1121–1141
+        assertTrue("$at", at.t in 1100..1125 && at.b in 1135..1165 && at.l < 30 && at.r > 1000 && at.pageW == pg.width)
+        val inv = Invoice("x", 0, p.header, p.header, p.items, columns = p.columns)
+        val back = com.shivtej.billscanner.core.store.InvoiceCodec.decode(com.shivtej.billscanner.core.store.InvoiceCodec.encode(inv))
+        assertEquals(inv.items.map { it.at }, back.items.map { it.at })
+    }
 }

@@ -32,26 +32,42 @@ object PdfBill {
         init { startPage = pageNo; endPage = pageNo; sortByPosition = true }
 
         override fun writeString(text: String, positions: MutableList<TextPosition>) {
-            // Split the run into words at spaces (and at wide gaps between letters).
-            var cur = mutableListOf<TextPosition>()
-            fun flush() {
-                if (cur.isEmpty()) return
-                val t = cur.joinToString("") { it.unicode }.trim()
-                if (t.isNotEmpty()) {
-                    val l = cur.minOf { it.xDirAdj }; val r = cur.maxOf { it.xDirAdj + it.widthDirAdj }
-                    val b = cur.maxOf { it.yDirAdj }; val h = cur.maxOf { it.heightDir }.coerceAtLeast(4f)
-                    words += OcrWord(t, Box((l * K).toInt(), ((b - h) * K).toInt(), (r * K).toInt(), (b * K + h * 0.25f * K).toInt()))
+            // Words exactly as PDFBox spaced them (its own spacing rules know the fonts), each with the
+            // boxes of its own letters. Our own gap check only splits further where letters are far apart.
+            var pi = 0
+            for (word in text.split(' ', '\t', '\u00A0').filter { it.isNotEmpty() }) {
+                while (pi < positions.size && positions[pi].unicode.isNullOrBlank()) pi++
+                val start = pi
+                var got = 0
+                while (pi < positions.size && got < word.length) { got += (positions[pi].unicode?.length ?: 0).coerceAtLeast(1); pi++ }
+                val ps = positions.subList(start, pi)
+                if (ps.isEmpty()) continue
+                // A wide gap inside one "word" (two columns PDFBox ran together): split there.
+                var cur = mutableListOf<TextPosition>()
+                var txt = StringBuilder()
+                fun flush() {
+                    val t = txt.toString().trim()
+                    if (cur.isNotEmpty() && t.isNotEmpty()) add(cur, t)
+                    cur = mutableListOf(); txt = StringBuilder()
                 }
-                cur = mutableListOf()
+                for (p in ps) {
+                    val prev = cur.lastOrNull()
+                    if (prev != null) {
+                        val gap = p.xDirAdj - (prev.xDirAdj + prev.widthDirAdj)
+                        val ch = maxOf(prev.widthDirAdj, p.widthDirAdj, 1f)
+                        if (gap > 1.5f * ch || p.xDirAdj < prev.xDirAdj - ch) flush()
+                    }
+                    cur += p; txt.append(p.unicode.orEmpty())
+                }
+                flush()
             }
-            for (p in positions) {
-                val prev = cur.lastOrNull()
-                val gap = if (prev != null) p.xDirAdj - (prev.xDirAdj + prev.widthDirAdj) else 0f
-                if (p.unicode.isBlank()) { flush(); continue }
-                if (prev != null && (gap > p.widthOfSpace * 0.8f || p.xDirAdj < prev.xDirAdj)) flush()
-                cur += p
-            }
-            flush()
+        }
+
+        private fun add(ps: List<TextPosition>, t: String) {
+            val l = ps.minOf { it.xDirAdj }; val r = ps.maxOf { it.xDirAdj + it.widthDirAdj }
+            val b = ps.maxOf { it.yDirAdj }
+            val h = ps.maxOf { if (it.heightDir.isFinite()) it.heightDir else 0f }.let { if (it < 3f) ps.maxOf { p -> p.fontSizeInPt } * 0.7f else it }.coerceAtLeast(3f)
+            words += OcrWord(t, Box((l * K).toInt(), ((b - h) * K).toInt(), (r * K).toInt().coerceAtLeast((l * K).toInt() + 1), (b * K + h * 0.25f * K).toInt()))
         }
     }
 

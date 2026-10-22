@@ -39,6 +39,8 @@ class Container(val ctx: Context, db: BillDb) {
 
     // ---- the bill being added
     val pending = mutableStateListOf<PendingPage>()
+    /** Adds a page/PDF to the bill being added, once. */
+    fun addPending(p: PendingPage) { if (pending.none { it.uri == p.uri }) pending += p }
     var step by mutableStateOf(ScanStep.SAVE)
     var progress by mutableStateOf(0f)
     var pageNow by mutableStateOf(0)
@@ -60,10 +62,17 @@ class Container(val ctx: Context, db: BillDb) {
                 val ocr = mutableListOf<OcrPage>()
                 val files = mutableListOf<String>()
                 step = ScanStep.OCR
-                for ((k, item) in list.withIndex()) {
+                // The same file added twice (picked again, or shared twice) is read once.
+                val seen = mutableSetOf<String>()
+                fun firstTime(f: File): Boolean {
+                    val h = java.security.MessageDigest.getInstance("MD5").digest(f.readBytes()).joinToString("") { "%02x".format(it) }
+                    return seen.add(h).also { if (!it) f.delete() }
+                }
+                for ((k, item) in list.distinctBy { it.uri }.withIndex()) {
                     if (item.pdf) {
                         // A PDF bill: its own text is read directly; pages are also kept as pictures to look at.
                         val src = withContext(Dispatchers.IO) { pages.keepFile(id, item.uri, "bill_${k + 1}.pdf") }
+                        if (!withContext(Dispatchers.IO) { firstTime(src) }) continue
                         val read = PdfBill.read(ctx, src) { n, total -> pageNow = files.size + 1; progress = 0.1f + 0.6f * n / total }
                         read.forEachIndexed { i, pg ->
                             ocr += pg.words
@@ -73,7 +82,9 @@ class Container(val ctx: Context, db: BillDb) {
                             }
                         }
                     } else {
-                        val path = withContext(Dispatchers.IO) { pages.keepFile(id, item.uri, "page_${files.size + 1}.jpg").absolutePath }
+                        val kept = withContext(Dispatchers.IO) { pages.keepFile(id, item.uri, "page_${files.size + 1}.jpg") }
+                        if (!withContext(Dispatchers.IO) { firstTime(kept) }) continue
+                        val path = kept.absolutePath
                         files += path
                         pageNow = files.size
                         val bmp = withContext(Dispatchers.IO) { Ocr.rotate(Ocr.loadBitmap(File(path)), item.rotation) }

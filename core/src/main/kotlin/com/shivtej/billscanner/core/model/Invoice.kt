@@ -66,9 +66,14 @@ data class LineItem(
     val targetPct: BigDecimal? = null,
     /** Every cell of this line exactly as printed, in the order of [Invoice.columns]. */
     val raw: List<String> = emptyList(),
+    /** Where the line is on the bill's page (to show that strip of the photo while fixing it). */
+    val at: LineAt? = null,
 ) {
     val edited: Set<F> get() = Calc.diff(original, current)
 }
+
+/** A line's place on page [page] (0-based) of the bill, in the scan's pixel size [pageW] × [pageH]. */
+data class LineAt(val page: Int, val l: Int, val t: Int, val r: Int, val b: Int, val pageW: Int, val pageH: Int)
 
 /** Invoice header. `null` = not found. */
 data class Header(

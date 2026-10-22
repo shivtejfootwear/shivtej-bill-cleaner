@@ -35,7 +35,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val c = container
-        takeShared(intent)
+        // Only a fresh start: when the screen is rebuilt (rotation, back from recents) the same share must not be added again.
+        if (savedInstanceState == null) takeShared(intent)
         setContent { BillTheme(c.lang) { Root(c.sharedTick) } }
     }
 
@@ -55,11 +56,14 @@ class MainActivity : ComponentActivity() {
         }
         if (uris.isEmpty()) return
         val c = container
-        for (u in uris) {
+        // A shared file is a new bill: pages left from an earlier, unfinished "add" are not mixed into it.
+        c.pending.clear()
+        for (u in uris.distinct()) {
             val type = contentResolver.getType(u) ?: i.type ?: ""
-            c.pending += PendingPage(u, pdf = type.contains("pdf") || u.toString().lowercase().endsWith(".pdf"))
+            c.addPending(PendingPage(u, pdf = type.contains("pdf") || u.toString().lowercase().endsWith(".pdf")))
         }
         c.sharedTick++
+        setIntent(Intent())   // handled; never again for this intent
     }
 }
 

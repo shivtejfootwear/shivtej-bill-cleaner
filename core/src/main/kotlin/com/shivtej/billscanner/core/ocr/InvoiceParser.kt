@@ -6,6 +6,7 @@ import com.shivtej.billscanner.core.model.F
 import com.shivtej.billscanner.core.model.Header
 import com.shivtej.billscanner.core.model.ItemKind
 import com.shivtej.billscanner.core.model.ItemValues
+import com.shivtej.billscanner.core.model.LineAt
 import com.shivtej.billscanner.core.model.LineItem
 import java.math.BigDecimal
 import kotlin.math.abs
@@ -40,6 +41,8 @@ object InvoiceParser {
     private val DATE = Regex("""\b(\d{1,2}[-/. ](?:[A-Za-z0][A-Za-z]{2,8}|\d{1,2})[-/. ]\d{2,4})\b""")
     /** Words that are labels on a bill, never a name. */
     private val LABELS = Regex("""(?i)^\s*(address|invoice|date|state|place|gstin|party|dc\s*no|eway|pay\s*mode|due|mobile|phone|contact)\b""")
+    /** Words of the lines under an item table (tax, totals, bank, signature): such a line is not an article. */
+    private val FOOTERISH = Regex("""(?i)\b(c\s*gst|s\s*gst|igst|utgst|hsn|taxable|total|round|bank|a/c|ifsc?|e\s*&\s*o|rupees|in\s*words|signatory)\b|\bfor\s*:""")
     private val DOTTED = Regex("""^\d{1,3}(\.\d{3})+\.\d{2}$""")
     private val UNITS = setOf("pair", "pairs", "prs", "pr", "pcs", "pc", "nos", "no", "set", "sets", "%", "pkt", "box", "dz", "doz")
     private val STOP = Regex("""(?i)\b(continued|amount\s*(rs\.?)?\s*in\s*words|rupees|e\s*&\s*o\s*e|our\s+bankers|bank\s+(name|details)|terms\s*(&|and)?\s*conditions|declaration|authori[sz]ed\s+signatory|output\s*[cs]gst|sub\s*-?\s*total|grand\s*total|round\s*off)\b""")
@@ -72,12 +75,29 @@ object InvoiceParser {
         var columns = emptyList<Column>()
         var footerNumbers = emptyList<BigDecimal>()
         pages.forEachIndexed { i, p ->
-            val r = parsePage(p, items.size, memory)
+            val r = parsePage(p, items.size, memory, i)
             if (r.footerNumbers.isNotEmpty()) footerNumbers = r.footerNumbers
             header = merge(header, r.header, i == pages.lastIndex)
             items += r.items
             if (columns.isEmpty()) columns = r.columns
             notes += r.notes.map { if (pages.size > 1) "पेज ${i + 1}: $it" else it }
+        }
+        // The same bill added twice (a photo and its PDF, or one file twice): a serial number repeats with the same article.
+        // Keep the better reading of each line, in the first one's place.
+        run {
+            fun key(i: LineItem) = i.current.article.uppercase().filter(Char::isLetterOrDigit)
+            val drop = mutableSetOf<Int>()
+            for (j in items.indices) {
+                val sj = items[j].current.sr ?: continue
+                val i = (0 until j).firstOrNull { it !in drop && items[it].current.sr == sj && key(items[it]) == key(items[j]) && key(items[j]).isNotEmpty() } ?: continue
+                if (items[j].needs.size < items[i].needs.size) items[i] = items[j]
+                drop += j
+            }
+            if (drop.isNotEmpty()) {
+                val kept = items.filterIndexed { k, _ -> k !in drop }
+                items.clear(); items += kept
+                notes += "एक ही बिल दो बार जुड़ा था — दोहराई गई ${drop.size} लाइनें हटाईं (हर लाइन की सबसे साफ़ पढ़ाई रखी)"
+            }
         }
         if (items.isEmpty()) notes += "बिल में आर्टिकल की टेबल नहीं मिली। फ़ोटो साफ़ और पूरी हो, फिर दोबारा स्कैन करें या आर्टिकल हाथ से जोड़ें।"
         // A printed total that is nowhere near the lines is a misread (e.g. "2.00" taken from a page number).
@@ -190,8 +210,10 @@ object InvoiceParser {
 
     private class TableResult(val items: List<LineItem>, val footer: Footer, val cols: List<Col>, val footerNumbers: List<BigDecimal>)
 
-    private fun parsePage(page: OcrPage, startIndex: Int, memory: LayoutMemory?): PageResult {
-        val words = Layout.straighten(Layout.dedupe(Layout.clean(page.words)))
+    private fun parsePage(page: OcrPage, startIndex: Int, memory: LayoutMemory?, pageNo: Int = 0): PageResult {
+        val base = Layout.dedupe(Layout.clean(page.words))
+        val slope = Layout.skew(base)
+        val words = Layout.straighten(base, slope)
         val rows = Layout.lines(words)
         val mh = Layout.medianHeight(words)
         val notes = mutableListOf<String>()
@@ -246,7 +268,8 @@ object InvoiceParser {
         val pre = rows.subList(0, bands.first().start)
         // A heading that reads worse than the best one on the page uses the best one's words (same bill, same columns).
         val bestBand = bands.maxByOrNull { scores[it.best] }!!
-        fun headingOf(b: Band) = if (scores[b.best] < scores[bestBand.best] - 1) bestBand else b
+        fun cols(b: Band) = columns(rows.subList(b.start, b.end + 1), mh).size
+        fun headingOf(b: Band) = if (b !== bestBand && (scores[b.best] < scores[bestBand.best] - 1 || cols(b) != cols(bestBand))) bestBand else b
         for ((k, b0) in bands.withIndex()) {
             val b = headingOf(b0)
             val body = rows.subList(b0.end + 1, bands.getOrNull(k + 1)?.start ?: rows.size)
@@ -260,7 +283,15 @@ object InvoiceParser {
             val again = if (results.isNotEmpty() && k == 0) readTable(rows.subList(b.start, b.end + 1), body, mh, memory, header, next) else r
             results += again; next += again.items.size
         }
-        val items = results.flatMap { it.items }
+        // Line positions back from the straightened words to the page as photographed.
+        val th = kotlin.math.atan(slope); val cs = kotlin.math.cos(th); val sn = kotlin.math.sin(th)
+        fun unturn(x: Double, y: Double) = (x * cs - y * sn) to (x * sn + y * cs)
+        val items = results.flatMap { it.items }.map { it ->
+            val a = it.at ?: return@map it
+            val pts = listOf(unturn(a.l.toDouble(), a.t.toDouble()), unturn(a.r.toDouble(), a.t.toDouble()), unturn(a.l.toDouble(), a.b.toDouble()), unturn(a.r.toDouble(), a.b.toDouble()))
+            it.copy(at = LineAt(pageNo, pts.minOf { p -> p.first }.toInt().coerceAtLeast(0), pts.minOf { p -> p.second }.toInt().coerceAtLeast(0),
+                pts.maxOf { p -> p.first }.toInt().coerceAtMost(page.width), pts.maxOf { p -> p.second }.toInt().coerceAtMost(page.height), page.width, page.height))
+        }
         val f = results.map { it.footer }
         fun <T> last(g: (Footer) -> T?): T? = f.lastOrNull { g(it) != null }?.let(g)
         var footer = Footer(last { it.qty }, last { it.subtotal }, last { it.grand }, last { it.roundOff }, last { it.other }, last { it.discount },
@@ -332,7 +363,8 @@ object InvoiceParser {
             val numericCells = cells.count { (ci, ws) -> cols[ci].kind in NUMERIC && number(ws.joinToString(" ") { it.text }) != null }
             val hasText = cells.any { (ci, ws) -> cols[ci].kind == Kind.DESC && ws.isNotEmpty() }
             // A full line of numbers with its description is an article even when the photo lost its serial number.
-            val fullLine = !requireSerialRun && hasText && numericCells >= 3
+            val text = cells.values.flatten().joinToString(" ") { it.text }
+            val fullLine = !requireSerialRun && hasText && numericCells >= 3 && !FOOTERISH.containsMatchIn(text)
             return if (srCol >= 0) (sr != null && (numericCells >= (if (requireSerialRun) 3 else 1) || (!requireSerialRun && hasText))) || fullLine
             else numericCells >= 2 && hasText
         }
@@ -406,6 +438,11 @@ object InvoiceParser {
                 first[descCol] = listOf(rest) + b.first()[descCol]!!.drop(1)
                 readItem(listOf(first) + b.drop(1), cols, startIndex + k + 1)
             } else items[k].let { it.copy(current = it.current.copy(sr = expect), original = it.original.copy(sr = expect)) }
+        }
+        // Where each line is (straightened coordinates; turned back to the photo by the page).
+        for (k in items.indices) {
+            val ws = blocks[k].flatMap { it.values.flatten() }
+            if (ws.isNotEmpty()) items[k] = items[k].copy(at = LineAt(0, ws.minOf { it.box.l }, ws.minOf { it.box.t }, ws.maxOf { it.box.r }, ws.maxOf { it.box.b }, 0, 0))
         }
         val footRows = body.drop(footerAt)
         val footer = readFooter(footRows, cols, bounds, mh)
@@ -901,7 +938,8 @@ object InvoiceParser {
         // ---- a decimal point the photo lost or misread ("745 %" for 7.45 %, "1.29 5.68" for 1,295.68):
         // the reading that makes the line's own arithmetic work is taken, and the printed cell shown that way.
         val raw = cols.indices.map { ci -> block.mapNotNull { cellText(it[ci]).ifEmpty { null } }.joinToString(" ") }.toMutableList()
-        if (v.taxable == null || Calc.checkLine(v).isNotEmpty()) repairDecimals(v, cols, raw)?.let { v = it }
+        if (v.taxable == null || v.qty == null || (v.discPct ?: BigDecimal.ZERO) >= BigDecimal(100) || Calc.checkLine(v).isNotEmpty())
+            repairDecimals(v, cols, raw)?.let { v = it }
         // "640299905" + "%": the GST % glued to an 8-digit HSN code.
         val hc = cols.indexOfFirst { it.kind == Kind.HSN }; val gc = cols.indexOfFirst { it.kind == Kind.GST_PCT }
         if (hc >= 0 && gc >= 0 && v.gstPct == null && Regex("""^\d{9,10}$""").matches(v.hsn)) {
@@ -973,7 +1011,9 @@ object InvoiceParser {
      */
     private fun repairDecimals(v: ItemValues, cols: List<Col>, raw: MutableList<String>): ItemValues? {
         fun ok(c: ItemValues) = c.qty != null && c.rate != null && c.taxable != null && Calc.checkLine(c).isEmpty()
-        class Try(val values: ItemValues, val col: Int, val text: String)
+        class Try(val values: ItemValues, val edits: List<Pair<Int, String>>) {
+            constructor(values: ItemValues, col: Int, text: String) : this(values, listOf(col to text))
+        }
         val tries = mutableListOf<Try>()
         fun col(k: Kind) = cols.indexOfFirst { it.kind == k }
         val digits = Regex("""\d[\d,.]*""")
@@ -1002,10 +1042,39 @@ object InvoiceParser {
                 tries += Try(set(x), ci, x.toPlainString())
             }
         }
+        // Pairs lost ("pair" left alone, or nothing): the whole number of pairs that makes the line add up, if there is exactly one.
+        val qc = col(Kind.QTY)
+        if (qc >= 0 && v.qty == null && v.rate != null && v.taxable != null && v.rate.signum() > 0 &&
+            raw[qc].filter(Char::isDigit).isEmpty()) {
+            val discTries = tries.filter { it.values.discPct != v.discPct }
+            val discs: List<Pair<BigDecimal, Try?>> = (listOfNotNull(v.discPct).map { it to null } + discTries.map { it.values.discPct!! to it })
+                .ifEmpty { listOf(BigDecimal.ZERO to null) }
+            for ((dd, dt) in discs) {
+                val per = v.rate * (BigDecimal(100) - dd) / BigDecimal(100)
+                if (per.signum() <= 0) continue
+                val q = v.taxable.divide(per, 4, java.math.RoundingMode.HALF_UP)
+                val qi = q.setScale(0, java.math.RoundingMode.HALF_UP)
+                if (qi.signum() > 0 && qi <= BigDecimal(9999) && (q - qi).abs() <= BigDecimal("0.002")) {
+                    val unit = raw[qc].trim().ifEmpty { "" }
+                    var nv = v.copy(qty = qi, discPct = if (v.discPct != null) dd else v.discPct)
+                    val edits = mutableListOf(qc to (qi.toPlainString() + " " + unit).trim())
+                    // "5496 pair" under MRP: the pairs were glued to the MRP.
+                    val mc = col(Kind.MRP)
+                    val mt = if (mc >= 0) raw[mc].trim() else ""
+                    val glued = Regex("""^(\d[\d,]*(?:\.\d{1,2})?)(\d+)\s*(pairs?|prs?|pcs?)$""", RegexOption.IGNORE_CASE).matchEntire(mt)
+                    if (glued != null && glued.groupValues[2] == qi.toPlainString()) {
+                        nv = nv.copy(mrp = BigDecimal(glued.groupValues[1].replace(",", "")))
+                        edits += mc to glued.groupValues[1]
+                        edits[0] = qc to "${qi.toPlainString()} ${glued.groupValues[3]}"
+                    }
+                    tries += Try(nv, edits + dt?.edits.orEmpty())
+                }
+            }
+        }
         val good = tries.filter { ok(it.values) }
         if (good.size != 1 && good.map { it.values }.distinct().size != 1) return null
         val g = good.first()
-        raw[g.col] = g.text
+        for ((c, t) in g.edits) raw[c] = t
         return g.values
     }
 

@@ -50,6 +50,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -78,6 +79,7 @@ fun ItemSheet(
     item: LineItem, onDismiss: () -> Unit, onSave: (ItemValues) -> Unit, onVerified: (Boolean) -> Unit, onRevert: () -> Unit,
     onRecalc: () -> Unit, onDuplicate: () -> Unit, onDelete: () -> Unit,
     header: Header = Header(), withGst: Boolean = true, target: BigDecimal? = null, onTarget: (BigDecimal?) -> Unit = {},
+    strip: android.graphics.Bitmap? = null,
 ) {
     val o = item.original
     val c = item.current
@@ -89,6 +91,24 @@ fun ItemSheet(
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = C.card) {
         Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("${c.sr ?: ""} · ${c.article.ifEmpty { "?" }} · " + tr("बदलें", "Edit"), fontSize = 19.sp, fontWeight = FontWeight.Bold, color = C.navy)
+            // What the bill really says on this line: look here and type the numbers below.
+            if (strip != null) {
+                var big by remember { mutableStateOf(false) }
+                Muted(tr("बिल में यह लाइन (टैप = बड़ा / छोटा):", "This line on the bill (tap = bigger / smaller):"))
+                androidx.compose.foundation.layout.Box(
+                    Modifier.fillMaxWidth().border(1.dp, C.line, RoundedCornerShape(8.dp)).horizontalScroll(rememberScrollState()).clickable { big = !big },
+                ) {
+                    androidx.compose.foundation.Image(
+                        strip.asImageBitmap(), contentDescription = null, contentScale = androidx.compose.ui.layout.ContentScale.FillWidth,
+                        modifier = if (big) Modifier.width((strip.width / 1.3f).coerceAtLeast(600f).dp) else Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+            if (item.needs.isNotEmpty()) Text(
+                "⚑ " + tr("पीले ख़ाने ठीक से नहीं पढ़े गए: ", "Not read well: ") + item.needs.joinToString(", ") { com.shivtej.billscanner.core.model.Warnings.hindi(it) } +
+                    tr(" — ऊपर बिल देखकर नीचे सही संख्या लिखें और सेव करें।", " — look at the bill above, type the right numbers below and save."),
+                fontSize = 12.5.sp, color = C.warn, modifier = Modifier.fillMaxWidth().background(C.warnSoft, RoundedCornerShape(10.dp)).padding(8.dp),
+            )
             Muted(tr("बिल पर छपा (स्कैन): ", "Printed on bill (scan): ") + (o.discPct?.let { pct(it) } ?: "Needs Verification") + " · " + tr("असली मान अलग सुरक्षित रहता है", "the original is kept separately"))
             OutlinedTextField(
                 f.discPct, { f = f.copy(discPct = it) }, singleLine = true, modifier = Modifier.fillMaxWidth(),
