@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.DocumentScanner
 import androidx.compose.material.icons.outlined.PhotoLibrary
+import androidx.compose.material.icons.outlined.PictureAsPdf
 import androidx.compose.material.icons.outlined.RotateRight
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -81,6 +82,12 @@ fun AddScreen(onBack: () -> Unit, onStart: () -> Unit) {
         }
     }
     val pick = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris -> uris.forEach { c.pending += PendingPage(it) } }
+    val pickPdf = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
+        uris.forEach { u ->
+            runCatching { ctx.contentResolver.takePersistableUriPermission(u, android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) }
+            c.pending += PendingPage(u, pdf = true)
+        }
+    }
     AddContent(
         pages = c.pending.toList(), message = msg, onBack = onBack,
         onCamera = {
@@ -90,6 +97,7 @@ fun AddScreen(onBack: () -> Unit, onStart: () -> Unit) {
                 .addOnFailureListener { msg = tr2(c.lang, "कैमरा स्कैनर नहीं खुला (Google Play services चाहिए)। गैलरी से फ़ोटो चुनें।", "Scanner did not open (needs Google Play services). Pick photos from the gallery.") }
         },
         onGallery = { pick.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+        onPdf = { pickPdf.launch(arrayOf("application/pdf")) },
         onRotate = { i -> c.pending[i] = c.pending[i].copy(rotation = (c.pending[i].rotation + 90) % 360) },
         onRemove = { i -> c.pending.removeAt(i) },
         onStart = { c.startScan(); onStart() },
@@ -101,15 +109,18 @@ fun tr2(lang: String, hi: String, en: String) = if (lang == "en") en else hi
 @Composable
 fun AddContent(
     pages: List<PendingPage>, message: String?, onBack: () -> Unit, onCamera: () -> Unit, onGallery: () -> Unit,
-    onRotate: (Int) -> Unit, onRemove: (Int) -> Unit, onStart: () -> Unit, thumbs: Map<Uri, Bitmap>? = null,
+    onRotate: (Int) -> Unit, onRemove: (Int) -> Unit, onStart: () -> Unit, thumbs: Map<Uri, Bitmap>? = null, onPdf: () -> Unit = {},
 ) {
     Column(Modifier.fillMaxSize().background(C.bg)) {
         TopBar(tr("बिल जोड़ें", "Add invoice"), onBack)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                SourceTile(Icons.Outlined.DocumentScanner, tr("कैमरा", "Camera"), tr("फ़ोटो खींचें · अपने-आप क्रॉप", "Photo · auto crop"), Modifier.weight(1f), onCamera)
-                SourceTile(Icons.Outlined.PhotoLibrary, tr("गैलरी", "Gallery"), tr("एक या कई फ़ोटो", "One or many photos"), Modifier.weight(1f), onGallery)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                SourceTile(Icons.Outlined.PictureAsPdf, tr("PDF", "PDF"), tr("WhatsApp वाला PDF · सबसे सही", "WhatsApp PDF · most exact"), Modifier.weight(1f), onPdf, highlight = true)
+                SourceTile(Icons.Outlined.DocumentScanner, tr("कैमरा", "Camera"), tr("फ़ोटो · अपने-आप क्रॉप", "Photo · auto crop"), Modifier.weight(1f), onCamera)
+                SourceTile(Icons.Outlined.PhotoLibrary, tr("गैलरी", "Gallery"), tr("फ़ोटो / स्क्रीनशॉट", "Photos / screenshots"), Modifier.weight(1f), onGallery)
             }
+            Muted(tr("💡 बिल WhatsApp पर PDF में आया है तो PDF ही चुनें — उसमें लिखा हर अक्षर सीधे पढ़ा जाता है, स्क्रीनशॉट से ज़्यादा सही। WhatsApp में PDF पर ⋮ → Share → Shivtej Bill Scanner भी कर सकते हैं।",
+                "💡 If the bill came as a PDF, pick the PDF — its text is read exactly, better than a screenshot. You can also Share the PDF from WhatsApp to this app."))
             message?.let { Muted(it, color = C.warn) }
             Card {
                 Title(tr("पेज (एक ही बिल के)", "Pages (same invoice)") + " · ${pages.size}")
@@ -123,7 +134,7 @@ fun AddContent(
                 Title(tr("फ़ोटो की सुरक्षा", "Photo safety"))
                 KV(tr("असली फ़ोटो सुरक्षित रखें", "Keep the original photo"), tr("हमेशा", "Always"), C.ok)
                 KV(tr("बिल कहाँ पढ़ा जाता है", "Where the bill is read"), tr("इसी फ़ोन पर", "On this phone"), C.ok)
-                Muted(tr("🔒 कोई फ़ोटो internet पर नहीं भेजी जाती। app में internet की अनुमति ही नहीं है।", "🔒 No photo is sent over the internet — the app has no internet permission."))
+                Muted(tr("🔒 कोई फ़ोटो या PDF internet पर नहीं भेजी जाती — सब इसी फ़ोन पर।", "🔒 No photo or PDF is sent over the internet — all on this phone."))
             }
             Spacer(Modifier.height(6.dp))
         }
@@ -135,9 +146,10 @@ fun AddContent(
 }
 
 @Composable
-private fun SourceTile(icon: ImageVector, title: String, sub: String, modifier: Modifier, onClick: () -> Unit) {
+private fun SourceTile(icon: ImageVector, title: String, sub: String, modifier: Modifier, onClick: () -> Unit, highlight: Boolean = false) {
     Column(
-        modifier.background(C.card, RoundedCornerShape(16.dp)).border(1.dp, C.line, RoundedCornerShape(16.dp)).clickable(onClick = onClick).padding(vertical = 18.dp, horizontal = 8.dp),
+        modifier.background(if (highlight) C.orangeSoft else C.card, RoundedCornerShape(16.dp)).border(if (highlight) 2.dp else 1.dp, if (highlight) C.orange else C.line, RoundedCornerShape(16.dp))
+            .clickable(onClick = onClick).padding(vertical = 16.dp, horizontal = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(Modifier.size(54.dp).background(C.navySoft, CircleShape), contentAlignment = Alignment.Center) { Icon(icon, contentDescription = null, tint = C.navy, modifier = Modifier.size(30.dp)) }
@@ -150,7 +162,7 @@ private fun SourceTile(icon: ImageVector, title: String, sub: String, modifier: 
 private fun PageThumb(i: Int, p: PendingPage, preset: Bitmap?, onRotate: () -> Unit, onRemove: () -> Unit) {
     val ctx = LocalContext.current
     val bmp by produceState(preset, p.uri) {
-        if (preset == null) value = withContext(Dispatchers.IO) {
+        if (preset == null && !p.pdf) value = withContext(Dispatchers.IO) {
             runCatching {
                 val o = android.graphics.BitmapFactory.Options().apply { inSampleSize = 8 }
                 ctx.contentResolver.openInputStream(p.uri)!!.use { android.graphics.BitmapFactory.decodeStream(it, null, o) }
@@ -159,7 +171,8 @@ private fun PageThumb(i: Int, p: PendingPage, preset: Bitmap?, onRotate: () -> U
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(Modifier.size(86.dp, 116.dp).background(Color.White, RoundedCornerShape(10.dp)).border(1.dp, C.line, RoundedCornerShape(10.dp))) {
-            bmp?.let { Image(it.asImageBitmap(), contentDescription = null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize().padding(3.dp).rotate(p.rotation.toFloat())) }
+            if (p.pdf) Text("PDF", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = C.err, modifier = Modifier.align(Alignment.Center))
+            else bmp?.let { Image(it.asImageBitmap(), contentDescription = null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize().padding(3.dp).rotate(p.rotation.toFloat())) }
             Text("${tr("पेज", "Page")} ${i + 1}", fontSize = 10.sp, color = Color.White, modifier = Modifier.align(Alignment.BottomStart).padding(4.dp).background(C.navy, RoundedCornerShape(6.dp)).padding(horizontal = 5.dp))
         }
         Row {

@@ -23,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -56,6 +57,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
+
+/** What a tap on a file row does: open it at once, only save it, or send it. */
+enum class Act { OPEN, SAVE, SHARE }
 
 enum class ExportKind(val ext: String, val mime: String) {
     XLSX("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
@@ -118,6 +122,19 @@ object Files {
         return File(dir, name).absolutePath
     }
 
+    /** Opens the file straight away in an app that can show it (Excel / Sheets / WPS, a PDF viewer, Photos). */
+    fun open(ctx: Context, name: String, mime: String, data: ByteArray) {
+        val dir = File(ctx.cacheDir, "exports").apply { mkdirs() }
+        val f = File(dir, name).apply { writeBytes(data) }
+        val uri = FileProvider.getUriForFile(ctx, "${ctx.packageName}.files", f)
+        val view = Intent(Intent.ACTION_VIEW).setDataAndType(uri, mime)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+        try { ctx.startActivity(view) } catch (e: android.content.ActivityNotFoundException) {
+            val what = when { mime.contains("sheet") -> "Excel (Google Sheets / WPS / MS Excel)"; mime.contains("pdf") -> "PDF"; else -> mime }
+            error("फ़ोन में $what खोलने वाला app नहीं है — Play Store से install करें। फ़ाइल Download/Shivtej Bills में सेव है।")
+        }
+    }
+
     fun share(ctx: Context, name: String, mime: String, data: ByteArray) {
         val dir = File(ctx.cacheDir, "exports").apply { mkdirs() }
         val f = File(dir, name).apply { writeBytes(data) }
@@ -138,66 +155,77 @@ fun ExportScreen(id: String, onBack: () -> Unit) {
     var landscape by remember { mutableStateOf(c.prefs.pdfLandscape) }
     var busy by remember { mutableStateOf<ExportKind?>(null) }
     var msg by remember { mutableStateOf<String?>(null) }
-    var askStock by remember { mutableStateOf<Boolean?>(null) }
+    var askStock by remember { mutableStateOf<Act?>(null) }
 
-    fun run(k: ExportKind, share: Boolean) {
+    fun run(k: ExportKind, act: Act) {
         busy = k
         scope.launch {
             runCatching {
                 val data = withContext(Dispatchers.IO) { Files.bytes(ctx, inv, k, landscape) }
                 val name = Files.name(inv, k)
-                if (share) Files.share(ctx, name, k.mime, data) else withContext(Dispatchers.IO) { Files.saveToDownloads(ctx, name, k.mime, data) }.also { msg = tr2(c.lang, "सेव हो गई: $it", "Saved: $it") }
+                when (act) {
+                    Act.SHARE -> Files.share(ctx, name, k.mime, data)
+                    Act.SAVE -> withContext(Dispatchers.IO) { Files.saveToDownloads(ctx, name, k.mime, data) }.also { msg = tr2(c.lang, "सेव हो गई: $it", "Saved: $it") }
+                    Act.OPEN -> {
+                        val at = withContext(Dispatchers.IO) { Files.saveToDownloads(ctx, name, k.mime, data) }
+                        msg = tr2(c.lang, "खुल रही है · सेव भी हुई: $at", "Opening · also saved: $at")
+                        Files.open(ctx, name, k.mime, data)
+                    }
+                }
                 ed.change { it.copy(exportedAt = System.currentTimeMillis()) }
-            }.onFailure { msg = tr2(c.lang, "फ़ाइल नहीं बनी: ${it.message}", "Could not create the file: ${it.message}") }
+            }.onFailure { msg = tr2(c.lang, "फ़ाइल नहीं खुली: ${it.message}", "Could not open the file: ${it.message}") }
             busy = null
         }
     }
 
-    ExportContent(inv, landscape, { landscape = it; c.prefs.pdfLandscape = it }, busy, msg, onBack) { k, share ->
-        if (k == ExportKind.STOCK_CSV) askStock = share else run(k, share)
+    ExportContent(inv, landscape, { landscape = it; c.prefs.pdfLandscape = it }, busy, msg, onBack) { k, act ->
+        if (k == ExportKind.STOCK_CSV) askStock = act else run(k, act)
     }
-    askStock?.let { share ->
+    askStock?.let { act ->
         val n = InvoiceExport.stockRows(inv).sumOf { it.qty }
         AlertDialog(
             onDismissRequest = { askStock = null },
             title = { Text(tr("साइज़-वार स्टॉक फ़ाइल बनाएँ?", "Create the size-wise stock file?")) },
             text = { Text(tr("$n जोड़ी की साइज़-वार लाइनें बनेंगी — सिर्फ़ उन आर्टिकल की जिनके साइज़ बिल की मात्रा से मेल खाते हैं।", "$n pairs, only for articles whose sizes match the bill quantity.") +
                 if (inv.status != InvoiceStatus.VERIFIED) tr("\n\nबिल अभी Verified नहीं है।", "\n\nThe invoice is not verified yet.") else "") },
-            confirmButton = { TextButton(onClick = { askStock = null; run(ExportKind.STOCK_CSV, share) }) { Text(tr("हाँ, बनाएँ", "Yes, create")) } },
+            confirmButton = { TextButton(onClick = { askStock = null; run(ExportKind.STOCK_CSV, act) }) { Text(tr("हाँ, बनाएँ", "Yes, create")) } },
             dismissButton = { TextButton(onClick = { askStock = null }) { Text(tr("रुकें", "Cancel")) } },
         )
     }
 }
 
 @Composable
-fun ExportContent(inv: Invoice, landscape: Boolean, onLandscape: (Boolean) -> Unit, busy: ExportKind?, message: String?, onBack: () -> Unit, onMake: (ExportKind, Boolean) -> Unit) {
+fun ExportContent(inv: Invoice, landscape: Boolean, onLandscape: (Boolean) -> Unit, busy: ExportKind?, message: String?, onBack: () -> Unit, onMake: (ExportKind, Act) -> Unit) {
     Column(Modifier.fillMaxSize().background(C.bg)) {
-        TopBar(tr("फ़ाइल बनाएँ", "Create files"), onBack)
+        TopBar(tr("फ़ाइल बनाएँ / खोलें", "Create / open files"), onBack)
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             if (inv.status != InvoiceStatus.VERIFIED) Text(tr("⚠ बिल अभी Verified नहीं है — फ़ाइल में \"Not verified yet\" लिखा रहेगा।", "⚠ Invoice not verified yet — files will say \"Not verified yet\"."),
                 fontSize = 13.sp, color = C.warn, modifier = Modifier.fillMaxWidth().background(C.warnSoft, RoundedCornerShape(10.dp)).padding(10.dp))
             message?.let { Text(it, fontSize = 13.sp, color = C.ok, modifier = Modifier.fillMaxWidth().background(C.okSoft, RoundedCornerShape(10.dp)).padding(10.dp)) }
-            ExportRow("XLSX", Color(0xFF13795B), "Excel (.xlsx)", tr("बिल जैसा छपा + हरा बैठा % + पीला टार्गेट % (Excel में बदल सकते हैं) · कंपनी-वार · नया बिल · स्टॉक", "Bill as printed + green baitha % + yellow target % (editable in Excel) · company-wise · new bill · stock"), busy == ExportKind.XLSX, { onMake(ExportKind.XLSX, false) }) { onMake(ExportKind.XLSX, true) }
-            ExportRow("%", C.orange, tr("नया बिल (आपके %) PDF", "New bill at your % — PDF"), tr("कंपनी-वार %, नया रेट, नई रकम, Total और फ़र्क़", "Company %, new rate, amount, total and difference"), busy == ExportKind.PDF_TARGET, { onMake(ExportKind.PDF_TARGET, false) }) { onMake(ExportKind.PDF_TARGET, true) }
-            ExportRow("PNG", C.orangeDark, tr("नया बिल — फ़ोटो (WhatsApp के लिए)", "New bill — image (for WhatsApp)"), tr("एक लंबी फ़ोटो में पूरा नया बिल", "The whole new bill as one image"), busy == ExportKind.IMAGE_TARGET, { onMake(ExportKind.IMAGE_TARGET, false) }) { onMake(ExportKind.IMAGE_TARGET, true) }
-            ExportRow("PDF", C.err, tr("बिल रिपोर्ट PDF (बैठा % सहित)", "Bill report PDF (with baitha %)"), tr("बिल के सारे कॉलम जैसे छपे + बैठा % · हर पेज पर हेडर", "All bill columns as printed + baitha % · headers on every page"), busy == ExportKind.PDF_REPORT, { onMake(ExportKind.PDF_REPORT, false) }) { onMake(ExportKind.PDF_REPORT, true) }
+            Muted(tr("फ़ाइल पर टैप = तुरंत खुलेगी (और Download में सेव भी)।  ⬇ = सिर्फ़ सेव  ·  ↗ = WhatsApp / Gmail पर भेजें", "Tap a file = opens at once (and is saved).  ⬇ = save only  ·  ↗ = send"))
+            @Composable fun row(k: ExportKind, tag: String, color: Color, title: String, sub: String) =
+                ExportRow(tag, color, title, sub, busy == k, onOpen = { onMake(k, Act.OPEN) }, onSave = { onMake(k, Act.SAVE) }) { onMake(k, Act.SHARE) }
+            row(ExportKind.XLSX, "XLSX", Color(0xFF13795B), "Excel (.xlsx)", tr("बिल जैसा छपा + हरा बैठा % + पीला अपना % (Excel में बदल सकते हैं) + नई रकम और Total", "Bill as printed + green baitha % + yellow our % (editable) + new amount and total"))
+            row(ExportKind.PDF_REPORT, "PDF", C.err, tr("पूरा बिल PDF (बैठा % + अपना % + नई रकम)", "Whole bill PDF (baitha % + our % + new amount)"), tr("बिल के सारे कॉलम जैसे छपे · हर पेज पर हेडर", "All bill columns as printed · headers on every page"))
             Row(Modifier.fillMaxWidth().padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Muted(tr("PDF आड़ा (landscape) — ज़्यादा कॉलम", "Landscape PDF — more columns"), Modifier.weight(1f)); Switch(landscape, onLandscape)
             }
-            ExportRow("IMG", C.navy, tr("असली बिल की फ़ोटो PDF", "Original invoice photo PDF"), tr("फ़ोटो जैसी है वैसी, कोई बदलाव नहीं", "The photo as it is, unchanged"), busy == ExportKind.PDF_PHOTO, { onMake(ExportKind.PDF_PHOTO, false) }) { onMake(ExportKind.PDF_PHOTO, true) }
-            ExportRow("CSV", C.navy2, tr("साइज़-वार स्टॉक CSV", "Size-wise stock CSV"), "Article, Colour, Size, Quantity, MRP, Purchase Rate, Supplier, Invoice Number, Invoice Date", busy == ExportKind.STOCK_CSV, { onMake(ExportKind.STOCK_CSV, false) }) { onMake(ExportKind.STOCK_CSV, true) }
-            ExportRow("TXT", C.muted, tr("स्कैन की कच्ची जानकारी", "Raw scan data"), tr("कोई बिल ठीक से न पढ़ा जाए तो यह फ़ाइल भेजें — उससे पढ़ना सुधारा जाएगा", "If a bill is not read well, send this file so the reader can be improved"), busy == ExportKind.OCR_TEXT, { onMake(ExportKind.OCR_TEXT, false) }) { onMake(ExportKind.OCR_TEXT, true) }
-            Muted(tr("फ़ाइलें फ़ोन के Download/Shivtej Bills फ़ोल्डर में सेव होती हैं। शेयर से WhatsApp, Gmail, Drive पर भेज सकते हैं।", "Files are saved in Download/Shivtej Bills. Share sends them to WhatsApp, Gmail, Drive."))
+            row(ExportKind.PDF_TARGET, "%", C.orange, tr("नया बिल (अपने %) PDF", "New bill at our % — PDF"), tr("कंपनी-वार %, नई रकम, Total और फ़र्क़", "Company %, new amount, total and difference"))
+            row(ExportKind.IMAGE_TARGET, "PNG", C.orangeDark, tr("नया बिल — फ़ोटो (WhatsApp के लिए)", "New bill — image (for WhatsApp)"), tr("एक लंबी फ़ोटो में पूरा नया बिल", "The whole new bill as one image"))
+            row(ExportKind.PDF_PHOTO, "IMG", C.navy, tr("असली बिल की फ़ोटो PDF", "Original invoice photo PDF"), tr("फ़ोटो जैसी है वैसी, कोई बदलाव नहीं", "The photo as it is, unchanged"))
+            row(ExportKind.STOCK_CSV, "CSV", C.navy2, tr("साइज़-वार स्टॉक CSV", "Size-wise stock CSV"), "Article, Colour, Size, Quantity, MRP, Purchase Rate, Supplier, Invoice Number, Invoice Date")
+            row(ExportKind.OCR_TEXT, "TXT", C.muted, tr("स्कैन की कच्ची जानकारी", "Raw scan data"), tr("कोई बिल ठीक से न पढ़ा जाए तो यह फ़ाइल भेजें — उससे पढ़ना सुधारा जाएगा", "If a bill is not read well, send this file so the reader can be improved"))
+            Muted(tr("फ़ाइलें फ़ोन के Download/Shivtej Bills फ़ोल्डर में सेव होती हैं।", "Files are saved in Download/Shivtej Bills."))
             Spacer(Modifier.height(8.dp))
         }
     }
 }
 
 @Composable
-private fun ExportRow(tag: String, color: Color, title: String, sub: String, busy: Boolean, onSave: () -> Unit, onShare: () -> Unit) {
+private fun ExportRow(tag: String, color: Color, title: String, sub: String, busy: Boolean, onOpen: () -> Unit, onSave: () -> Unit, onShare: () -> Unit) {
     Row(
         Modifier.fillMaxWidth().background(C.card, RoundedCornerShape(14.dp)).border(1.dp, C.line, RoundedCornerShape(14.dp))
-            .clickable(onClick = onSave).padding(12.dp),
+            .clickable(onClick = onOpen).padding(start = 12.dp, top = 10.dp, bottom = 10.dp, end = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.size(44.dp).background(color, RoundedCornerShape(10.dp)), contentAlignment = Alignment.Center) {
@@ -207,7 +235,9 @@ private fun ExportRow(tag: String, color: Color, title: String, sub: String, bus
         Column(Modifier.weight(1f).padding(start = 12.dp)) {
             Text(title, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = C.navy)
             Text(sub, fontSize = 12.sp, color = C.muted)
+            Text(tr("▶ खोलें", "▶ Open"), fontSize = 13.sp, fontWeight = FontWeight.Bold, color = C.orangeDark)
         }
+        IconButton(onClick = onSave) { Icon(Icons.Outlined.Download, contentDescription = tr("सेव", "Save"), tint = C.navy) }
         IconButton(onClick = onShare) { Icon(Icons.Outlined.Share, contentDescription = tr("शेयर", "Share"), tint = C.navy) }
     }
 }

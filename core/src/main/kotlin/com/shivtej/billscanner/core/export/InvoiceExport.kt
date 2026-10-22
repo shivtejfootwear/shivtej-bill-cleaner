@@ -71,16 +71,18 @@ object InvoiceExport {
     }
 
     /** Text of one printed cell: exactly as printed, unless the person corrected that value. */
-    fun printedText(i: LineItem, ci: Int, c: Column): String {
+    fun printedText(inv: Invoice, i: LineItem, ci: Int, c: Column): String {
         val f = c.field
-        return if (!isEdited(i, c) && ci < i.raw.size) i.raw[ci] else if (f != null) valueOf(i.current, f) else i.raw.getOrNull(ci).orEmpty()
+        // The printed words belong to the bill's own columns; with the standard set (lines typed in) they do not apply.
+        val raw = inv.columns.isNotEmpty()
+        return if (raw && !isEdited(i, c) && ci < i.raw.size) i.raw[ci] else if (f != null) valueOf(i.current, f) else if (raw) i.raw.getOrNull(ci).orEmpty() else ""
     }
 
     /** One cell of the printed copy: exactly as printed, unless the person corrected that value. */
-    private fun printedCell(i: LineItem, ci: Int, c: Column): Cell {
+    private fun printedCell(inv: Invoice, i: LineItem, ci: Int, c: Column): Cell {
         val f = c.field
         val edited = isEdited(i, c)
-        val text = printedText(i, ci, c)
+        val text = printedText(inv, i, ci, c)
         if (f == F.DISC_PCT && i.current.discPct == null) return Cell.Text(text.ifEmpty { NEEDS_VERIFICATION }, St.WARN)
         val plain = text.trim()
         val num = if (Regex("""^-?[\d,]+(\.\d+)?$""").matches(plain)) plain.replace(",", "").toBigDecimalOrNull() else null
@@ -92,9 +94,15 @@ object InvoiceExport {
         }
     }
 
-    val GREEN_COLUMNS = listOf("MRP", "Pairs", "GST %", "Amount (before GST)", "Net Rate / Pair", "Cost / Pair with GST", "बैठा % (MRP पर असल डिस्काउंट)")
-    val TARGET_COLUMNS = listOf("Target % (बदल सकते हैं)", "New Cost / Pair with GST", "New Rate / Pair (before GST)", "New Amount (before GST)", "Difference vs Bill")
+    const val SITTING_HEADER = "बैठा % (उन्होंने MRP पर असल कितना दिया)"
+    const val TARGET_HEADER = "अपना % (बदल सकते हैं)"
+    const val NEW_AMOUNT_HEADER = "नई रकम (अपने % से, GST से पहले)"
 
+    /**
+     * Sheet 1 — the bill exactly as printed, then only three columns of ours:
+     * green बैठा % (what they really gave on MRP), yellow अपना % (change it in Excel), and the new amount at that %.
+     * Below: the bill's totals as printed beside the new totals.
+     */
     private fun printed(inv: Invoice): Sheet {
         val s = Sheet("Bill + Baitha %")
         val h = inv.header
@@ -103,49 +111,51 @@ object InvoiceExport {
         s.row(Cell.Text("${h.supplierName ?: "Supplier"} — Invoice ${h.invoiceNo ?: NOT_FOUND} — ${h.invoiceDate ?: ""}", St.TITLE))
         s.row(Cell.Text("Buyer: ${h.buyerName ?: NOT_FOUND}   ·   Supplier GSTIN: ${h.supplierGstin ?: NOT_FOUND}   ·   Buyer GSTIN: ${h.buyerGstin ?: NOT_FOUND}", St.NORMAL))
         s.row(Cell.Text(
-            "Columns up to \"${cols.last().label}\" are the supplier's bill as printed. Green = our calculation: बैठा % = (MRP − cost per pair" +
-                (if (inv.sittingWithGst) " incl. GST" else " before GST") + ") ÷ MRP. Yellow Target % can be changed in Excel; the new columns follow it. " +
-                "Target columns are our estimate, not the supplier's bill.", St.NORMAL))
+            "Columns up to \"${cols.last().label}\" = supplier's bill as printed. Green बैठा % = (MRP − cost per pair" +
+                (if (inv.sittingWithGst) " incl. GST" else " before GST") + ") ÷ MRP. Yellow अपना % can be changed here; the new amount and totals follow it. " +
+                "New amounts are our estimate, not the supplier's bill.", St.NORMAL))
         s.row(Cell.Empty)
         val headRow = 5
         s.freezeRows = headRow; s.filterRow = headRow
-        s.widths = cols.map { c -> when (c.field) { F.ARTICLE -> 30.0; F.SR -> 6.0; F.HSN -> 11.0; F.SIZE -> 14.0; F.COLOUR -> 14.0; else -> 11.0 } } +
-            listOf(10.0, 8.0, 7.0, 13.0, 12.0, 13.0, 16.0) + listOf(13.0, 13.0, 14.0, 14.0, 13.0)
+        s.widths = cols.map { c -> when (c.field) { F.ARTICLE -> 30.0; F.SR -> 6.0; F.HSN -> 11.0; F.SIZE -> 14.0; F.COLOUR -> 14.0; else -> 11.0 } } + listOf(14.0, 13.0, 16.0)
         s.row(cols.map { Cell.Text(it.label, if (it.field == F.DISC_PCT) St.HEADER_ORANGE else St.HEADER) } +
-            GREEN_COLUMNS.map { Cell.Text(it, St.HEADER_GREEN) } + TARGET_COLUMNS.mapIndexed { k, t -> Cell.Text(t, if (k == 0) St.HEADER_ORANGE else St.HEADER) })
-        val g = (0 until GREEN_COLUMNS.size).map { Xlsx.col(n + it) }       // MRP, pairs, gst, amount, net, cost, baitha
-        val tc = (0 until TARGET_COLUMNS.size).map { Xlsx.col(n + GREEN_COLUMNS.size + it) }
+            listOf(Cell.Text(SITTING_HEADER, St.HEADER_GREEN), Cell.Text(TARGET_HEADER, St.HEADER_ORANGE), Cell.Text(NEW_AMOUNT_HEADER, St.HEADER)))
+        val tc = Xlsx.col(n + 1); val ac = Xlsx.col(n + 2)
         val first = headRow + 1
+        val byRate = sortedMapOf<BigDecimal, MutableList<String>>()      // GST % → cells of new amounts at that rate
+        var fixedTax = BigDecimal.ZERO
         inv.items.forEachIndexed { k, it ->
             val r = first + k
             val v = it.current
-            val gst = Calc.gstPct(v, h)
+            val g = Target.gstRate(inv, it).stripTrailingZeros()
             val tl = Target.line(inv, it)
-            val tp = Target.pct(inv, it)
-            val newCost = if (inv.sittingWithGst) "ROUND(${g[0]}$r*(100-${tc[0]}$r)/100,2)" else "ROUND(${tc[2]}$r*(100+N(${g[2]}$r))/100,2)"
-            val newRate = if (inv.sittingWithGst) "ROUND(${g[0]}$r*(100-${tc[0]}$r)/(100+N(${g[2]}$r)),2)" else "ROUND(${g[0]}$r*(100-${tc[0]}$r)/100,2)"
-            fun ifT(f: String, cached: BigDecimal?, st: St = St.MONEY) = Cell.Formula("IF(OR(${tc[0]}$r=\"\",${g[0]}$r=\"\"),\"\",$f)", cached, st)
-            s.row(
-                cols.mapIndexed { ci, c -> printedCell(it, ci, c) } + listOf(
-                    v.mrp?.let { m -> Cell.Num(m, St.GREEN_MONEY) } ?: Cell.Text(NOT_FOUND, St.WARN),
-                    v.qty?.let { q -> Cell.Num(q, St.GREEN_INT) } ?: Cell.Text(NOT_FOUND, St.WARN),
-                    gst?.let { x -> Cell.Num(x, St.GREEN_PCT) } ?: Cell.Text(""),
-                    v.taxable?.let { x -> Cell.Num(x, St.GREEN_MONEY) } ?: Cell.Text(NOT_FOUND, St.WARN),
-                    Calc.netPerPair(v)?.let { x -> Cell.Num(Calc.r2(x), St.GREEN_MONEY) } ?: Cell.Text(""),
-                    Calc.landedPerPair(v, h)?.let { x -> Cell.Num(Calc.r2(x), St.GREEN_MONEY) } ?: Cell.Text(""),
-                    Calc.sittingPct(v, h, inv.sittingWithGst)?.let { x -> Cell.Num(x, St.GREEN_PCT) } ?: Cell.Text(if (it.kind == ItemKind.CHARGE) "" else NEEDS_VERIFICATION, St.WARN),
-                ) + if (it.kind == ItemKind.CHARGE) listOf(Cell.Text("charge")) else listOf(
-                    tp?.let { x -> Cell.Num(x, St.EDIT_PCT) } ?: Cell.Text("", St.EDIT_PCT),
-                    ifT(newCost, tl?.landed), ifT(newRate, tl?.net),
-                    ifT("ROUND(${tc[2]}$r*${g[1]}$r,2)", tl?.amount),
-                    ifT("${tc[3]}$r-N(${g[3]}$r)", tl?.difference),
-                ),
-            )
+            val bill = v.taxable
+            val sit = Calc.sittingPct(v, h, inv.sittingWithGst)
+            val own = Target.ownTax(it)
+            val canTarget = Target.targetable(inv, it)
+            if (canTarget || bill != null) { if (canTarget || own == null) byRate.getOrPut(g) { mutableListOf() } += "$ac$r" else fixedTax += own }
+            val sitCell = when {
+                it.kind == ItemKind.CHARGE -> Cell.Text("")
+                sit != null -> Cell.Num(sit, St.GREEN_PCT)
+                else -> Cell.Text(NEEDS_VERIFICATION, St.WARN)
+            }
+            val targetCell = when {
+                canTarget -> Target.pct(inv, it)?.let { x -> Cell.Num(x, St.EDIT_PCT) } ?: Cell.Text("", St.EDIT_PCT)
+                it.kind == ItemKind.CHARGE -> Cell.Text("")
+                else -> Cell.Text("MRP जाँचें", St.WARN)
+            }
+            val billNum = bill?.toPlainString() ?: "0"
+            val amountCell: Cell = if (canTarget) {
+                val mrp = v.mrp!!.toPlainString(); val q = v.qty!!.toPlainString()
+                val rate = if (inv.sittingWithGst) "ROUND($mrp*(100-$tc$r)/(100+$g),2)" else "ROUND($mrp*(100-$tc$r)/100,2)"
+                Cell.Formula("IF($tc$r=\"\",$billNum,ROUND($rate*$q,2))", tl?.amount ?: bill ?: BigDecimal.ZERO, St.MONEY)
+            } else bill?.let { x -> Cell.Num(x, St.MONEY) } ?: Cell.Text("")
+            s.row(cols.mapIndexed { ci, c -> printedCell(inv, it, ci, c) } + listOf(sitCell, targetCell, amountCell))
         }
         val last = first + inv.items.size - 1
         val t = Totals.of(inv)
         val sheet = Target.sheet(inv)
-        val width = n + GREEN_COLUMNS.size + TARGET_COLUMNS.size
+        val width = n + 3
         val labelAt = cols.indexOfFirst { it.field == F.ARTICLE }.takeIf { it >= 0 } ?: 0
         val amountAt = cols.indexOfLast { it.field == F.TAXABLE || it.field == F.TOTAL }
         val qtyAt = cols.indexOfFirst { it.field == F.QTY }
@@ -155,29 +165,26 @@ object InvoiceExport {
             for ((k, c) in put) if (k in 0 until width) cells[k] = c
             s.row(cells)
         }
-        val gi = n; val ti = n + GREEN_COLUMNS.size
         val sumRow = last + 1
-        val newAmt = if (sheet.any) sheet.lines.fold(BigDecimal.ZERO) { a, l -> a + l.amount } else null
+        val billCol = if (amountAt >= 0) amountAt else -1
         line("Total",
-            amountAt to (if (amountAt >= 0) Cell.Num(t.taxable, St.BOLD_MONEY) else Cell.Empty),
+            billCol to Cell.Num(t.taxable, St.BOLD_MONEY),
             qtyAt to (if (qtyAt >= 0) Cell.Text("${t.qty.toPlainString()} pairs", St.BOLD_TEXT) else Cell.Empty),
-            gi + 1 to Cell.Formula("SUM(${g[1]}$first:${g[1]}$last)", t.qty, St.GREEN_INT),
-            gi + 3 to Cell.Formula("SUM(${g[3]}$first:${g[3]}$last)", t.taxable, St.BOLD_MONEY),
-            gi + 6 to (Calc.sittingTotal(inv)?.let { Cell.Num(it, St.GREEN_PCT) } ?: Cell.Empty),
-            ti + 3 to Cell.Formula("SUM(${tc[3]}$first:${tc[3]}$last)", newAmt, St.BOLD_MONEY),
-            ti + 4 to Cell.Formula("SUM(${tc[4]}$first:${tc[4]}$last)", if (sheet.any) sheet.lines.fold(BigDecimal.ZERO) { a, l -> a + (l.difference ?: BigDecimal.ZERO) } else null, St.BOLD_MONEY))
+            n to (Calc.sittingTotal(inv)?.let { Cell.Num(it, St.GREEN_PCT) } ?: Cell.Empty),
+            n + 2 to Cell.Formula("SUM($ac$first:$ac$last)", sheet.taxable, St.BOLD_MONEY))
         val gstBill = t.cgst + t.sgst + t.igst
+        val gstFormula = (byRate.entries.map { (g, cells) -> "ROUND((${cells.joinToString("+")})*$g/100,2)" } +
+            (if (fixedTax.signum() != 0) listOf(fixedTax.toPlainString()) else emptyList())).ifEmpty { listOf("0") }.joinToString("+")
         line("GST (CGST ${Calc.fmt(t.cgst)} + SGST ${Calc.fmt(t.sgst)}${if (t.igst.signum() != 0) " + IGST ${Calc.fmt(t.igst)}" else ""})",
-            amountAt to (if (amountAt >= 0) Cell.Num(gstBill, St.BOLD_MONEY) else Cell.Empty),
-            gi + 3 to Cell.Num(gstBill, St.BOLD_MONEY),
-            ti + 3 to Cell.Formula("ROUND(SUMPRODUCT(N(+${tc[3]}$first:${tc[3]}$last),N(+${g[2]}$first:${g[2]}$last))/100,2)", if (sheet.any) sheet.gst else null, St.BOLD_MONEY))
-        h.roundOff?.let { ro -> line("Round off", amountAt to (if (amountAt >= 0) Cell.Num(ro, St.BOLD_MONEY) else Cell.Empty), gi + 3 to Cell.Num(ro, St.BOLD_MONEY)) }
+            billCol to Cell.Num(gstBill, St.BOLD_MONEY),
+            n + 2 to Cell.Formula(gstFormula, sheet.gst, St.BOLD_MONEY))
+        val extra = (h.otherCharges ?: BigDecimal.ZERO) - (h.overallDiscount ?: BigDecimal.ZERO)
+        h.roundOff?.let { ro -> line("Round off", billCol to Cell.Num(ro, St.BOLD_MONEY)) }
         line("Grand Total" + if (t.printedGrand != null) " (printed on bill)" else " (calculated)",
-            amountAt to (if (amountAt >= 0) Cell.Num(t.printedGrand ?: t.grand, St.BOLD_MONEY) else Cell.Empty),
-            gi + 3 to Cell.Num(t.printedGrand ?: t.grand, St.BOLD_MONEY),
-            ti + 2 to Cell.Text("New total →", St.BOLD_TEXT),
-            ti + 3 to Cell.Formula("ROUND(${tc[3]}$sumRow+${tc[3]}${sumRow + 1},0)", if (sheet.any) sheet.rounded else null, St.BOLD_MONEY))
-        t.difference?.let { d -> if (d.signum() != 0) line("Difference: printed − calculated ₹${Calc.fmt(d)} — check", gi + 3 to Cell.Num(d, St.WARN)) }
+            billCol to Cell.Num(t.printedGrand ?: t.grand, St.BOLD_MONEY),
+            n + 1 to Cell.Text("नया Total →", St.BOLD_TEXT),
+            n + 2 to Cell.Formula("ROUND($ac$sumRow+$ac${sumRow + 1}" + (if (extra.signum() != 0) "+${extra.toPlainString()}" else "") + ",0)", sheet.rounded, St.BOLD_MONEY))
+        t.difference?.let { d -> if (d.signum() != 0) line("Printed total − calculated = ₹${Calc.fmt(d)} — check the bill", billCol to Cell.Num(d, St.WARN)) }
         return s
     }
 

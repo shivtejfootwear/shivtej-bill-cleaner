@@ -86,13 +86,14 @@ fun TopBar(title: String, onBack: (() -> Unit)?, right: @Composable () -> Unit =
 }
 
 @Composable
-fun BigButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, orange: Boolean = false, enabled: Boolean = true, icon: ImageVector? = null) {
+fun BigButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, orange: Boolean = false, enabled: Boolean = true, icon: ImageVector? = null, compact: Boolean = false) {
     Button(
         onClick = onClick, enabled = enabled, modifier = modifier.height(52.dp), shape = RoundedCornerShape(14.dp),
+        contentPadding = if (compact) androidx.compose.foundation.layout.PaddingValues(horizontal = 6.dp) else ButtonDefaults.ContentPadding,
         colors = ButtonDefaults.buttonColors(containerColor = if (orange) C.orange else C.navy, contentColor = Color.White),
     ) {
         if (icon != null) { Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)) }
-        Text(text, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+        Text(text, fontSize = if (compact) 14.sp else 16.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
     }
 }
 

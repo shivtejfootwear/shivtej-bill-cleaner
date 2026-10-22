@@ -78,6 +78,20 @@ class PageStore(private val ctx: Context) {
         }
     }
 
+    /** Copies one file the person picked into the invoice folder, exactly as it is. */
+    fun keepFile(invoiceId: String, uri: Uri, name: String): File {
+        val f = File(dir(invoiceId), name)
+        ctx.contentResolver.openInputStream(uri)!!.use { inp -> f.outputStream().use { inp.copyTo(it) } }
+        return f
+    }
+
+    /** A page picture made from a PDF (for viewing and the photo PDF). */
+    fun keepBitmap(invoiceId: String, n: Int, bmp: android.graphics.Bitmap): String {
+        val f = File(dir(invoiceId), "page_$n.jpg")
+        f.outputStream().use { bmp.compress(android.graphics.Bitmap.CompressFormat.JPEG, 90, it) }
+        return f.absolutePath
+    }
+
     /** What the OCR read on each page, so the bill can be read again later without the OCR. */
     fun saveOcr(invoiceId: String, pages: List<com.shivtej.billscanner.core.ocr.OcrPage>) =
         pages.forEachIndexed { i, p -> File(dir(invoiceId), "ocr_${i + 1}.tsv").writeText(com.shivtej.billscanner.core.store.OcrCodec.encode(p)) }

@@ -79,7 +79,7 @@ import java.math.BigDecimal
  * target % is set — the new rate and amount. Tap a line to edit it; tap a column heading to say what it is.
  */
 @Composable
-fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: () -> Unit, onPhoto: () -> Unit) {
+fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: () -> Unit, onPhoto: () -> Unit, onView: () -> Unit = {}) {
     val c = LocalContext.current.container
     val ed = rememberEditor(id)
     val inv = ed.invoice ?: return
@@ -100,7 +100,7 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
     val warnings = Warnings.of(inv, previous)
 
     BillContent(
-        inv, warnings, thumb, onBack = onBack, onTargets = onTargets, onExport = onExport, onPhoto = onPhoto,
+        inv, warnings, thumb, onBack = onBack, onTargets = onTargets, onExport = onExport, onPhoto = onPhoto, onView = onView,
         onRow = { editing = it }, onColumn = { teach = it }, onEditHeader = { editHeader = true },
         onVerify = {
             if (inv.status == InvoiceStatus.VERIFIED) ed.change { Edits.setStatus(it, InvoiceStatus.DRAFT, System.currentTimeMillis()) } else askVerify = true
@@ -207,7 +207,7 @@ fun BillContent(
     inv: Invoice, warnings: List<Warning>, thumb: Bitmap?, onBack: () -> Unit, onTargets: () -> Unit, onExport: () -> Unit, onPhoto: () -> Unit,
     onRow: (String) -> Unit = {}, onColumn: (Int) -> Unit = {}, onEditHeader: () -> Unit = {}, onVerify: () -> Unit = {}, onHistory: () -> Unit = {},
     onDelete: () -> Unit = {}, onAdd: () -> Unit = {}, onGst: (Boolean) -> Unit = {}, canUndo: Boolean = false, onUndo: () -> Unit = {},
-    message: String? = null, showWarnings: Boolean = false,
+    message: String? = null, showWarnings: Boolean = false, onView: () -> Unit = {},
 ) {
     val h = inv.header
     val t = Totals.of(inv)
@@ -264,8 +264,9 @@ fun BillContent(
         // ---- actions
         Column(Modifier.fillMaxWidth().background(C.card).padding(horizontal = 12.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                BigButton(tr("% लगाएँ · नया बिल", "Set % · new bill"), onTargets, Modifier.weight(1f), orange = true)
-                BigButton("Excel / PDF", onExport, Modifier.weight(0.8f))
+                BigButton(tr("% लगाएँ", "Set %"), onTargets, Modifier.weight(1f), orange = true, compact = true)
+                BigButton(tr("🔍 पूरा बिल", "🔍 Whole bill"), onView, Modifier.weight(1.1f), compact = true)
+                BigButton("Excel/PDF", onExport, Modifier.weight(1f), compact = true)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onAdd) { Icon(Icons.Outlined.Add, null, tint = C.navy); Text(tr(" लाइन जोड़ें", " Add line"), color = C.navy) }
@@ -339,10 +340,7 @@ fun BillGrid(inv: Invoice, onRow: (String) -> Unit, onColumn: (Int) -> Unit, mod
                 @Composable fun head(ci: Int) = HeadCell(cols[ci].label + " ▾", widthOf(cols[ci].field), if (cols[ci].field == F.DISC_PCT) Tone.ORANGE else Tone.NORMAL) { onColumn(ci) }
                 first.forEach { head(it) }
                 HeadCell(tr("बैठा %", "Baitha %"), 62.dp, Tone.GREEN)
-                if (sheet.any) {
-                    HeadCell(tr("टार्गेट %", "Target %"), 60.dp, Tone.TARGET)
-                    HeadCell(tr("नया रेट", "New rate"), 70.dp, Tone.TARGET)
-                }
+                if (sheet.any) HeadCell(tr("अपना %", "Our %"), 60.dp, Tone.TARGET)
                 after.forEach { head(it) }
                 if (sheet.any) HeadCell(tr("नई रकम", "New amount"), 84.dp, Tone.TARGET)
                 tail.forEach { head(it) }
@@ -364,9 +362,9 @@ fun BillGrid(inv: Invoice, onRow: (String) -> Unit, onColumn: (Int) -> Unit, mod
                         }
                         first.forEach { tot(it) }
                         DataCell(pct(Calc.sittingTotal(inv)), 62.dp, Tone.GREEN, true, bold = true)
-                        if (sheet.any) { DataCell("", 60.dp, Tone.TARGET, true); DataCell("", 70.dp, Tone.TARGET, true) }
+                        if (sheet.any) DataCell("", 60.dp, Tone.TARGET, true)
                         after.forEach { tot(it) }
-                        if (sheet.any) DataCell(num(sheet.lines.fold(BigDecimal.ZERO) { a, l -> a + l.amount }), 84.dp, Tone.TARGET, true, bold = true)
+                        if (sheet.any) DataCell(num(sheet.taxable), 84.dp, Tone.TARGET, true, bold = true)
                         tail.forEach { tot(it) }
                     }
                 }
@@ -382,13 +380,13 @@ private fun GridRow(
 ) {
     val warnRow = item.needs.isNotEmpty()
     Row(Modifier.clickable(onClick = onClick)) {
-        val left = frozen.joinToString(" ") { InvoiceExport.printedText(item, it, cols[it]) }.trim()
+        val left = frozen.joinToString(" ") { InvoiceExport.printedText(inv, item, it, cols[it]) }.trim()
             .ifEmpty { "${item.current.sr ?: ""} ${item.current.article}".trim() } + if (item.kind == ItemKind.CHARGE) tr(" (चार्ज)", " (charge)") else ""
         DataCell(left, FROZEN, Tone.NORMAL, false, warn = warnRow && (F.ARTICLE in item.needs || F.SR in item.needs))
         Row(Modifier.horizontalScroll(hs)) {
             @Composable fun cell(ci: Int) {
                 val col = cols[ci]
-                val text = InvoiceExport.printedText(item, ci, col).ifEmpty { if (col.field == F.DISC_PCT && item.current.discPct == null) "Needs Verif." else "" }
+                val text = InvoiceExport.printedText(inv, item, ci, col).ifEmpty { if (col.field == F.DISC_PCT && item.current.discPct == null) "Needs Verif." else "" }
                 val isNum = col.field != null && col.field !in setOf(F.SIZE, F.COLOUR, F.HSN, F.ARTICLE)
                 DataCell(text, widthOf(col.field), if (col.field == F.DISC_PCT) Tone.ORANGE else Tone.NORMAL, isNum,
                     warn = col.field != null && col.field in item.needs, edited = InvoiceExport.isEdited(item, col))
@@ -396,12 +394,10 @@ private fun GridRow(
             first.forEach { cell(it) }
             val s = Calc.sittingPct(item.current, inv.header, inv.sittingWithGst)
             DataCell(if (item.kind == ItemKind.CHARGE) "" else pct(s), 62.dp, Tone.GREEN, true, warn = s == null && item.kind == ItemKind.ARTICLE)
-            if (anyTarget) {
-                DataCell(line?.let { pct(it.pct) + if (item.targetPct != null) "*" else "" } ?: "—", 60.dp, Tone.TARGET, true)
-                DataCell(line?.let { num(it.net) } ?: "", 70.dp, Tone.TARGET, true)
-            }
+            if (anyTarget) DataCell(line?.let { pct(it.pct) + if (item.targetPct != null) "*" else "" } ?: "—", 60.dp, Tone.TARGET, true)
             after.forEach { cell(it) }
-            if (anyTarget) DataCell(line?.let { num(it.amount) } ?: "", 84.dp, Tone.TARGET, true)
+            // Lines without our % keep the bill amount (shown plain).
+            if (anyTarget) DataCell(line?.let { num(it.amount) } ?: item.current.taxable?.let { num(it) }.orEmpty(), 84.dp, if (line != null) Tone.TARGET else Tone.NORMAL, true, bold = line != null)
             tail.forEach { cell(it) }
         }
     }

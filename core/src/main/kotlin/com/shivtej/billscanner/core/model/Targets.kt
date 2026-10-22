@@ -101,19 +101,39 @@ object Target {
         val any: Boolean get() = lines.isNotEmpty()
     }
 
+    /**
+     * GST % each line of the new bill is taxed at, and the tax already printed on a line that keeps its bill
+     * value. GST is worked out on the total of each rate, as bills do.
+     */
+    fun gstRate(inv: Invoice, item: LineItem): BigDecimal = Calc.gstPct(item.current, inv.header) ?: BigDecimal.ZERO
+
+    /** A line a target % can be put on: an article with MRP and pairs whose बैठा % makes sense. */
+    fun targetable(inv: Invoice, item: LineItem): Boolean {
+        val v = item.current
+        return item.kind != ItemKind.CHARGE && v.mrp != null && v.qty != null && (v.taxable == null || Calc.sittingPct(v, inv.header, inv.sittingWithGst) != null)
+    }
+
+    fun ownTax(item: LineItem): BigDecimal? {
+        val v = item.current
+        return if (v.cgstAmt != null || v.sgstAmt != null || v.igstAmt != null) Calc.taxTotal(v) else null
+    }
+
     fun sheet(inv: Invoice): Sheet {
         val z = BigDecimal.ZERO
         val lines = inv.items.mapNotNull { line(inv, it) }
         val done = lines.map { it.item.id }.toSet()
         val untouched = inv.items.filter { it.id !in done }
-        var taxable = lines.fold(z) { a, l -> a + l.amount }
-        var gst = lines.fold(z) { a, l -> a + l.gst }
+        val byRate = sortedMapOf<BigDecimal, BigDecimal>()
+        var taxable = z
+        var fixedTax = z
+        for (l in lines) { taxable += l.amount; byRate.merge(gstRate(inv, l.item).stripTrailingZeros(), l.amount, BigDecimal::add) }
         for (i in untouched) {
-            val v = i.current
-            val t = v.taxable ?: continue
+            val t = i.current.taxable ?: continue
             taxable += t
-            gst += if (v.cgstAmt != null || v.sgstAmt != null || v.igstAmt != null) Calc.taxTotal(v) else (Calc.gstPct(v, inv.header) ?: z).multiply(t).divide(Calc.HUNDRED, 10, RoundingMode.HALF_UP)
+            val own = if (targetable(inv, i)) null else ownTax(i)
+            if (own != null) fixedTax += own else byRate.merge(gstRate(inv, i).stripTrailingZeros(), t, BigDecimal::add)
         }
+        val gst = byRate.entries.fold(fixedTax) { a, (g, amt) -> a + Calc.r2(amt.multiply(g).divide(Calc.HUNDRED, 10, RoundingMode.HALF_UP)) }
         val bill = Totals.of(inv)
         val total = Calc.r2(taxable + gst + (inv.header.otherCharges ?: z) - (inv.header.overallDiscount ?: z))
         return Sheet(lines, untouched, Calc.r2(taxable), Calc.r2(gst), total, total.setScale(0, RoundingMode.HALF_UP).setScale(2), bill.printedGrand ?: bill.grand)

@@ -101,6 +101,8 @@ dependencies {
 
     // On-device OCR (works offline; the photo never leaves the phone).
     implementation("com.google.mlkit:text-recognition:16.0.1")
+    // Bills that come as PDF: their own text and positions are read directly (no OCR guessing).
+    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
     // Google's document scanner: camera, auto crop, straighten, shadow clean-up, multi-page.
     implementation("com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1")
 

@@ -16,6 +16,7 @@ import com.shivtej.billscanner.data.InvoiceRepo
 import com.shivtej.billscanner.data.PageStore
 import com.shivtej.billscanner.data.Prefs
 import com.shivtej.billscanner.ocr.Ocr
+import com.shivtej.billscanner.ocr.PdfBill
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -25,7 +26,7 @@ import java.io.File
 import java.util.UUID
 
 /** A photo waiting to be scanned, and how far the person turned it. */
-data class PendingPage(val uri: Uri, val rotation: Int = 0)
+data class PendingPage(val uri: Uri, val rotation: Int = 0, val pdf: Boolean = false)
 
 enum class ScanStep { SAVE, OCR, FIELDS, CHECK, DONE, FAILED }
 
@@ -43,6 +44,8 @@ class Container(val ctx: Context, db: BillDb) {
     var pageNow by mutableStateOf(0)
     var scanError by mutableStateOf<String?>(null)
     var scannedId by mutableStateOf<String?>(null)
+    /** Bumped when a bill is shared to the app from WhatsApp / Files. */
+    var sharedTick by mutableStateOf(0)
 
     fun setLanguage(l: String) { prefs.language = l; lang = l }
 
@@ -54,15 +57,30 @@ class Container(val ctx: Context, db: BillDb) {
         scope.launch {
             runCatching {
                 val id = UUID.randomUUID().toString()
-                val files = pages.keep(id, list.map { it.uri })
-                step = ScanStep.OCR
                 val ocr = mutableListOf<OcrPage>()
-                files.forEachIndexed { i, path ->
-                    pageNow = i + 1
-                    val bmp = withContext(Dispatchers.IO) { Ocr.rotate(Ocr.loadBitmap(File(path)), list[i].rotation) }
-                    ocr += Ocr.read(bmp)
-                    bmp.recycle()
-                    progress = 0.1f + 0.6f * (i + 1) / files.size
+                val files = mutableListOf<String>()
+                step = ScanStep.OCR
+                for ((k, item) in list.withIndex()) {
+                    if (item.pdf) {
+                        // A PDF bill: its own text is read directly; pages are also kept as pictures to look at.
+                        val src = withContext(Dispatchers.IO) { pages.keepFile(id, item.uri, "bill_${k + 1}.pdf") }
+                        val read = PdfBill.read(ctx, src) { n, total -> pageNow = files.size + 1; progress = 0.1f + 0.6f * n / total }
+                        read.forEachIndexed { i, pg ->
+                            ocr += pg.words
+                            files += withContext(Dispatchers.IO) {
+                                val bmp = PdfBill.render(src, i, 2f)
+                                pages.keepBitmap(id, files.size + 1, bmp).also { bmp.recycle() }
+                            }
+                        }
+                    } else {
+                        val path = withContext(Dispatchers.IO) { pages.keepFile(id, item.uri, "page_${files.size + 1}.jpg").absolutePath }
+                        files += path
+                        pageNow = files.size
+                        val bmp = withContext(Dispatchers.IO) { Ocr.rotate(Ocr.loadBitmap(File(path)), item.rotation) }
+                        ocr += Ocr.read(bmp)
+                        bmp.recycle()
+                        progress = 0.1f + 0.6f * (k + 1) / list.size
+                    }
                 }
                 withContext(Dispatchers.IO) { pages.saveOcr(id, ocr) }
                 step = ScanStep.FIELDS; progress = 0.8f

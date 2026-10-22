@@ -136,7 +136,10 @@ object Pdf {
         F.CGST_PCT, F.SGST_PCT, F.IGST_PCT -> 26f; F.CGST_AMT, F.SGST_AMT, F.IGST_AMT -> 36f; else -> 40f
     }
 
-    /** A. Bill report: every column as printed (or as corrected), with the बैठा % beside it. */
+    /**
+     * A. Bill report: every column as printed (or as corrected), the बैठा % beside it, and — when a % of ours is set —
+     * our % and the new amount, with the bill's totals beside the new totals.
+     */
     fun report(inv: Invoice, landscape: Boolean, out: OutputStream) {
         val doc = PdfDocument()
         val wr = Writer(doc, if (landscape) 842 else 595, if (landscape) 595 else 842,
@@ -147,20 +150,30 @@ object Pdf {
         wr.line("Invoice ${h.invoiceNo ?: "Not found"} · Date ${h.invoiceDate ?: "Not found"} · GSTIN ${h.supplierGstin ?: "Not found"}" + (h.pageNote?.let { " · $it" } ?: ""), size = 8.5f)
         wr.line("Buyer: ${h.buyerName ?: "Not found"} · GSTIN ${h.buyerGstin ?: "Not found"} · Status: ${if (inv.status.name == "VERIFIED") "Verified" else "Not verified yet"}", size = 8.5f, gap = 8f)
         val cols = InvoiceExport.printedColumns(inv)
+        val sheet = Target.sheet(inv)
+        val lines = sheet.lines.associateBy { it.item.id }
         val pcols = cols.map { c -> Col(c.label, weight(c.field), right = c.field != null && c.field !in setOf(F.ARTICLE, F.SIZE, F.COLOUR, F.HSN, F.SR), orange = c.field == F.DISC_PCT) } +
-            Col("Baitha % (on MRP${if (inv.sittingWithGst) ", with GST" else ""})", 46f, green = true)
+            Col("Baitha % (on MRP${if (inv.sittingWithGst) ", with GST" else ""})", 46f, green = true) +
+            (if (sheet.any) listOf(Col("Our %", 32f, orange = true), Col("New Amount", 48f, orange = true)) else emptyList())
         val warn = mutableSetOf<Pair<Int, Int>>()
         val rows = inv.items.mapIndexed { r, it ->
             cols.mapIndexed { ci, c ->
                 if (c.field != null && c.field in it.needs) warn += r to ci
-                InvoiceExport.printedText(it, ci, c).ifEmpty { if (c.field == F.DISC_PCT && it.current.discPct == null) NEEDS_VERIFICATION else "" }
-            } + (if (it.kind == ItemKind.CHARGE) "" else p(Calc.sittingPct(it.current, h, inv.sittingWithGst)))
+                InvoiceExport.printedText(inv, it, ci, c).ifEmpty { if (c.field == F.DISC_PCT && it.current.discPct == null) NEEDS_VERIFICATION else "" }
+            } + (if (it.kind == ItemKind.CHARGE) "" else p(Calc.sittingPct(it.current, h, inv.sittingWithGst))) +
+                (if (!sheet.any) emptyList() else lines[it.id]?.let { l -> listOf(p(l.pct), n(l.amount)) } ?: listOf("—", it.current.taxable?.let { x -> n(x) } ?: ""))
         }
         wr.table(pcols, rows, warn)
         wr.line("Totals", wr.bold, 10f, NAVY, 4f)
         wr.line("Articles ${t.articleLines} · Pairs ${t.qty.toPlainString()} · Amount before GST ₹${n(t.taxable)} · CGST ₹${n(t.cgst)} · SGST ₹${n(t.sgst)}" +
             (if (t.igst.signum() != 0) " · IGST ₹${n(t.igst)}" else "") + (h.roundOff?.let { " · Round off ₹${n(it)}" } ?: ""))
         wr.line("Calculated total ₹${n(t.grand)} · Printed on bill ₹${n(t.printedGrand)} · Difference ₹${n(t.difference)} · Baitha % on the whole bill ${p(Calc.sittingTotal(inv))}", wr.bold, 9f, NAVY, 8f)
+        if (sheet.any) {
+            val by = Groups.of(inv).joinToString("  ·  ") { g -> "${g.key}: ${(g.target ?: inv.defaultTargetPct)?.let { p(it) } ?: "as billed"}" }
+            wr.line("At our % — $by", wr.bold, 10f, ORANGE_DARK, 3f)
+            wr.line("New amount ₹${n(sheet.taxable)} · GST ₹${n(sheet.gst)} · New total ₹${n(sheet.rounded)} · Bill total ₹${n(sheet.billTotal)} · Difference ₹${n(sheet.difference)}", wr.bold, 9.5f, NAVY, 3f)
+            wr.line("New amounts are our own calculation from MRP, not the supplier's invoice.", size = 7.5f, color = MUTED, gap = 8f)
+        }
         val ws = Warnings.of(inv).filter { it.level.name != "TIP" }
         if (ws.isNotEmpty()) {
             wr.line("Points to check", wr.bold, 10f, NAVY, 4f)
