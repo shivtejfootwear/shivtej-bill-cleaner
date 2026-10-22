@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A white bill with lines and an orange % badge, on navy. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#FFFFFF" android:pathData="M37,28h30a3,3 0,0 1,3 3v44l-5,-3 -5,3 -5,-3 -5,3 -5,-3 -5,3 -5,-3v-41a3,3 0,0 1,3 -3z" />
+    <path android:fillColor="#0E2A47" android:pathData="M41,38h22v3h-22zM41,45h22v3h-22zM41,52h14v3h-14z" />
+    <path android:fillColor="#F28A1E" android:pathData="M68,58m-11,0a11,11 0,1 1,22 0a11,11 0,1 1,-22 0" />
+    <path android:fillColor="#FFFFFF" android:pathData="M63.5,64.5l9,-13 1.8,1.2 -9,13zM64,53.5m-2.2,0a2.2,2.2 0,1 1,4.4 0a2.2,2.2 0,1 1,-4.4 0M72.5,62.5m-2.2,0a2.2,2.2 0,1 1,4.4 0a2.2,2.2 0,1 1,-4.4 0" />
+</vector>

@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ShivtejBillCleaner"
-include(":app")
+rootProject.name = "shivtej-bill-scanner"
+include(":core", ":app")

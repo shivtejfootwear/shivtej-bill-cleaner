@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- No internet permission: bills are read on the phone only. Camera is used through Google's document scanner. -->
+
     <application
+        android:name=".BillApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:largeHeap="true"
+        android:label="Shivtej Bill Scanner AI"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BillCleaner">
-
+        android:theme="@style/Theme.BillScanner">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -16,12 +17,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <!-- WhatsApp ya Gallery se "Share > Bill Cleaner" karke photo seedha bhejo -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
 
@@ -35,9 +30,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- ML Kit Document Scanner ka model app install hote hi download ho jaye -->
-        <meta-data
-            android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="document_scanner" />
+        <!-- The text-recognition model is bundled in the app, so OCR works offline from the first run. -->
+        <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="ocr" />
     </application>
 </manifest>

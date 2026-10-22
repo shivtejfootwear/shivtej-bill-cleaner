@@ -1,0 +1,83 @@
+package com.shivtej.billscanner.core.model
+
+import java.math.BigDecimal
+
+/** A note for the person: never an automatic change. */
+data class Warning(val level: Level, val itemId: String?, val hindi: String, val english: String) {
+    enum class Level { ERROR, CHECK, TIP }
+}
+
+/**
+ * Checks on a scanned invoice. [previous] = earlier invoices on this phone,
+ * used for duplicate bill numbers and rate comparisons.
+ */
+object Warnings {
+    fun of(inv: Invoice, previous: List<Invoice> = emptyList()): List<Warning> {
+        val out = mutableListOf<Warning>()
+        val h = inv.header
+        val t = Totals.of(inv)
+
+        // Whole invoice.
+        if (h.invoiceNo != null && previous.any { it.id != inv.id && it.header.invoiceNo == h.invoiceNo && it.header.supplierGstin == h.supplierGstin }) {
+            out += Warning(Warning.Level.ERROR, null, "बिल नंबर ${h.invoiceNo} पहले भी स्कैन हो चुका है — कहीं दोबारा तो नहीं जोड़ रहे?",
+                "Invoice ${h.invoiceNo} was scanned before.")
+        }
+        t.difference?.let { d ->
+            if (d.abs() > BigDecimal("0.99")) out += Warning(Warning.Level.CHECK, null,
+                "लाइनों का जोड़ ₹${Calc.fmt(t.grand)}, पर बिल पर कुल ₹${Calc.fmt(t.printedGrand)} छपा है — फ़र्क़ ₹${Calc.fmt(d)}। कोई और चार्ज, round-off या दूसरा पेज तो नहीं?",
+                "Lines add up to ₹${Calc.fmt(t.grand)} but the bill total is ₹${Calc.fmt(t.printedGrand)} (difference ₹${Calc.fmt(d)}).")
+            else if (d.signum() != 0) out += Warning(Warning.Level.TIP, null, "कुल में ₹${Calc.fmt(d)} का round-off फ़र्क़ है।", "Round-off difference ₹${Calc.fmt(d)}.")
+        }
+        if (h.printedGrandTotal == null) out += Warning(Warning.Level.CHECK, null, "बिल का कुल (Grand Total) नहीं पढ़ा गया — हाथ से डालें।", "Grand total not found.")
+        Regex("""\((\d+)\)""").find(h.packing.orEmpty())?.groupValues?.get(1)?.toBigDecimalOrNull()?.let { packed ->
+            if (packed.compareTo(t.qty) != 0) out += Warning(Warning.Level.CHECK, null,
+                "पैकिंग में $packed लिखा है, पर आर्टिकल की कुल जोड़ी ${t.qty.toPlainString()} है।", "Packing says $packed, items total ${t.qty.toPlainString()} pairs.")
+        }
+        if (h.pageNote != null) Regex("""(\d+)\s*of\s*(\d+)""", RegexOption.IGNORE_CASE).find(h.pageNote)?.let { m ->
+            val (p, n) = m.destructured
+            if (p.toInt() < n.toInt() && inv.pages.size < n.toInt()) out += Warning(Warning.Level.CHECK, null,
+                "बिल पर \"${h.pageNote}\" लिखा है — बाकी पेज भी जोड़ें।", "The bill says ${h.pageNote}; add the remaining page(s).")
+        }
+
+        // Lines.
+        val seen = HashMap<String, String>()
+        for (it in inv.items) {
+            val v = it.current
+            val name = "${v.sr ?: ""} ${v.article}".trim()
+            if (F.DISC_PCT in it.needs && v.discPct == null) out += Warning(Warning.Level.CHECK, it.id,
+                "$name: बिल डिस्काउंट % साफ़ नहीं पढ़ा गया — Needs Verification", "$name: bill discount % needs verification")
+            for (c in Calc.checkLine(v)) out += Warning(Warning.Level.CHECK, it.id,
+                "$name: ${hindi(c.field)} बिल पर ${Calc.fmt(c.printed)} है, हिसाब से ${Calc.fmt(c.expected)} होना चाहिए",
+                "$name: ${c.field} printed ${Calc.fmt(c.printed)}, expected ${Calc.fmt(c.expected)}")
+            if (it.kind != ItemKind.ARTICLE) continue
+            if (v.mrp != null && v.rate != null && v.rate > v.mrp) out += Warning(Warning.Level.CHECK, it.id,
+                "$name: रेट ₹${Calc.fmt(v.rate)} MRP ₹${Calc.fmt(v.mrp)} से ज़्यादा है — अजीब लग रहा है", "$name: rate above MRP")
+            if (v.mrp == null) out += Warning(Warning.Level.CHECK, it.id, "$name: MRP नहीं मिला", "$name: MRP not found")
+            if (v.colour.isEmpty()) out += Warning(Warning.Level.TIP, it.id, "$name: कलर नहीं छपा/पढ़ा गया", "$name: colour missing")
+            val s = Sizes.read(v.sizeText, v.qty)
+            if (s.state == Sizes.State.MISMATCH || s.state == Sizes.State.UNCLEAR) out += Warning(Warning.Level.CHECK, it.id, "$name: ${s.hindi}", "$name: size quantities need checking")
+            if (s.state == Sizes.State.NONE && v.sizeText.isEmpty()) out += Warning(Warning.Level.TIP, it.id, "$name: साइज़ नहीं छपे", "$name: sizes missing")
+            val key = "${v.article}|${v.colour}|${v.mrp}"
+            seen[key]?.let { other -> out += Warning(Warning.Level.TIP, it.id, "$name: यही आर्टिकल, कलर और MRP लाइन $other में भी है", "$name: same article/colour/MRP as line $other") }
+            seen.putIfAbsent(key, name)
+            // Same article from the same supplier at a different rate before.
+            val before = previous.filter { p -> p.id != inv.id && p.header.supplierGstin == h.supplierGstin }
+                .flatMap { p -> p.items.map { i -> p to i.current } }
+                .filter { (_, o) -> o.article == v.article && o.mrp?.compareTo(v.mrp) == 0 && o.rate != null }
+                .maxByOrNull { (p, _) -> p.createdAt }
+            if (before != null && v.rate != null && before.second.rate!!.compareTo(v.rate) != 0) out += Warning(Warning.Level.TIP, it.id,
+                "$name: पिछली बार रेट ₹${Calc.fmt(before.second.rate)} था (बिल ${before.first.header.invoiceNo ?: ""}), अब ₹${Calc.fmt(v.rate)}",
+                "$name: rate was ₹${Calc.fmt(before.second.rate)} last time, now ₹${Calc.fmt(v.rate)}")
+        }
+        if (inv.status != InvoiceStatus.VERIFIED && out.none { it.level != Warning.Level.TIP }) out += Warning(Warning.Level.TIP, null,
+            "सब ठीक लग रहा है। जाँचकर \"Verified\" करें, फिर चाहें तो साइज़-वार स्टॉक फ़ाइल बनाएँ।", "Everything looks fine — verify, then export stock if you want.")
+        return out
+    }
+
+    fun hindi(f: F): String = when (f) {
+        F.SR -> "क्रम"; F.ARTICLE -> "आर्टिकल"; F.NAME -> "नाम"; F.COLOUR -> "कलर"; F.SIZE -> "साइज़"; F.HSN -> "HSN"
+        F.QTY -> "मात्रा"; F.MRP -> "MRP"; F.RATE -> "रेट"; F.GROSS -> "Total (मात्रा × रेट)"; F.DISC_PCT -> "बिल डिस्काउंट %"
+        F.DISC_AMT -> "डिस्काउंट ₹"; F.TAXABLE -> "Taxable"; F.CGST_PCT -> "CGST %"; F.CGST_AMT -> "CGST ₹"
+        F.SGST_PCT -> "SGST %"; F.SGST_AMT -> "SGST ₹"; F.IGST_PCT -> "IGST %"; F.IGST_AMT -> "IGST ₹"; F.OTHER -> "दूसरे चार्ज"
+    }
+}

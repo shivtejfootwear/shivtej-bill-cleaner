@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="brand_blue">#FF1565E0</color>
-    <color name="screen_bg">#FFF4F7FC</color>
-
-    <style name="Theme.BillCleaner" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowBackground">@color/screen_bg</item>
-        <item name="android:statusBarColor">@color/screen_bg</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/screen_bg</item>
+    <style name="Theme.BillScanner" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#0E2A47</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+        <item name="android:windowBackground">#F3F5F9</item>
     </style>
+    <color name="launcher_bg">#0E2A47</color>
 </resources>
