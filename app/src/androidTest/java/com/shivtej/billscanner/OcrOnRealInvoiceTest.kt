@@ -130,6 +130,15 @@ class OcrOnRealInvoiceTest {
             pages += page
         }
         report(name, dir, pages)
+        // The self-check: doubtful lines cut out, enlarged, read again.
+        val before = InvoiceParser.parse(pages).items.count { it.needs.isNotEmpty() }
+        val t0 = System.currentTimeMillis()
+        val checked = com.shivtej.billscanner.ocr.SelfCheck.run(pages, bitmaps.map { b -> com.shivtej.billscanner.ocr.SelfCheck.Source { b } }, { InvoiceParser.parse(it) })
+        val after = checked.parsed.items.count { it.needs.isNotEmpty() }
+        log("[$name] SELFCHECK tried=${checked.tried} fixed=${checked.fixed} doubtful before=$before after=$after ms=${System.currentTimeMillis() - t0}")
+        val dir2 = File(dir, "selfcheck").apply { mkdirs() }
+        checked.pages.forEachIndexed { i, p -> File(dir2, "ocr_${i + 1}.tsv").writeText(OcrCodec.encode(p)) }
+        report("${name}_selfcheck", dir2, checked.pages)
     }
 
     @Test fun patel() = read("patel", listOf("patel_tradelines_g2_2627_1309.jpg"))

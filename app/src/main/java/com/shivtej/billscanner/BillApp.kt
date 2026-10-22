@@ -17,6 +17,7 @@ import com.shivtej.billscanner.data.PageStore
 import com.shivtej.billscanner.data.Prefs
 import com.shivtej.billscanner.ocr.Ocr
 import com.shivtej.billscanner.ocr.PdfBill
+import com.shivtej.billscanner.ocr.SelfCheck
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -46,6 +47,9 @@ class Container(val ctx: Context, db: BillDb) {
     var pageNow by mutableStateOf(0)
     var scanError by mutableStateOf<String?>(null)
     var scannedId by mutableStateOf<String?>(null)
+    /** Self-check progress: line n of total being read again. */
+    var checkNow by mutableStateOf(0)
+    var checkTotal by mutableStateOf(0)
     /** Bumped when a bill is shared to the app from WhatsApp / Files. */
     var sharedTick by mutableStateOf(0)
 
@@ -55,12 +59,14 @@ class Container(val ctx: Context, db: BillDb) {
     fun startScan() {
         val list = pending.toList()
         if (list.isEmpty()) return
-        scanError = null; scannedId = null; step = ScanStep.SAVE; progress = 0.05f; pageNow = 0
+        scanError = null; scannedId = null; step = ScanStep.SAVE; progress = 0.05f; pageNow = 0; checkNow = 0; checkTotal = 0
         scope.launch {
             runCatching {
                 val id = UUID.randomUUID().toString()
                 val ocr = mutableListOf<OcrPage>()
                 val files = mutableListOf<String>()
+                // Where each page's picture comes from, to read a doubtful line again (null = PDF text, read exactly).
+                val sources = mutableListOf<SelfCheck.Source?>()
                 step = ScanStep.OCR
                 // The same file added twice (picked again, or shared twice) is read once.
                 val seen = mutableSetOf<String>()
@@ -80,6 +86,7 @@ class Container(val ctx: Context, db: BillDb) {
                             error("यह PDF इसी app की बनाई रिपोर्ट है, सप्लायर का बिल नहीं। सप्लायर का असली PDF (WhatsApp वाला) या बिल की फ़ोटो चुनें।")
                         read.forEachIndexed { i, pg ->
                             ocr += pg.words
+                            sources += if (pg.fromText) null else SelfCheck.Source { withContext(Dispatchers.IO) { PdfBill.render(src, i, 3f) } }
                             files += withContext(Dispatchers.IO) {
                                 val bmp = PdfBill.render(src, i, 2f)
                                 pages.keepBitmap(id, files.size + 1, bmp).also { bmp.recycle() }
@@ -93,14 +100,23 @@ class Container(val ctx: Context, db: BillDb) {
                         pageNow = files.size
                         val bmp = withContext(Dispatchers.IO) { Ocr.rotate(Ocr.loadBitmap(File(path)), item.rotation) }
                         ocr += Ocr.read(bmp)
+                        val rot = item.rotation
+                        sources += SelfCheck.Source { withContext(Dispatchers.IO) { Ocr.rotate(Ocr.loadBitmap(File(path)), rot) } }
                         bmp.recycle()
                         progress = 0.1f + 0.6f * (k + 1) / list.size
                     }
                 }
-                withContext(Dispatchers.IO) { pages.saveOcr(id, ocr) }
-                step = ScanStep.FIELDS; progress = 0.8f
-                val parsed = withContext(Dispatchers.Default) { InvoiceParser.parse(ocr, TaughtLayouts(prefs.taught)) }
-                step = ScanStep.CHECK; progress = 0.92f
+                step = ScanStep.FIELDS; progress = 0.75f
+                val memory = TaughtLayouts(prefs.taught)
+                // The scanner checks itself: lines that do not add up are cut out, enlarged and read again.
+                step = ScanStep.CHECK; progress = 0.8f
+                val checked = SelfCheck.run(ocr, sources, { InvoiceParser.parse(it, memory) }) { n, total ->
+                    checkNow = n; checkTotal = total; progress = 0.8f + 0.18f * n / total
+                }
+                val parsed = checked.parsed.let { p ->
+                    if (checked.fixed > 0) p.copy(notes = p.notes + "खुद जाँच: ${checked.tried} शक वाली लाइनें दोबारा बड़ा करके पढ़ीं, ${checked.fixed} ठीक हुईं") else p
+                }
+                withContext(Dispatchers.IO) { pages.saveOcr(id, checked.pages) }
                 val inv = Invoice(id, System.currentTimeMillis(), parsed.header, parsed.header, parsed.items, files, columns = parsed.columns)
                 repo.save(inv)
                 id

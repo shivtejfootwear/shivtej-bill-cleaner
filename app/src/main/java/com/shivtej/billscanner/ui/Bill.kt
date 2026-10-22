@@ -231,6 +231,12 @@ fun BillContent(
                 Column(Modifier.weight(1f).padding(horizontal = 10.dp)) {
                     Text(tr("बिल ", "Bill ") + (h.invoiceNo ?: "?") + " · " + (h.invoiceDate ?: "?"), fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = C.navy)
                     Text("${t.articleLines} " + tr("आर्टिकल", "articles") + " · ${qtyText(t.qty)} " + tr("जोड़ी", "pairs") + " · " + rs(t.printedGrand ?: t.grand), fontSize = 13.sp, color = C.muted)
+                    val arts = inv.items.filter { it.kind == ItemKind.ARTICLE }
+                    val sure = arts.count { it.needs.isEmpty() && com.shivtej.billscanner.core.ocr.Heal.proven(it.current) }
+                    if (arts.isNotEmpty()) Text(
+                        "✓ $sure/${arts.size} " + tr("लाइन का हिसाब पक्का", "lines add up") + if (sure < arts.size) " · ⚠ ${arts.size - sure} " + tr("देखें", "to check") else "",
+                        fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold, color = if (sure == arts.size) C.ok else C.warn,
+                    )
                     val d = t.difference
                     when {
                         t.printedGrand == null -> Pill(tr("बिल का Total नहीं पढ़ा", "Bill total not read"), C.warn, C.warnSoft)
@@ -385,7 +391,14 @@ private fun GridRow(
     Row(Modifier.clickable(onClick = onClick)) {
         val left = frozen.joinToString(" ") { InvoiceExport.printedText(inv, item, it, cols[it]) }.trim()
             .ifEmpty { "${item.current.sr ?: ""} ${item.current.article}".trim() } + if (item.kind == ItemKind.CHARGE) tr(" (चार्ज)", " (charge)") else ""
-        DataCell(left, FROZEN, Tone.NORMAL, false, warn = warnRow && (F.ARTICLE in item.needs || F.SR in item.needs))
+        // ✓ = the line's own numbers add up (pairs × rate − discount = amount); ⚠ = look at it.
+        val mark = when {
+            item.kind != ItemKind.ARTICLE -> ""
+            item.needs.isEmpty() && com.shivtej.billscanner.core.ocr.Heal.proven(item.current) -> "✓ "
+            item.needs.isNotEmpty() -> "⚠ "
+            else -> ""
+        }
+        DataCell(mark + left, FROZEN, Tone.NORMAL, false, warn = warnRow)
         Row(Modifier.horizontalScroll(hs)) {
             @Composable fun cell(ci: Int) {
                 val col = cols[ci]

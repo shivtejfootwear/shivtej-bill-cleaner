@@ -128,7 +128,9 @@ object InvoiceParser {
                     ?.let { header = header.copy(printedGrandTotal = it) }
             }
         }
-        return ParsedInvoice(header, items, notes, columns)
+        val healed = Heal.byColumns(items, columns)
+        if (healed.fixed > 0) notes += "बिल के बाकी आर्टिकल देखकर ${healed.fixed} लाइनें खुद ठीक कीं (जैसे सब पर एक ही डिस्काउंट %/GST %, और हिसाब पूरा बैठा)"
+        return ParsedInvoice(header, healed.items, notes, columns)
     }
 
     private fun merge(a: Header, b: Header, last: Boolean) = Header(

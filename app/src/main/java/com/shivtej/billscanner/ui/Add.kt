@@ -186,11 +186,11 @@ private fun PageThumb(i: Int, p: PendingPage, preset: Bitmap?, onRotate: () -> U
 fun ProcessingScreen(onDone: (String) -> Unit, onBack: () -> Unit) {
     val c = LocalContext.current.container
     LaunchedEffect(c.step, c.scannedId) { c.scannedId?.let { if (c.step == ScanStep.DONE) onDone(it) } }
-    ProcessingContent(c.step, c.progress, c.pageNow, c.scanError, onBack)
+    ProcessingContent(c.step, c.progress, c.pageNow, c.scanError, onBack, c.checkNow, c.checkTotal)
 }
 
 @Composable
-fun ProcessingContent(step: ScanStep, progress: Float, page: Int, error: String?, onBack: () -> Unit) {
+fun ProcessingContent(step: ScanStep, progress: Float, page: Int, error: String?, onBack: () -> Unit, checkNow: Int = 0, checkTotal: Int = 0) {
     Column(Modifier.fillMaxSize().background(C.bg)) {
         TopBar(tr("स्कैन हो रहा है", "Scanning"), if (step == ScanStep.FAILED) onBack else null)
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -205,7 +205,8 @@ fun ProcessingContent(step: ScanStep, progress: Float, page: Int, error: String?
                 StepRow(1, tr("असली फ़ोटो सुरक्षित करना", "Saving the original photo"), step, ScanStep.SAVE)
                 StepRow(2, tr("अक्षर पढ़ना (OCR, फ़ोन पर)", "Reading text (OCR, on phone)"), step, ScanStep.OCR)
                 StepRow(3, tr("आर्टिकल, रेट, डिस्काउंट पहचानना", "Finding articles, rates, discounts"), step, ScanStep.FIELDS)
-                StepRow(4, tr("हिसाब और मिलान", "Calculation and checks"), step, ScanStep.CHECK)
+                StepRow(4, tr("खुद जाँच: जिस लाइन का हिसाब न बैठे, उसे बड़ा करके दोबारा पढ़ना", "Self-check: lines that do not add up are enlarged and read again") +
+                    if (step == ScanStep.CHECK && checkTotal > 0) " · $checkNow/$checkTotal" else "", step, ScanStep.CHECK)
             }
             if (error != null) Card(border = C.warn, bg = C.warnSoft) {
                 Text(tr("बिल नहीं पढ़ा जा सका: ", "Could not read the bill: ") + error, color = C.warn, fontSize = 14.sp)

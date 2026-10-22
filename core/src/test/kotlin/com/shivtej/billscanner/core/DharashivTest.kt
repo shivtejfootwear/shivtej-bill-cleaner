@@ -103,12 +103,18 @@ class DharashivTest {
         assertEquals(d("107350.00"), s.billTotal)
     }
 
-    @Test fun unreadableDiscIsNotInvented() {
+    @Test fun unreadableDiscIsWorkedOutOnlyWhenTheLineProvesIt() {
+        // Line 7: 1 pair × 720.00, amount 649.30, Disc. unreadable. The bill's common 9.82 % makes the line add up exactly.
         val p = InvoiceParser.parse(listOf(DharashivInvoice.page1(blankDiscOf = setOf(7)), DharashivInvoice.page2()))
         val it7 = p.items[6]
-        assertNull(it7.current.discPct)
-        assertTrue(F.DISC_PCT in it7.needs)
+        assertEquals(0, it7.current.discPct!!.compareTo(d("9.82")))
+        assertTrue(it7.needs.isEmpty())
+        assertTrue(it7.raw.any { it.contains("हिसाब") })
         assertEquals(d("649.30"), it7.current.taxable)
+        // Line 36 has its own 7.45 %: an unreadable Disc. there does not get the bill's 9.82 % (the line would not add up).
+        val q = InvoiceParser.parse(listOf(DharashivInvoice.page1(blankDiscOf = setOf(36)), DharashivInvoice.page2()))
+        assertNull(q.items[35].current.discPct)
+        assertTrue(F.DISC_PCT in q.items[35].needs)
     }
 
     @Test fun misplacedHeadingsAreFixedByTheBillsOwnArithmetic() {

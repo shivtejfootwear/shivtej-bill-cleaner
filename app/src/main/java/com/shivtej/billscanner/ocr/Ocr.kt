@@ -50,6 +50,9 @@ object Ocr {
     fun rotate(bmp: Bitmap, degrees: Int): Bitmap =
         if (degrees % 360 == 0) bmp else Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, Matrix().apply { postRotate(degrees.toFloat()) }, true)
 
+    /** Words of [bmp] (a part of a page enlarged [k] times, placed at [dx], [dy]) in page coordinates. */
+    suspend fun recogniseAt(bmp: Bitmap, dx: Int, dy: Int, k: Double) = recognise(bmp, dx, dy, k)
+
     private suspend fun recognise(bmp: Bitmap, dx: Int, dy: Int, k: Double): List<OcrWord> {
         val text = recognizer.process(InputImage.fromBitmap(bmp, 0)).await()
         return text.textBlocks.flatMap { b -> b.lines.flatMap { l -> l.elements } }.mapNotNull { e ->
