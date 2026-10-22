@@ -23,7 +23,7 @@ object SelfCheck {
     class Result(val pages: List<OcrPage>, val parsed: ParsedInvoice, val tried: Int, val fixed: Int)
 
     /** The bitmap a page was read from (same size as its OCR), or null for a PDF page read from its own text. */
-    fun interface Source { suspend fun bitmap(): Bitmap? }
+    class Source(val bitmap: suspend () -> Bitmap?)
 
     private enum class Look { GREY, SHARP, BLACK_WHITE }
 
@@ -54,7 +54,7 @@ object SelfCheck {
             search@ for (look in Look.values()) for (letter in listOf(40, 30)) {
                 val words = readStrip(bmp, top, bottom, mh, letter, look) ?: continue
                 // This band's words replaced by the new reading of it.
-                val inBand = { w: OcrWord -> w.box.cy in a.t..a.b }
+                val inBand = { w: OcrWord -> w.box.cy >= a.t.toDouble() && w.box.cy <= a.b.toDouble() }
                 val trial = cur.toMutableList().also { it[a.page] = page.copy(words = page.words.filterNot(inBand) + words.filter(inBand)) }
                 val p2 = parse(trial)
                 val after = good(p2)
