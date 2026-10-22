@@ -125,7 +125,8 @@ fun AnalysisContent(
                         val v = it.current
                         val t = it.targetPct ?: def
                         val tr8 = Calc.targetRate(v.mrp, t)
-                        val diff = if (tr8 != null && v.rate != null) tr8 - v.rate else null
+                        val rate = v.rate
+                        val diff = if (tr8 != null && rate != null) tr8 - rate else null
                         Row(Modifier.clickable { onItem(it.id) }) {
                             Cell("${v.sr ?: ""} ${v.article}", cols[0].second, left = true)
                             Cell(if (v.discPct == null) "Needs Verif." else pct(v.discPct), cols[1].second, orange = true, warn = v.discPct == null)

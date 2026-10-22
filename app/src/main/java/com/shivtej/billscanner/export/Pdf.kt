@@ -199,10 +199,11 @@ object Pdf {
             val v = it.current
             val tp = it.targetPct ?: inv.defaultTargetPct
             val tr = Calc.targetRate(v.mrp, tp)
-            val value = if (tr != null && v.qty != null) Calc.r2(tr * v.qty) else null
+            val q = v.qty; val rate = v.rate
+            val value = if (tr != null && q != null) Calc.r2(tr * q) else null
             value?.let { total += it }
             listOf("${v.sr ?: ""}", "${v.article} ${v.name}".trim(), v.qty?.stripTrailingZeros()?.toPlainString() ?: "", n(v.mrp), n(v.rate),
-                v.discPct?.let { p(it) } ?: NEEDS_VERIFICATION, p(Calc.mrpDiscPct(v)), p(tp), tr?.let { n(it) } ?: "", if (tr != null && v.rate != null) n(tr - v.rate) else "", value?.let { n(it) } ?: "")
+                v.discPct?.let { p(it) } ?: NEEDS_VERIFICATION, p(Calc.mrpDiscPct(v)), p(tp), tr?.let { n(it) } ?: "", if (tr != null && rate != null) n(tr - rate) else "", value?.let { n(it) } ?: "")
         }
         wr.table(cols, rows)
         wr.line("Total value at target rates (before tax): ₹${n(total)}", wr.bold, 10f, NAVY)
