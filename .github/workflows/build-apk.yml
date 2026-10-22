@@ -112,6 +112,11 @@ jobs:
         with:
           gradle-version: "8.14.3"
 
+      - name: Free disk space for the emulator
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /usr/local/lib/node_modules /opt/hostedtoolcache/CodeQL || true
+          df -h /
+
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -134,8 +139,9 @@ jobs:
           $SDK/sdkmanager --install "$IMG" "emulator" "platform-tools" > ocr/sdk.txt 2>&1
           echo no | $SDK/avdmanager create avd -n t -k "$IMG" -d pixel --force > ocr/avd.txt 2>&1
           $SDK/avdmanager list avd >> ocr/avd.txt 2>&1; ls -la $ANDROID_AVD_HOME >> ocr/avd.txt
+          echo "disk.dataPartition.size=3G" >> $ANDROID_AVD_HOME/t.avd/config.ini
           export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH
-          nohup emulator -avd t -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none -memory 4096 > ocr/emulator.txt 2>&1 &
+          nohup emulator -avd t -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none -memory 4096 -partition-size 3072 > ocr/emulator.txt 2>&1 &
           timeout 600 adb wait-for-device
           timeout 900 bash -c 'until [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" = "1" ]; do sleep 5; done'
           echo "boot exit=$?" >> ocr/emulator-status.txt
