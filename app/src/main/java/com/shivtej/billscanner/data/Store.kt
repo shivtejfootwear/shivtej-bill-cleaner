@@ -116,6 +116,11 @@ class Prefs(ctx: Context) {
         get() = p.getBoolean("pdf_land", true)
         set(v) { p.edit().putBoolean("pdf_land", v).apply() }
 
+    /** What the scanner learnt from the person's corrections (see core Learnt). */
+    var learnt: com.shivtej.billscanner.core.ocr.Learnt
+        get() = com.shivtej.billscanner.core.ocr.Learnt.decode(p.getString("learnt", ""))
+        set(v) { p.edit().putString("learnt", v.encode()).apply() }
+
     /** Column meanings the person taught, per supplier: "supplier\u001Fheading\u001FKIND" lines. */
     var taught: Map<String, Map<String, com.shivtej.billscanner.core.ocr.InvoiceParser.Kind>>
         get() = (p.getString("taught", "") ?: "").lines().mapNotNull { l ->

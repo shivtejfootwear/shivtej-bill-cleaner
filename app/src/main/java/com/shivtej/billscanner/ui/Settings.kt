@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.shivtej.billscanner.BuildConfig
 import com.shivtej.billscanner.container
 
@@ -34,11 +35,14 @@ fun SettingsScreen(onBack: () -> Unit) {
     val c = LocalContext.current.container
     var choices by remember { mutableStateOf(c.prefs.discountChoices) }
     var land by remember { mutableStateOf(c.prefs.pdfLandscape) }
+    var learnt by remember { mutableStateOf(c.prefs.learnt) }
     SettingsContent(
         c.lang, { c.setLanguage(it) }, choices,
         onAddChoice = { p -> choices = (choices + p).distinct().sorted(); c.prefs.discountChoices = choices },
         onRemoveChoice = { p -> choices = choices - p; c.prefs.discountChoices = choices },
         landscape = land, onLandscape = { land = it; c.prefs.pdfLandscape = it }, onBack = onBack,
+        learnt = learnt, onForget = { c.prefs.learnt = com.shivtej.billscanner.core.ocr.Learnt(); c.prefs.taught = emptyMap(); learnt = c.prefs.learnt },
+        taughtColumns = c.prefs.taught.values.sumOf { it.size },
     )
 }
 
@@ -47,11 +51,27 @@ fun SettingsScreen(onBack: () -> Unit) {
 fun SettingsContent(
     lang: String, onLang: (String) -> Unit, choices: List<Int>, onAddChoice: (Int) -> Unit, onRemoveChoice: (Int) -> Unit,
     landscape: Boolean, onLandscape: (Boolean) -> Unit, onBack: () -> Unit,
+    learnt: com.shivtej.billscanner.core.ocr.Learnt = com.shivtej.billscanner.core.ocr.Learnt(), onForget: () -> Unit = {}, taughtColumns: Int = 0,
 ) {
     var add by remember { mutableStateOf("") }
     Column(Modifier.fillMaxSize().background(C.bg)) {
         TopBar(tr("सेटिंग", "Settings"), onBack)
         Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Card {
+                Title(tr("🧠 स्कैनर ने क्या सीखा", "🧠 What the scanner learnt"))
+                val fixes = learnt.fixes.values.sumOf { m -> m.values.sumOf { it.size } }
+                val mrps = learnt.mrp.values.sumOf { it.size }
+                Text(
+                    tr("आपके सुधार: $fixes · अक्षर/अंक की पहचान: ${learnt.swaps.size} · हटाई गई फ़ालतू लाइनें: ${learnt.junk.values.sumOf { it.size }} · " +
+                        "याद किए कॉलम: $taughtColumns · आर्टिकल MRP (${learnt.mrp.size} पार्टी): $mrps",
+                        "Your fixes: $fixes · letters for digits: ${learnt.swaps.size} · junk lines: ${learnt.junk.values.sumOf { it.size }} · " +
+                            "columns taught: $taughtColumns · article MRPs (${learnt.mrp.size} suppliers): $mrps"),
+                    fontSize = 14.sp, color = C.navy,
+                )
+                Muted(tr("आप किसी लाइन को ठीक करते हैं तो app याद रखता है कि उस पार्टी के बिल में वह गलती कैसी थी, और अगली बार खुद ठीक करता है। सब इसी फ़ोन पर रहता है।",
+                    "When you fix a line, the app remembers that supplier's misreading and fixes it by itself next time. Stays on this phone."))
+                if (learnt.size + mrps + taughtColumns > 0) TextButton(onClick = onForget) { Text(tr("सब भूल जाओ (शुरू से)", "Forget everything"), color = C.err) }
+            }
             Card {
                 Title(tr("भाषा", "Language"))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

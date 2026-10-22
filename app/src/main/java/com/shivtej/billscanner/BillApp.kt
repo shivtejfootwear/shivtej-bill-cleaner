@@ -18,6 +18,7 @@ import com.shivtej.billscanner.data.Prefs
 import com.shivtej.billscanner.ocr.Ocr
 import com.shivtej.billscanner.ocr.PdfBill
 import com.shivtej.billscanner.ocr.SelfCheck
+import com.shivtej.billscanner.core.ocr.Learning
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -110,7 +111,9 @@ class Container(val ctx: Context, db: BillDb) {
                 val memory = TaughtLayouts(prefs.taught)
                 // The scanner checks itself: lines that do not add up are cut out, enlarged and read again.
                 step = ScanStep.CHECK; progress = 0.8f
-                val checked = SelfCheck.run(ocr, sources, { InvoiceParser.parse(it, memory) }) { n, total ->
+                val learnt = prefs.learnt
+                val read = { ps: List<OcrPage> -> Learning.apply(learnt, InvoiceParser.parse(ps, memory)).first }
+                val checked = SelfCheck.run(ocr, sources, read) { n, total ->
                     checkNow = n; checkTotal = total; progress = 0.8f + 0.18f * n / total
                 }
                 val parsed = checked.parsed.let { p ->
@@ -119,6 +122,8 @@ class Container(val ctx: Context, db: BillDb) {
                 withContext(Dispatchers.IO) { pages.saveOcr(id, checked.pages) }
                 val inv = Invoice(id, System.currentTimeMillis(), parsed.header, parsed.header, parsed.items, files, columns = parsed.columns)
                 repo.save(inv)
+                // Lines that added up teach this supplier's article MRPs for the next bills.
+                prefs.learnt = Learning.fromBill(prefs.learnt, inv)
                 id
             }.onSuccess { id -> scannedId = id; step = ScanStep.DONE; progress = 1f; pending.clear() }
                 .onFailure { scanError = it.message ?: it.toString(); step = ScanStep.FAILED }
@@ -138,7 +143,7 @@ suspend fun Container.teachColumn(inv: Invoice, label: String, kind: InvoicePars
     prefs.taught = all
     val ocr = withContext(Dispatchers.IO) { pages.loadOcr(inv.id) }
     if (ocr.isEmpty()) return null
-    val p = withContext(Dispatchers.Default) { InvoiceParser.parse(ocr, TaughtLayouts(all)) }
+    val p = withContext(Dispatchers.Default) { Learning.apply(prefs.learnt, InvoiceParser.parse(ocr, TaughtLayouts(all))).first }
     val now = System.currentTimeMillis()
     val again = inv.copy(
         headerOriginal = p.header, header = p.header, items = p.items, columns = p.columns, status = com.shivtej.billscanner.core.model.InvoiceStatus.DRAFT,

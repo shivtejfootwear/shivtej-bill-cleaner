@@ -117,12 +117,22 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
         val strip by produceState<Bitmap?>(null, itemId) { value = withContext(Dispatchers.IO) { item?.let { lineStrip(inv, it) } } }
         if (item == null) editing = null else ItemSheet(
             item, onDismiss = { editing = null },
-            onSave = { v -> ed.change { Edits.updateItem(it, itemId, v, System.currentTimeMillis()) } },
+            onSave = { v ->
+                // The scanner learns from the fix: the same misreading on this supplier's next bills is corrected by itself.
+                val (learnt, lessons) = com.shivtej.billscanner.core.ocr.Learning.fromEdit(c.prefs.learnt, inv, item!!, v)
+                if (lessons.isNotEmpty()) { c.prefs.learnt = learnt; message = tr("🧠 सीख लिया (अगले बिल में खुद ठीक होगा): ", "🧠 Learnt (fixed by itself next time): ") + lessons.joinToString(" · ") }
+                ed.change { Edits.updateItem(it, itemId, v, System.currentTimeMillis()) }
+            },
             onVerified = { on -> ed.change { Edits.setVerified(it, itemId, on, System.currentTimeMillis()) } },
             onRevert = { ed.change { Edits.revertItem(it, itemId, System.currentTimeMillis()) } },
             onRecalc = { ed.change { Edits.recalcItem(it, itemId, System.currentTimeMillis()) } },
             onDuplicate = { ed.change { Edits.duplicateItem(it, itemId, System.currentTimeMillis()) }; editing = null },
-            onDelete = { ed.change { Edits.deleteItem(it, itemId, System.currentTimeMillis()) }; editing = null },
+            onDelete = {
+                val before = c.prefs.learnt
+                val after = com.shivtej.billscanner.core.ocr.Learning.fromDelete(before, inv, item!!)
+                if (after != before) { c.prefs.learnt = after; message = tr("🧠 सीख लिया: ऐसी लाइन अगली बार इस पार्टी के बिल में नहीं आएगी", "🧠 Learnt: such a line is skipped next time") }
+                ed.change { Edits.deleteItem(it, itemId, System.currentTimeMillis()) }; editing = null
+            },
             header = inv.header, withGst = inv.sittingWithGst, target = Target.pct(inv, item.copy(targetPct = null)),
             onTarget = { p -> ed.change { Edits.setTarget(it, itemId, p, System.currentTimeMillis()) } },
             strip = strip,
