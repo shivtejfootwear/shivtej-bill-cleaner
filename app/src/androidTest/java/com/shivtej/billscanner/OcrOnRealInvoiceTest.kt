@@ -51,7 +51,10 @@ class OcrOnRealInvoiceTest {
         File(dir, "ocr_words.tsv").writeText(page.words.joinToString("\n") { "${it.box.l}\t${it.box.t}\t${it.box.r}\t${it.box.b}\t${it.text}" })
         File(dir, "invoice.json").writeText(InvoiceCodec.encode(inv))
         File(dir, "real_invoice.xlsx").outputStream().use { InvoiceExport.xlsx(inv, it) }
-        File(dir, "real_report.pdf").outputStream().use { Pdf.report(inv, true, it) }
+        File(dir, "real_report_landscape.pdf").outputStream().use { Pdf.report(inv, true, it) }
+        File(dir, "real_report_portrait.pdf").outputStream().use { Pdf.report(inv, false, it) }
+        File(dir, "real_target_sheet.pdf").outputStream().use { Pdf.target(inv.copy(defaultTargetPct = java.math.BigDecimal("35")), it) }
+        File(dir, "real_photo.pdf").outputStream().use { Pdf.photos(listOf(bmp), "PATEL TRADELINES G2/2627/1309", it) }
         log("FILES ${dir.absolutePath}")
     }
 }
