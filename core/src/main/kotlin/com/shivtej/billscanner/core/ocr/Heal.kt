@@ -25,6 +25,13 @@ object Heal {
         v.qty != null && v.rate != null && v.taxable != null && Calc.checkLine(v).isEmpty() &&
             (v.discPct != null || v.discAmt != null || v.gross != null || (v.qty * v.rate - v.taxable).abs() <= BigDecimal("0.06"))
 
+    /** Fields whose doubt matters for the money (a missing colour or name does not). */
+    val MONEY = setOf(F.QTY, F.MRP, F.RATE, F.GROSS, F.DISC_PCT, F.DISC_AMT, F.TAXABLE, F.GST_PCT, F.CGST_PCT, F.SGST_PCT, F.IGST_PCT,
+        F.CGST_AMT, F.SGST_AMT, F.IGST_AMT, F.TOTAL, F.SR)
+
+    /** The line is read for sure: its numbers add up and no money field is in doubt. */
+    fun sure(i: LineItem): Boolean = proven(i.current) && i.needs.none { it in MONEY }
+
     /** Most common value and how many lines have it. */
     private fun mode(xs: List<BigDecimal>): Pair<BigDecimal, Int>? =
         xs.groupBy { it.stripTrailingZeros() }.maxByOrNull { it.value.size }?.let { it.key to it.value.size }

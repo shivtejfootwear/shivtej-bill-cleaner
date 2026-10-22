@@ -104,8 +104,9 @@ fun ItemSheet(
                     )
                 }
             }
-            if (item.needs.isNotEmpty()) Text(
-                "⚑ " + tr("पीले ख़ाने ठीक से नहीं पढ़े गए: ", "Not read well: ") + item.needs.joinToString(", ") { com.shivtej.billscanner.core.model.Warnings.hindi(it) } +
+            val doubts = item.needs.filter { it in com.shivtej.billscanner.core.ocr.Heal.MONEY }
+            if (doubts.isNotEmpty()) Text(
+                "⚑ " + tr("पीले ख़ाने ठीक से नहीं पढ़े गए: ", "Not read well: ") + doubts.joinToString(", ") { com.shivtej.billscanner.core.model.Warnings.hindi(it) } +
                     tr(" — ऊपर बिल देखकर नीचे सही संख्या लिखें और सेव करें।", " — look at the bill above, type the right numbers below and save."),
                 fontSize = 12.5.sp, color = C.warn, modifier = Modifier.fillMaxWidth().background(C.warnSoft, RoundedCornerShape(10.dp)).padding(8.dp),
             )

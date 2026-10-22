@@ -245,7 +245,7 @@ fun BillContent(
                     Text(tr("बिल ", "Bill ") + (h.invoiceNo ?: "?") + " · " + (h.invoiceDate ?: "?"), fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = C.navy)
                     Text("${t.articleLines} " + tr("आर्टिकल", "articles") + " · ${qtyText(t.qty)} " + tr("जोड़ी", "pairs") + " · " + rs(t.printedGrand ?: t.grand), fontSize = 13.sp, color = C.muted)
                     val arts = inv.items.filter { it.kind == ItemKind.ARTICLE }
-                    val sure = arts.count { it.needs.isEmpty() && com.shivtej.billscanner.core.ocr.Heal.proven(it.current) }
+                    val sure = arts.count { com.shivtej.billscanner.core.ocr.Heal.sure(it) }
                     if (arts.isNotEmpty()) Text(
                         "✓ $sure/${arts.size} " + tr("लाइन का हिसाब पक्का", "lines add up") + if (sure < arts.size) " · ⚠ ${arts.size - sure} " + tr("ठीक करें ›", "fix ›") else "",
                         fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold, color = if (sure == arts.size) C.ok else C.warn,
@@ -398,15 +398,15 @@ private fun GridRow(
     inv: Invoice, item: LineItem, cols: List<BillColumn>, frozen: List<Int>, first: List<Int>, after: List<Int>, tail: List<Int>,
     line: Target.Line?, anyTarget: Boolean, hs: ScrollState, onClick: () -> Unit,
 ) {
-    val warnRow = item.needs.isNotEmpty()
+    val warnRow = item.kind == ItemKind.ARTICLE && !com.shivtej.billscanner.core.ocr.Heal.sure(item)
     Row(Modifier.clickable(onClick = onClick)) {
         val left = frozen.joinToString(" ") { InvoiceExport.printedText(inv, item, it, cols[it]) }.trim()
             .ifEmpty { "${item.current.sr ?: ""} ${item.current.article}".trim() } + if (item.kind == ItemKind.CHARGE) tr(" (चार्ज)", " (charge)") else ""
         // ✓ = the line's own numbers add up (pairs × rate − discount = amount); ⚠ = look at it.
         val mark = when {
             item.kind != ItemKind.ARTICLE -> ""
-            item.needs.isEmpty() && com.shivtej.billscanner.core.ocr.Heal.proven(item.current) -> "✓ "
-            item.needs.isNotEmpty() -> "⚠ "
+            com.shivtej.billscanner.core.ocr.Heal.sure(item) -> "✓ "
+            item.kind == ItemKind.ARTICLE -> "⚠ "
             else -> ""
         }
         DataCell(mark + left, FROZEN, Tone.NORMAL, false, warn = warnRow)
@@ -439,8 +439,13 @@ fun lineStrip(inv: Invoice, item: LineItem): Bitmap? = runCatching {
     val h = (a.b - a.t).coerceAtLeast(10)
     val top = ((a.t - h * 0.9) * k).toInt().coerceIn(0, page.height - 1)
     val bottom = ((a.b + h * 0.9) * k).toInt().coerceIn(top + 1, page.height)
-    val out = Bitmap.createBitmap(page, 0, top, page.width, bottom - top)
-    if (out !== page) page.recycle()
+    val out = Bitmap.createBitmap(page, 0, top, page.width, bottom - top).copy(Bitmap.Config.ARGB_8888, true)
+    page.recycle()
+    // The line itself marked in yellow, its neighbours left plain.
+    val cv = android.graphics.Canvas(out)
+    val y0 = (a.t * k - top).toFloat(); val y1 = (a.b * k - top).toFloat()
+    cv.drawRect(0f, y0, out.width.toFloat(), y1, android.graphics.Paint().apply { color = 0x55FFD400 })
+    cv.drawRect(0f, y0, out.width.toFloat(), y1, android.graphics.Paint().apply { color = 0xFFF28A1E.toInt(); style = android.graphics.Paint.Style.STROKE; strokeWidth = 4f })
     out
 }.getOrNull()
 

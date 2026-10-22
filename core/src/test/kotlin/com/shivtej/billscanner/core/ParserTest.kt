@@ -64,7 +64,7 @@ class ParserTest {
         assertEquals("Black 6/2,7/3,8/3,9/2,10/2 | Grey 7/3,8/3,9/3,10/3", it4.sizeText)
         assertEquals("RedBlack", parsed.items[5].current.colour)
         assertEquals(ItemKind.CHARGE, parsed.items[9].kind)              // FREIGHT
-        assertTrue(F.COLOUR in parsed.items[10].needs)                     // S11500 has no colour printed
+        assertTrue(parsed.items[10].needs.isEmpty() && parsed.items[10].current.colour.isEmpty())   // S11500 has no colour printed: a tip, not a doubt
         assertTrue(parsed.items.take(10).all { it.needs.isEmpty() || it.kind == ItemKind.CHARGE })
     }
 

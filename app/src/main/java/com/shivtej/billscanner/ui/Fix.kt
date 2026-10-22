@@ -50,7 +50,7 @@ import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 
 /** Article lines the scan could not read for sure: they do not add up, or a number is missing. */
-fun doubtful(inv: Invoice): List<LineItem> = inv.items.filter { it.kind == ItemKind.ARTICLE && !(it.needs.isEmpty() && Heal.proven(it.current)) }
+fun doubtful(inv: Invoice): List<LineItem> = inv.items.filter { it.kind == ItemKind.ARTICLE && !Heal.sure(it) }
 
 /** Right after a scan: "these N lines were not understood — fix them now?" */
 @Composable

@@ -880,7 +880,7 @@ object InvoiceParser {
      */
     private fun readItem(block0: List<Map<Int, List<OcrWord>>>, cols: List<Col>, index: Int): LineItem {
         val first = readItemOnce(block0, cols, index)
-        if (first.kind != ItemKind.ARTICLE || (first.needs.isEmpty() && Heal.proven(first.current))) return first
+        if (first.kind != ItemKind.ARTICLE || Heal.sure(first)) return first
         val moved = reflow(block0, cols) ?: return first
         val again = readItemOnce(moved, cols, index)
         return if (Heal.proven(again.current) && again.needs.size <= first.needs.size) again else first
@@ -1034,7 +1034,7 @@ object InvoiceParser {
             if (perPair < m0 * BigDecimal("0.05") || perPair > m0 * BigDecimal("1.3")) { needs += F.TAXABLE; needs += F.MRP }
         }
         if (article.isEmpty()) needs += F.ARTICLE
-        if (kind == ItemKind.ARTICLE && colour.isEmpty() && Kind.SIZE !in has) needs += F.COLOUR
+        // A colour not printed is not a misreading (a tip says so); it never makes the line "not understood".
         if ((Kind.CGST_PCT in has || Kind.SGST_PCT in has) && (v.cgstPct == null || v.sgstPct == null)) { needs += F.CGST_PCT; needs += F.SGST_PCT }
         for (c in Calc.checkLine(v)) {
             needs += c.field

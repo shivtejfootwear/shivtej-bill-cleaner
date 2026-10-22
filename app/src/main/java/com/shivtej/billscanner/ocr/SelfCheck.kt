@@ -27,7 +27,7 @@ object SelfCheck {
 
     private enum class Look { GREY, SHARP, BLACK_WHITE }
 
-    private fun good(p: ParsedInvoice) = p.items.filter { it.needs.isEmpty() && Heal.proven(it.current) }.mapNotNull { it.current.sr }.toSet()
+    private fun good(p: ParsedInvoice) = p.items.filter { Heal.sure(it) }.mapNotNull { it.current.sr }.toSet()
 
     suspend fun run(
         pages: List<OcrPage>, sources: List<Source?>, parse: (List<OcrPage>) -> ParsedInvoice,
@@ -38,7 +38,7 @@ object SelfCheck {
         val deadline = System.currentTimeMillis() + budgetMs
         val cur = pages.toMutableList()
         var parsed = parse(cur)
-        val bad = parsed.items.filter { it.needs.isNotEmpty() && it.current.sr != null && it.at != null && sources.getOrNull(it.at!!.page) != null }.take(60)
+        val bad = parsed.items.filter { !Heal.sure(it) && it.kind == com.shivtej.billscanner.core.model.ItemKind.ARTICLE && it.current.sr != null && it.at != null && sources.getOrNull(it.at!!.page) != null }.take(60)
         val bitmaps = HashMap<Int, Bitmap?>()
         var fixed = 0
         for ((n, item) in bad.withIndex()) {
@@ -48,7 +48,7 @@ object SelfCheck {
             if (bmp.width != a.pageW || bmp.height != a.pageH) continue
             // Fixed already by an earlier re-read (neighbouring line)?
             val now = parsed.items.firstOrNull { it.current.sr == item.current.sr } ?: continue
-            if (now.needs.isEmpty()) continue
+            if (Heal.sure(now)) continue
             val page = cur[a.page]
             val mh = page.words.map { it.box.h }.sorted().let { if (it.isEmpty()) 20 else it[it.size / 2] }.coerceAtLeast(8)
             val top = (a.t - mh / 2).coerceAtLeast(0); val bottom = (a.b + mh / 2).coerceAtMost(bmp.height)
@@ -64,7 +64,7 @@ object SelfCheck {
                 val p2 = parse(trial)
                 val after = good(p2)
                 val line = p2.items.firstOrNull { it.current.sr == item.current.sr }
-                if (after.containsAll(before) && after.size > before.size && line != null && line.needs.isEmpty() && p2.items.size <= parsed.items.size + 1) {
+                if (after.containsAll(before) && after.size > before.size && line != null && Heal.sure(line) && p2.items.size <= parsed.items.size + 1) {
                     cur[a.page] = trial[a.page]; parsed = p2; fixed++
                     break@search
                 }

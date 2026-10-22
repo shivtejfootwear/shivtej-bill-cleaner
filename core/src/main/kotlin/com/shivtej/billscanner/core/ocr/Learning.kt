@@ -80,7 +80,7 @@ object Learning {
     fun fromEdit(l: Learnt, inv: Invoice, old: LineItem, new: ItemValues): Pair<Learnt, List<String>> {
         val s = supplier(inv.header) ?: supplier(inv.headerOriginal) ?: return l to emptyList()
         // Only a line the scan itself doubted teaches anything (a number changed on purpose on a line that added up does not).
-        if (old.needs.isEmpty() && Heal.proven(old.original)) return l to emptyList()
+        if (Heal.sure(old.copy(current = old.original))) return l to emptyList()
         // …and only when what the person typed makes the line add up (a % typed in the wrong box teaches nothing).
         val mrpOk = new.mrp != null && com.shivtej.billscanner.core.model.Calc.sittingPct(new, inv.header) != null
         if (!Heal.proven(new) && !mrpOk) return l to emptyList()
@@ -111,7 +111,7 @@ object Learning {
     fun fromDelete(l: Learnt, inv: Invoice, item: LineItem): Learnt {
         val s = supplier(inv.header) ?: return l
         // Only lines the scan doubted (an article that added up is not junk, it may just be a repeat).
-        if (item.needs.isEmpty() && Heal.proven(item.current)) return l
+        if (Heal.sure(item)) return l
         val start = lineStart(item).takeIf { it.length >= 2 } ?: return l
         return l.copy(junk = l.junk + (s to (l.junk[s].orEmpty() + start)))
     }
@@ -119,7 +119,7 @@ object Learning {
     /** Lines that added up teach each article's MRP for this supplier. */
     fun fromBill(l: Learnt, inv: Invoice): Learnt {
         val s = supplier(inv.header) ?: return l
-        val add = inv.items.filter { it.kind == ItemKind.ARTICLE && it.needs.isEmpty() && Heal.proven(it.current) && it.current.mrp != null && articleKey(it.current).length >= 3 }
+        val add = inv.items.filter { it.kind == ItemKind.ARTICLE && Heal.sure(it) && it.current.mrp != null && articleKey(it.current).length >= 3 }
             .associate { articleKey(it.current) to it.current.mrp!!.stripTrailingZeros().toPlainString() }
         if (add.isEmpty()) return l
         return l.copy(mrp = l.mrp + (s to (l.mrp[s].orEmpty() + add)))
@@ -134,7 +134,7 @@ object Learning {
         var fixed = 0
         val items = p.items.mapNotNull { item ->
             if (item.kind != ItemKind.ARTICLE) return@mapNotNull item
-            val sure = item.needs.isEmpty() && Heal.proven(item.current)
+            val sure = Heal.sure(item)
             if (!sure && lineStart(item) in junk) return@mapNotNull null
             if (sure) return@mapNotNull item
             var v = item.current
