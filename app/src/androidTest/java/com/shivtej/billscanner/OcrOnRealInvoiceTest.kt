@@ -143,6 +143,9 @@ class OcrOnRealInvoiceTest {
 
     @Test fun patel() = read("patel", listOf("patel_tradelines_g2_2627_1309.jpg"))
 
+    /** PATEL TRADING CORPORATION (EBase): rate with GST + net rate, amounts with GST, MRP 0.00 on non-brand goods. */
+    @Test fun patelTrading() = read("patel_trading", listOf("patel_trading_alt496_page1.jpg", "patel_trading_alt496_page2.jpg"))
+
     /** Both pages: page 2 has only the end of line 11 ("Golden 5/1") and the totals. */
     @Test fun patelTwoPages() = read("patel2", listOf("patel_tradelines_g2_2627_1309.jpg", "patel_tradelines_g2_2627_1309_page2.jpg"))
 

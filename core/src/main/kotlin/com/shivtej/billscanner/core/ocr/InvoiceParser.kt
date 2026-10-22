@@ -49,7 +49,7 @@ object InvoiceParser {
     private val OWN_TEXT = Regex("""(?i)(original\s+invoice\s+photo|copy\s+for\s+refere|shivtej\s+bill\s+scanner|not\s+an\s+official\s+digital|not\s+the\s+supplier'?s\s+original).*$""")
     private val DOTTED = Regex("""^\d{1,3}(\.\d{3})+\.\d{2}$""")
     private val UNITS = setOf("pair", "pairs", "prs", "pr", "pcs", "pc", "nos", "no", "set", "sets", "%", "pkt", "box", "dz", "doz")
-    private val STOP = Regex("""(?i)\b(continued|amount\s*(rs\.?)?\s*in\s*words|rupees|e\s*&\s*o\s*e|our\s+bankers|bank\s+(name|details)|terms\s*(&|and)?\s*conditions|declaration|authori[sz]ed\s+signatory|output\s*[cs]gst|sub\s*-?\s*total|grand\s*total|round\s*off)\b""")
+    private val STOP = Regex("""(?i)\b(continued|amount\s*(rs\.?)?\s*in\s*words|rupees|e\s*&\s*o\s*e|our\s+bankers|bank\s+(name|details)|terms\s*(&|and)?\s*conditions|declaration|authori[sz]ed\s+signatory|output\s*[cs]gst|sub\s*-?\s*total|grand\s*total|round\s*off)\b|(?i)\bitems?\s*:\s*\d+""")
     private val CHARGE = Regex("""(?i)^(freight|transport|packing|forwarding|cartage|hamali|courier|insurance|postage|loading)""")
 
     /** Number in a cell: "1,049", "9.82 %", "6 pair", "₹ 1,07,350.00", "(0.42)". Null when it is not one number. */
@@ -164,7 +164,7 @@ object InvoiceParser {
         // Totals printed on a later page win.
         printedGrandTotal = b.printedGrandTotal ?: a.printedGrandTotal,
         overallDiscount = b.overallDiscount ?: a.overallDiscount, otherCharges = b.otherCharges ?: a.otherCharges,
-        roundOff = b.roundOff ?: a.roundOff, pageNote = if (last) b.pageNote ?: a.pageNote else a.pageNote ?: b.pageNote,
+        roundOff = b.roundOff ?: a.roundOff, pageNote = if (last) b.pageNote else a.pageNote ?: b.pageNote,   // the last page says whether more is to come
         cgstPct = b.cgstPct ?: a.cgstPct, cgstAmt = b.cgstAmt ?: a.cgstAmt, sgstPct = b.sgstPct ?: a.sgstPct, sgstAmt = b.sgstAmt ?: a.sgstAmt,
         igstPct = b.igstPct ?: a.igstPct, igstAmt = b.igstAmt ?: a.igstAmt,
         printedQty = b.printedQty ?: a.printedQty, printedSubtotal = b.printedSubtotal ?: a.printedSubtotal,
@@ -226,10 +226,10 @@ object InvoiceParser {
         val cx get() = (l + r) / 2
     }
 
-    enum class Kind { SR, DESC, HSN, GST_PCT, SIZE, COLOUR, MRP, QTY, UNIT, RATE, GROSS, DISC_PCT, DISC_AMT, TAXABLE, CGST_PCT, CGST_AMT, SGST_PCT, SGST_AMT, IGST_PCT, IGST_AMT, TOTAL, AMOUNT, OTHER }
+    enum class Kind { SR, DESC, HSN, GST_PCT, SIZE, COLOUR, MRP, QTY, UNIT, RATE, GROSS, DISC_PCT, DISC_AMT, TAXABLE, CGST_PCT, CGST_AMT, SGST_PCT, SGST_AMT, IGST_PCT, IGST_AMT, TOTAL, AMOUNT, OTHER, RATE_GST }
 
     private val NUMERIC = setOf(Kind.MRP, Kind.QTY, Kind.RATE, Kind.GROSS, Kind.DISC_PCT, Kind.DISC_AMT, Kind.TAXABLE, Kind.CGST_PCT, Kind.CGST_AMT,
-        Kind.SGST_PCT, Kind.SGST_AMT, Kind.IGST_PCT, Kind.IGST_AMT, Kind.TOTAL, Kind.AMOUNT)
+        Kind.SGST_PCT, Kind.SGST_AMT, Kind.IGST_PCT, Kind.IGST_AMT, Kind.TOTAL, Kind.AMOUNT, Kind.RATE_GST)
 
     // ================================================================ one page
 
@@ -426,6 +426,17 @@ object InvoiceParser {
         val lastStart = starts.lastIndexOf(true)
         var lastItemRowIdx = -1
         fun numericOf(cells: Map<Int, List<OcrWord>>) = cells.filter { (ci, ws) -> cols[ci].kind in NUMERIC && number(ws.joinToString(" ") { it.text }) != null }.keys
+        fun colNum(cells: Map<Int, List<OcrWord>>, vararg k: Kind) = cols.indexOfFirst { it.kind in k }.takeIf { it >= 0 }?.let { ci -> number(cellText(cells[ci])) }
+        fun totalRow(cells: Map<Int, List<OcrWord>>): Boolean {
+            val ws = cells.values.flatten()
+            if (ws.size < 3 || ws.any { w -> w.text.any(Char::isLetter) && w.text.lowercase().trim('.', ':') !in UNITS }) return false
+            if (ws.count { isNum(it.text) } < 3) return false
+            val starters = assigned.filterIndexed { i, _ -> starts[i] }.map { it.second }
+            val q = colNum(cells, Kind.QTY); val sumQ = starters.mapNotNull { colNum(it, Kind.QTY) }.fold(BigDecimal.ZERO, BigDecimal::add)
+            val a = colNum(cells, Kind.TOTAL, Kind.AMOUNT, Kind.TAXABLE)
+            val maxA = starters.mapNotNull { colNum(it, Kind.TOTAL, Kind.AMOUNT, Kind.TAXABLE) }.maxOrNull()
+            return (q != null && sumQ.signum() > 0 && q >= sumQ) || (a != null && maxA != null && a > maxA * BigDecimal("1.5"))
+        }
         // The numbers of a line the photo split in two may come just before its text part.
         var pending: Map<Int, List<OcrWord>>? = null
         val lead = mutableListOf<String>()
@@ -447,6 +458,8 @@ object InvoiceParser {
                     cells.values.flatten().all { isNum(it.text) } && cells.values.flatten().size in 1..2 && numericCells >= 1 -> {
                     footerAt = body.indexOf(pair.first); break
                 }
+                // A row of numbers only after the last article, adding up the columns (pairs, MRP, amount) = the table's total row.
+                idx > lastStart && totalRow(cells) -> { footerAt = body.indexOf(pair.first); break }
                 idx - lastItemRowIdx > 6 -> {}  // far below the last item: not part of it
                 else -> { blocks.last() += cells; lastItemRowIdx = idx }
             }
@@ -463,6 +476,15 @@ object InvoiceParser {
             val keepAt = items.indices.filter { it !in junk }
             val kb = keepAt.map { blocks[it] }; val ki = keepAt.map { items[it] }
             blocks.clear(); blocks.addAll(kb); items.clear(); items.addAll(ki)
+        }
+        // A column the bill leaves empty (e.g. "Disc." on a bill billed at plain rates) is not a doubt on any line.
+        if (items.size >= 3) for (ci in cols.indices) {
+            val f = fieldOf(cols[ci].kind) ?: continue
+            val blank = items.count { it.raw.getOrNull(ci).isNullOrBlank() }
+            if (blank * 10 >= items.size * 8) for (k in items.indices) {
+                val it = items[k]
+                if (f in it.needs && it.raw.getOrNull(ci).isNullOrBlank()) items[k] = it.copy(needs = it.needs - f)
+            }
         }
         // Serial numbers the photo lost: the one between its neighbours, or glued to the description ("31251-…" = 3 + 1251-…).
         if (srCol >= 0) for (k in items.indices.toList() + items.indices.reversed()) {
@@ -522,7 +544,7 @@ object InvoiceParser {
         Kind.SR -> F.SR; Kind.DESC -> F.ARTICLE; Kind.HSN -> F.HSN; Kind.GST_PCT -> F.GST_PCT; Kind.SIZE -> F.SIZE; Kind.COLOUR -> F.COLOUR
         Kind.MRP -> F.MRP; Kind.QTY -> F.QTY; Kind.RATE -> F.RATE; Kind.GROSS -> F.GROSS; Kind.DISC_PCT -> F.DISC_PCT; Kind.DISC_AMT -> F.DISC_AMT
         Kind.TAXABLE -> F.TAXABLE; Kind.CGST_PCT -> F.CGST_PCT; Kind.CGST_AMT -> F.CGST_AMT; Kind.SGST_PCT -> F.SGST_PCT; Kind.SGST_AMT -> F.SGST_AMT
-        Kind.IGST_PCT -> F.IGST_PCT; Kind.IGST_AMT -> F.IGST_AMT; Kind.TOTAL -> F.TOTAL; Kind.AMOUNT -> F.TAXABLE; Kind.UNIT, Kind.OTHER -> null
+        Kind.IGST_PCT -> F.IGST_PCT; Kind.IGST_AMT -> F.IGST_AMT; Kind.TOTAL -> F.TOTAL; Kind.AMOUNT -> F.TAXABLE; Kind.RATE_GST -> F.RATE_GST; Kind.UNIT, Kind.OTHER -> null
     }
 
     // ================================================================ header → columns
@@ -542,6 +564,7 @@ object InvoiceParser {
         if (next == Role.VALUE && last in setOf(Role.TAXABLE, Role.TOTAL, Role.AMOUNT)) return true
         if (next == Role.AMOUNT && last == Role.TOTAL) return true
         if (next == Role.QTY && last == Role.RATE) return true     // "Rate/Pair"
+        if (next == Role.RATE && last == Role.AMOUNT) return true   // "Net Rate"
         return false
     }
 
@@ -559,9 +582,13 @@ object InvoiceParser {
         val cols = mutableListOf<Col>()
         for (line in lines.reversed()) {
             val before = cols.toList()
+            val pad = 0.6 * mh
+            fun ov(c: Col, p: Phrase) = min(c.r, p.r + pad) - max(c.l, p.l - pad)
+            // Each column below belongs to the heading word of this line that covers it most
+            // ("Disc  Disc.  Disc." over "(per) (%) Amt." are three headings, not one title over all).
+            val owner = before.associateWith { c -> line.filter { ov(c, it) > 0 }.maxByOrNull { ov(c, it) } }
             for (p in line) {
-                val pad = 0.6 * mh
-                val under = before.filter { c -> min(c.r, p.r + pad) - max(c.l, p.l - pad) > 0 }
+                val under = before.filter { c -> ov(c, p) > 0 && owner[c] === p }
                 when {
                     under.isEmpty() -> cols += Col(p.text, p.l, p.r, p.roles.toMutableList())
                     under.size == 1 -> under[0].let { c -> c.label = "${p.text} ${c.label}"; c.l = min(c.l, p.l); c.r = max(c.r, p.r); c.roles.addAll(0, p.roles) }
@@ -596,6 +623,12 @@ object InvoiceParser {
                 else -> Kind.OTHER
             }
         }
+        // "Rate" beside a "Net Rate": the first includes GST, the net one does not; the Amount is then pairs × rate with GST.
+        val netAt = cols.indexOfFirst { norm(it.label).contains("netrate") }
+        if (netAt >= 0) {
+            cols[netAt].kind = Kind.RATE
+            cols.forEachIndexed { i, c -> if (i != netAt && c.kind == Kind.RATE) c.kind = Kind.RATE_GST }
+        }
         // A lone "%" heading just before a tax or discount amount ("CGST" printed over the amount only) is that tax's %.
         for (i in 0 until cols.size - 1) {
             val c = cols[i]
@@ -629,6 +662,12 @@ object InvoiceParser {
         }
         // Two columns can't both be the line amount.
         if (cols.count { it.kind == Kind.AMOUNT } > 1) cols.filter { it.kind == Kind.AMOUNT }.dropLast(1).forEach { it.kind = Kind.GROSS }
+        // With a rate including GST, the Amount includes GST too.
+        if (cols.any { it.kind == Kind.RATE_GST } && cols.none { it.kind == Kind.TAXABLE }) {
+            cols.lastOrNull { it.kind == Kind.AMOUNT || it.kind == Kind.TOTAL }?.let { it.kind = Kind.TOTAL; it.locked = true }
+            // The headings say it plainly: not to be re-guessed from the numbers.
+            cols.filter { it.kind == Kind.RATE || it.kind == Kind.RATE_GST || it.kind == Kind.QTY }.forEach { it.locked = true }
+        }
         return cols
     }
 
@@ -961,7 +1000,8 @@ object InvoiceParser {
         // Description lines (and anything in an unnamed column on its left).
         var descLines = cols.withIndex().filter { it.value.kind == Kind.DESC }.flatMap { (ci, _) -> block.map { cellText(it[ci]).replace(OWN_TEXT, "").trim() } }.filter { it.isNotEmpty() }.toMutableList()
         if (sr == null && descLines.isNotEmpty()) {
-            // "1 1180-Paralite…" when there is no Sr heading.
+            // "1 1180-Paralite…" when there is no Sr heading; ") 29 Indus…" when a mark beside the serial was read too.
+            descLines[0] = descLines[0].trimStart(')', '(', '|', '.', ',', ']', '[', '/', ' ')
             val t = descLines[0].split(' ')
             t.first().trim('.', ')').toIntOrNull()?.takeIf { it in 1..999 && t.size > 1 }?.let { sr = it; descLines[0] = t.drop(1).joinToString(" ") }
         }
@@ -1021,7 +1061,15 @@ object InvoiceParser {
             discPct = firstNum(Kind.DISC_PCT), discAmt = firstNum(Kind.DISC_AMT), taxable = firstNum(Kind.TAXABLE) ?: amount,
             cgstPct = firstNum(Kind.CGST_PCT), cgstAmt = firstNum(Kind.CGST_AMT), sgstPct = firstNum(Kind.SGST_PCT), sgstAmt = firstNum(Kind.SGST_AMT),
             igstPct = firstNum(Kind.IGST_PCT), igstAmt = firstNum(Kind.IGST_AMT), gstPct = firstNum(Kind.GST_PCT), printedTotal = firstNum(Kind.TOTAL),
+            rateGst = firstNum(Kind.RATE_GST),
         )
+        // "MRP 0.00": a line without MRP (non-brand goods billed by rate only) — not a misreading.
+        if (v.mrp?.signum() == 0) v = v.copy(mrp = null)
+        // Amount printed with GST (pairs × rate with GST): the amount before GST is worked out from it.
+        if (v.rateGst != null && v.printedTotal != null && v.taxable == null && cols.none { it.kind == Kind.TAXABLE }) {
+            val g = v.gstPct ?: v.rate?.takeIf { it.signum() > 0 }?.let { r -> (v.rateGst!! / r - BigDecimal.ONE).multiply(BigDecimal(100)).setScale(0, java.math.RoundingMode.HALF_UP) }
+            if (g != null) v = v.copy(taxable = Calc.r2(v.printedTotal!!.multiply(BigDecimal(100)).divide(BigDecimal(100) + g, 10, java.math.RoundingMode.HALF_UP)), gstPct = v.gstPct ?: g)
+        }
         // Disc column printed as an amount (e.g. "88.35") instead of a %: keep it as the amount.
         if (v.discPct != null && v.discAmt == null && cols.none { it.kind == Kind.DISC_AMT }) {
             val dTxt = cellText(cols.indexOfFirst { it.kind == Kind.DISC_PCT }.let { first[it] })
@@ -1053,7 +1101,9 @@ object InvoiceParser {
         if (v.discPct == null && Kind.DISC_PCT in has) needs += F.DISC_PCT
         if (v.discAmt == null && Kind.DISC_AMT in has) needs += F.DISC_AMT
         if (v.taxable == null) needs += F.TAXABLE
-        if (v.mrp == null && kind == ItemKind.ARTICLE) needs += F.MRP
+        val mrpCi = cols.indexOfFirst { it.kind == Kind.MRP }
+        val mrpPrintedZero = mrpCi >= 0 && number(block.firstNotNullOfOrNull { cellText(it[mrpCi]).ifEmpty { null } } ?: "")?.signum() == 0
+        if (v.mrp == null && kind == ItemKind.ARTICLE && !mrpPrintedZero) needs += F.MRP
         // Amount per pair far from the MRP (a part of the number lost): one of the two is misread.
         val q0 = v.qty; val t0 = v.taxable; val m0 = v.mrp
         if (kind == ItemKind.ARTICLE && q0 != null && t0 != null && m0 != null && q0.signum() > 0 && m0.signum() > 0) {
@@ -1208,10 +1258,56 @@ object InvoiceParser {
         val pctRe = Regex("""@?\s*(\d{1,2}(?:\.\d{1,2})?)\s*%""")
         val qtyCol = cols.indexOfFirst { it.kind == Kind.QTY }
         var stop = false
+        // A tax summary table ("Taxable Value | SGST | SGST Amt | CGST | CGST Amt …"): its headings' places, to read the numbers under them.
+        var taxCols: Map<String, Double>? = null
+        var taxFromTotal = false
         for (r in rows) {
             if (stop) break
             val t = r.text
             val ns = nums(r)
+            val lowT = t.lowercase()
+            if (ns.none { it.second.abs() >= BigDecimal(100) } && listOf("cgst", "sgst", "igst").count { lowT.contains(it) } >= 2) {
+                val ws = r.words
+                val m = mutableMapOf<String, Double>()
+                for (tax in listOf("cgst", "sgst", "igst")) {
+                    val i = ws.indexOfFirst { it.text.lowercase().contains(tax) }
+                    if (i < 0) continue
+                    // "CGST Amt" (one word or two) — else the next "Amt" to its right before another tax word.
+                    val others = listOf("cgst", "sgst", "igst") - tax
+                    val amt = ws.withIndex().firstOrNull { (k, w) -> k >= i && Regex("""(?i)amt|amount""").containsMatchIn(w.text) &&
+                        ws.subList(i + 1, k + 1).none { x -> others.any { x.text.lowercase().contains(it) } } }?.value
+                    m[tax] = (amt ?: ws[i]).box.cx
+                }
+                ws.firstOrNull { it.text.lowercase().startsWith("taxable") }?.let { m["taxable"] = it.box.cx }
+                if (m.size >= 2) { taxCols = m; continue }
+            }
+            val tc = taxCols
+            if (tc != null && ns.isNotEmpty()) {
+                val isTotal = Regex("""(?i)^\s*total\b""").containsMatchIn(t)
+                if (!taxFromTotal || isTotal) {
+                    val width = (r.words.maxOfOrNull { it.box.r } ?: 1000) * 0.06
+                    for ((w, v) in ns) {
+                        if (w.text.contains('%')) continue
+                        val near = tc.minByOrNull { (_, x) -> kotlin.math.abs(x - w.box.cx) } ?: continue
+                        if (kotlin.math.abs(near.value - w.box.cx) > width) continue
+                        when (near.key) { "cgst" -> ca = v; "sgst" -> sa = v; "igst" -> ia = v; "taxable" -> sub = v }
+                    }
+                    pctRe.findAll(t).map { it.groupValues[1].toBigDecimalOrNull() }.filterNotNull().toList().let { ps ->
+                        if (ps.size >= 2) { if (cp == null) cp = ps[1]; if (sp == null) sp = ps[0] }
+                    }
+                    if (isTotal) taxFromTotal = true
+                }
+                continue
+            }
+            // The table's total row (numbers only, under the item columns): pairs, and the amount with GST when the bill prints one.
+            if (cols.isNotEmpty() && ns.size >= 3 && t.none { it.isLetter() }) {
+                val cells = assign(r, cols, bounds, mh)
+                fun at(vararg k: Kind) = cols.indexOfFirst { it.kind in k }.takeIf { it >= 0 }?.let { ci -> cells[ci]?.let { number(cellText(it)) } }
+                at(Kind.QTY)?.let { qty = it }
+                at(Kind.TOTAL)?.let { g -> grand = grand?.let { maxOf(it, g) } ?: g }
+                if (cols.none { it.kind == Kind.TOTAL }) at(Kind.TAXABLE, Kind.AMOUNT)?.let { sub = it }
+                continue
+            }
             if (Regex("""(?i)in\s*words|rupees|only\b""").containsMatchIn(t) && !Regex("""(?i)grand|net""").containsMatchIn(t)) {
                 // "Amount in words : … Only   ₹ 26012.00": the total printed at the end of the same line.
                 Regex("""₹\s*([\d,]+\.\d{2})""").find(t)?.let { m -> number(m.groupValues[1])?.let { g -> grand = grand?.let { maxOf(it, g) } ?: g } }

@@ -385,7 +385,7 @@ fun BillGrid(inv: Invoice, onRow: (String) -> Unit, onColumn: (Int) -> Unit, mod
                         first.forEach { tot(it) }
                         DataCell(pct(Calc.sittingTotal(inv)), 62.dp, Tone.GREEN, true, bold = true)
                         if (sheet.any) DataCell("", 60.dp, Tone.TARGET, true)
-                        if (sheet.any) DataCell(num(sheet.taxable), 84.dp, Tone.TARGET, true, bold = true)
+                        if (sheet.any) DataCell(num(if (Target.inclusive(inv)) sheet.total else sheet.taxable), 84.dp, Tone.TARGET, true, bold = true)
                     }
                 }
             }
@@ -413,7 +413,7 @@ private fun GridRow(
         Row(Modifier.horizontalScroll(hs)) {
             @Composable fun cell(ci: Int) {
                 val col = cols[ci]
-                val text = InvoiceExport.printedText(inv, item, ci, col).ifEmpty { if (col.field == F.DISC_PCT && item.current.discPct == null) "Needs Verif." else "" }
+                val text = InvoiceExport.printedText(inv, item, ci, col).ifEmpty { if (col.field == F.DISC_PCT && item.current.discPct == null && F.DISC_PCT in item.needs) "Needs Verif." else "" }
                 val isNum = col.field != null && col.field !in setOf(F.SIZE, F.COLOUR, F.HSN, F.ARTICLE)
                 DataCell(text, widthOf(col.field), if (col.field == F.DISC_PCT) Tone.ORANGE else Tone.NORMAL, isNum,
                     warn = col.field != null && col.field in item.needs, edited = InvoiceExport.isEdited(item, col))
@@ -423,7 +423,7 @@ private fun GridRow(
             DataCell(if (item.kind == ItemKind.CHARGE) "" else pct(s), 62.dp, Tone.GREEN, true, warn = s == null && item.kind == ItemKind.ARTICLE)
             if (anyTarget) DataCell(line?.let { pct(it.pct) + if (item.targetPct != null) "*" else "" } ?: "—", 60.dp, Tone.TARGET, true)
             // Lines without our % keep the bill amount (shown plain).
-            if (anyTarget) DataCell(line?.let { num(it.amount) } ?: item.current.taxable?.let { num(it) }.orEmpty(), 84.dp, if (line != null) Tone.TARGET else Tone.NORMAL, true, bold = line != null)
+            if (anyTarget) DataCell(line?.let { num(Target.newShown(inv, it)) } ?: Target.billShown(inv, item)?.let { num(it) }.orEmpty(), 84.dp, if (line != null) Tone.TARGET else Tone.NORMAL, true, bold = line != null)
         }
     }
 }

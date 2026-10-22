@@ -13,6 +13,8 @@ enum class F {
     GST_PCT,
     /** Line amount including tax, when the bill prints one. */
     TOTAL,
+    /** Rate per pair including GST, on bills that print it beside a "Net Rate" (before GST). */
+    RATE_GST,
 }
 
 /**
@@ -50,6 +52,8 @@ data class ItemValues(
     val gstPct: BigDecimal? = null,
     /** Line amount including tax, when printed. */
     val printedTotal: BigDecimal? = null,
+    /** Rate per pair including GST, when the bill prints it (its Amount is then qty × this, GST included). */
+    val rateGst: BigDecimal? = null,
 )
 
 data class LineItem(

@@ -51,7 +51,7 @@ data class Learnt(
 
 object Learning {
     /** Columns whose numbers can be taught. */
-    val NUMBERS = listOf(F.QTY, F.MRP, F.RATE, F.GROSS, F.DISC_PCT, F.DISC_AMT, F.TAXABLE, F.GST_PCT, F.CGST_PCT, F.SGST_PCT, F.IGST_PCT, F.CGST_AMT, F.SGST_AMT, F.IGST_AMT)
+    val NUMBERS = listOf(F.QTY, F.MRP, F.RATE, F.GROSS, F.DISC_PCT, F.DISC_AMT, F.TAXABLE, F.GST_PCT, F.CGST_PCT, F.SGST_PCT, F.IGST_PCT, F.CGST_AMT, F.SGST_AMT, F.IGST_AMT, F.RATE_GST, F.TOTAL)
     private val ARITH = setOf(F.QTY, F.RATE, F.DISC_PCT, F.TAXABLE, F.GROSS, F.DISC_AMT)
     private val UNIT = Regex("""(?i)\s*(pairs?|prs?|pcs?|nos?|sets?|%|₹|rs\.?|/-)\s*""")
 
@@ -63,14 +63,14 @@ object Learning {
     private fun get(v: ItemValues, f: F): BigDecimal? = when (f) {
         F.QTY -> v.qty; F.MRP -> v.mrp; F.RATE -> v.rate; F.GROSS -> v.gross; F.DISC_PCT -> v.discPct; F.DISC_AMT -> v.discAmt
         F.TAXABLE -> v.taxable; F.GST_PCT -> v.gstPct; F.CGST_PCT -> v.cgstPct; F.SGST_PCT -> v.sgstPct; F.IGST_PCT -> v.igstPct
-        F.CGST_AMT -> v.cgstAmt; F.SGST_AMT -> v.sgstAmt; F.IGST_AMT -> v.igstAmt; else -> null
+        F.CGST_AMT -> v.cgstAmt; F.SGST_AMT -> v.sgstAmt; F.IGST_AMT -> v.igstAmt; F.RATE_GST -> v.rateGst; F.TOTAL -> v.printedTotal; else -> null
     }
 
     private fun set(v: ItemValues, f: F, x: BigDecimal): ItemValues = when (f) {
         F.QTY -> v.copy(qty = x); F.MRP -> v.copy(mrp = x); F.RATE -> v.copy(rate = x); F.GROSS -> v.copy(gross = x)
         F.DISC_PCT -> v.copy(discPct = x); F.DISC_AMT -> v.copy(discAmt = x); F.TAXABLE -> v.copy(taxable = x); F.GST_PCT -> v.copy(gstPct = x)
         F.CGST_PCT -> v.copy(cgstPct = x); F.SGST_PCT -> v.copy(sgstPct = x); F.IGST_PCT -> v.copy(igstPct = x)
-        F.CGST_AMT -> v.copy(cgstAmt = x); F.SGST_AMT -> v.copy(sgstAmt = x); F.IGST_AMT -> v.copy(igstAmt = x); else -> v
+        F.CGST_AMT -> v.copy(cgstAmt = x); F.SGST_AMT -> v.copy(sgstAmt = x); F.IGST_AMT -> v.copy(igstAmt = x); F.RATE_GST -> v.copy(rateGst = x); F.TOTAL -> v.copy(printedTotal = x); else -> v
     }
 
     /**

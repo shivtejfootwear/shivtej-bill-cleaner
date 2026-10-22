@@ -90,6 +90,8 @@ object Calc {
             if (v.discPct != null) cmp(F.TAXABLE, v.taxable, v.qty * v.rate * (HUNDRED - v.discPct) / HUNDRED)
             else if (v.discAmt != null) cmp(F.TAXABLE, v.taxable, v.qty * v.rate - v.discAmt)
         }
+        // Bills that print the rate with GST: Amount = pairs × that rate.
+        if (v.rateGst != null && v.qty != null && v.printedTotal != null) cmp(F.TOTAL, v.printedTotal, v.qty * v.rateGst)
         if (v.taxable != null) {
             v.cgstPct?.let { cmp(F.CGST_AMT, v.cgstAmt, v.taxable * it / HUNDRED) }
             v.sgstPct?.let { cmp(F.SGST_AMT, v.sgstAmt, v.taxable * it / HUNDRED) }
@@ -111,7 +113,7 @@ object Calc {
         n(F.DISC_PCT, a.discPct, b.discPct); n(F.DISC_AMT, a.discAmt, b.discAmt); n(F.TAXABLE, a.taxable, b.taxable)
         n(F.CGST_PCT, a.cgstPct, b.cgstPct); n(F.CGST_AMT, a.cgstAmt, b.cgstAmt); n(F.SGST_PCT, a.sgstPct, b.sgstPct)
         n(F.SGST_AMT, a.sgstAmt, b.sgstAmt); n(F.IGST_PCT, a.igstPct, b.igstPct); n(F.IGST_AMT, a.igstAmt, b.igstAmt)
-        n(F.OTHER, a.other, b.other)
+        n(F.OTHER, a.other, b.other); n(F.RATE_GST, a.rateGst, b.rateGst); n(F.TOTAL, a.printedTotal, b.printedTotal); n(F.GST_PCT, a.gstPct, b.gstPct)
     }
 
     // ------------------------------------------------------------ बैठा % (what the article really costs against MRP)

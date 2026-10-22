@@ -138,7 +138,7 @@ fun ItemSheet(
             val shown = if (drivers) preview else draft
             val checks = Calc.checkLine(shown)
             val g = shown.gross; val da = shown.discAmt
-            if (shown.discPct == null) Text(
+            if (shown.discPct == null && com.shivtej.billscanner.core.model.F.DISC_PCT in item.needs) Text(
                 "⚑ " + tr("छपा डिस्काउंट % नहीं पढ़ा गया।", "The printed discount % was not read.") +
                     (if (g != null && da != null && g.signum() != 0) " ₹${num(da)} ÷ ₹${num(g)} = ${pct(Calc.r2(da * BigDecimal(100) / g))} " +
                         tr("बनता है — बिल फ़ोटो में देखकर ही भरें।", "— check the photo before filling it in.") else ""),

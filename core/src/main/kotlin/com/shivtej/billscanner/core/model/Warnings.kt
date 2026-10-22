@@ -61,8 +61,9 @@ object Warnings {
             if (it.kind != ItemKind.ARTICLE) continue
             if (v.mrp != null && v.rate != null && v.rate > v.mrp) out += Warning(Warning.Level.CHECK, it.id,
                 "$name: रेट ₹${Calc.fmt(v.rate)} MRP ₹${Calc.fmt(v.mrp)} से ज़्यादा है — अजीब लग रहा है", "$name: rate above MRP")
-            if (v.mrp == null) out += Warning(Warning.Level.CHECK, it.id, "$name: MRP नहीं मिला", "$name: MRP not found")
-            else if (v.taxable != null && v.qty != null && Calc.sittingPct(v, h, inv.sittingWithGst) == null) out += Warning(Warning.Level.CHECK, it.id,
+            // MRP 0.00 printed (goods billed by rate only) is not asked about.
+            if (v.mrp == null && (F.MRP in it.needs || inv.columns.isEmpty())) out += Warning(Warning.Level.CHECK, it.id, "$name: MRP नहीं मिला", "$name: MRP not found")
+            else if (v.mrp != null && v.taxable != null && v.qty != null && Calc.sittingPct(v, h, inv.sittingWithGst) == null) out += Warning(Warning.Level.CHECK, it.id,
                 "$name: MRP ₹${Calc.fmt(v.mrp)} और रकम ₹${Calc.fmt(v.taxable)} आपस में नहीं बैठते — कोई नंबर गलत पढ़ा गया, जाँचें", "$name: MRP and amount do not fit — a number was misread")
             // Colour is not needed for the bill: never asked about.
             // Size counts are checked only where the bill prints them per size ("6/2,7/3"); "6X10" alone is a size range.
@@ -88,7 +89,7 @@ object Warnings {
     }
 
     fun hindi(f: F): String = when (f) {
-        F.SR -> "क्रम"; F.ARTICLE -> "आर्टिकल"; F.NAME -> "नाम"; F.COLOUR -> "कलर"; F.SIZE -> "साइज़"; F.HSN -> "HSN"
+        F.RATE_GST -> "रेट (GST सहित)"; F.SR -> "क्रम"; F.ARTICLE -> "आर्टिकल"; F.NAME -> "नाम"; F.COLOUR -> "कलर"; F.SIZE -> "साइज़"; F.HSN -> "HSN"
         F.QTY -> "मात्रा"; F.MRP -> "MRP"; F.RATE -> "रेट"; F.GROSS -> "Total (मात्रा × रेट)"; F.DISC_PCT -> "बिल डिस्काउंट %"
         F.DISC_AMT -> "डिस्काउंट ₹"; F.TAXABLE -> "Taxable"; F.CGST_PCT -> "CGST %"; F.CGST_AMT -> "CGST ₹"
         F.SGST_PCT -> "SGST %"; F.SGST_AMT -> "SGST ₹"; F.IGST_PCT -> "IGST %"; F.IGST_AMT -> "IGST ₹"; F.OTHER -> "दूसरे चार्ज"

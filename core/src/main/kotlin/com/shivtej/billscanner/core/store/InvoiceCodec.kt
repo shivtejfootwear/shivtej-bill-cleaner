@@ -72,7 +72,7 @@ object InvoiceCodec {
         "hsn" to v.hsn, "qty" to b(v.qty), "mrp" to b(v.mrp), "rate" to b(v.rate), "gross" to b(v.gross), "discPct" to b(v.discPct),
         "discAmt" to b(v.discAmt), "taxable" to b(v.taxable), "cgstPct" to b(v.cgstPct), "cgstAmt" to b(v.cgstAmt),
         "sgstPct" to b(v.sgstPct), "sgstAmt" to b(v.sgstAmt), "igstPct" to b(v.igstPct), "igstAmt" to b(v.igstAmt),
-        "other" to b(v.other), "notes" to v.notes, "gstPct" to b(v.gstPct), "printedTotal" to b(v.printedTotal),
+        "other" to b(v.other), "notes" to v.notes, "gstPct" to b(v.gstPct), "printedTotal" to b(v.printedTotal), "rateGst" to b(v.rateGst),
     )
 
     private fun values(m: Map<String, Any?>) = ItemValues(
@@ -81,7 +81,7 @@ object InvoiceCodec {
         rate = m.dec("rate"), gross = m.dec("gross"), discPct = m.dec("discPct"), discAmt = m.dec("discAmt"), taxable = m.dec("taxable"),
         cgstPct = m.dec("cgstPct"), cgstAmt = m.dec("cgstAmt"), sgstPct = m.dec("sgstPct"), sgstAmt = m.dec("sgstAmt"),
         igstPct = m.dec("igstPct"), igstAmt = m.dec("igstAmt"), other = m.dec("other"), notes = m.str("notes"),
-        gstPct = m.dec("gstPct"), printedTotal = m.dec("printedTotal"),
+        gstPct = m.dec("gstPct"), printedTotal = m.dec("printedTotal"), rateGst = m.dec("rateGst"),
     )
 
     private fun item(i: LineItem) = linkedMapOf(

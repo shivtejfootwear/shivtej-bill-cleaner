@@ -65,7 +65,7 @@ object InvoiceExport {
         F.GROSS -> Calc.fmt(v.gross); F.DISC_PCT -> v.discPct?.let { Calc.pct(it) } ?: NEEDS_VERIFICATION; F.DISC_AMT -> Calc.fmt(v.discAmt)
         F.TAXABLE -> Calc.fmt(v.taxable); F.CGST_PCT -> Calc.pct(v.cgstPct); F.CGST_AMT -> Calc.fmt(v.cgstAmt); F.SGST_PCT -> Calc.pct(v.sgstPct)
         F.SGST_AMT -> Calc.fmt(v.sgstAmt); F.IGST_PCT -> Calc.pct(v.igstPct); F.IGST_AMT -> Calc.fmt(v.igstAmt); F.OTHER -> Calc.fmt(v.other)
-        F.GST_PCT -> Calc.pct(v.gstPct); F.TOTAL -> Calc.fmt(v.printedTotal)
+        F.GST_PCT -> Calc.pct(v.gstPct); F.TOTAL -> Calc.fmt(v.printedTotal); F.RATE_GST -> Calc.fmt(v.rateGst)
     }
 
     /** Whether the person changed the value shown in this printed column. */
@@ -87,7 +87,7 @@ object InvoiceExport {
         val f = c.field
         val edited = isEdited(i, c)
         val text = printedText(inv, i, ci, c)
-        if (f == F.DISC_PCT && i.current.discPct == null) return Cell.Text(text.ifEmpty { NEEDS_VERIFICATION }, St.WARN)
+        if (f == F.DISC_PCT && i.current.discPct == null && F.DISC_PCT in i.needs) return Cell.Text(text.ifEmpty { NEEDS_VERIFICATION }, St.WARN)
         val plain = text.trim()
         val num = if (Regex("""^-?[\d,]+(\.\d+)?$""").matches(plain)) plain.replace(",", "").toBigDecimalOrNull() else null
         val st = if (f == F.DISC_PCT) St.BILL_PCT else St.TEXT
@@ -101,6 +101,7 @@ object InvoiceExport {
     const val SITTING_HEADER = "बैठा % (उन्होंने MRP पर असल कितना दिया)"
     const val TARGET_HEADER = "अपना % (बदल सकते हैं)"
     const val NEW_AMOUNT_HEADER = "नई रकम (अपने % से, GST से पहले)"
+    const val NEW_AMOUNT_GST_HEADER = "नई रकम (अपने % से, GST सहित — बिल जैसी)"
 
     /**
      * Sheet 1 — the bill exactly as printed, then only three columns of ours:
@@ -112,6 +113,8 @@ object InvoiceExport {
         val h = inv.header
         val cols = printedColumns(inv)
         val n = cols.size
+        // A bill whose Amount includes GST (rate with GST × pairs): the new amounts are shown with GST too.
+        val incl = Target.inclusive(inv)
         s.row(Cell.Text("${h.supplierName ?: "Supplier"} — Invoice ${h.invoiceNo ?: NOT_FOUND} — ${h.invoiceDate ?: ""}", St.TITLE))
         s.row(Cell.Text("Buyer: ${h.buyerName ?: NOT_FOUND}   ·   Supplier GSTIN: ${h.supplierGstin ?: NOT_FOUND}   ·   Buyer GSTIN: ${h.buyerGstin ?: NOT_FOUND}", St.NORMAL))
         s.row(Cell.Text(
@@ -123,7 +126,7 @@ object InvoiceExport {
         s.freezeRows = headRow; s.filterRow = headRow
         s.widths = cols.map { c -> when (c.field) { F.ARTICLE -> 30.0; F.SR -> 6.0; F.HSN -> 11.0; F.SIZE -> 14.0; F.COLOUR -> 14.0; else -> 11.0 } } + listOf(14.0, 13.0, 16.0)
         s.row(cols.map { Cell.Text(it.label, if (it.field == F.DISC_PCT) St.HEADER_ORANGE else St.HEADER) } +
-            listOf(Cell.Text(SITTING_HEADER, St.HEADER_GREEN), Cell.Text(TARGET_HEADER, St.HEADER_ORANGE), Cell.Text(NEW_AMOUNT_HEADER, St.HEADER)))
+            listOf(Cell.Text(SITTING_HEADER, St.HEADER_GREEN), Cell.Text(TARGET_HEADER, St.HEADER_ORANGE), Cell.Text(if (incl) NEW_AMOUNT_GST_HEADER else NEW_AMOUNT_HEADER, St.HEADER)))
         val tc = Xlsx.col(n + 1); val ac = Xlsx.col(n + 2)
         val first = headRow + 1
         val byRate = sortedMapOf<BigDecimal, MutableList<String>>()      // GST % → cells of new amounts at that rate
@@ -133,7 +136,8 @@ object InvoiceExport {
             val v = it.current
             val g = Target.gstRate(inv, it).stripTrailingZeros()
             val tl = Target.line(inv, it)
-            val bill = v.taxable
+            val bill = Target.billShown(inv, it)
+            val rateOnly = v.mrp == null && F.MRP !in it.needs && it.kind == ItemKind.ARTICLE
             val sit = Calc.sittingPct(v, h, inv.sittingWithGst)
             val own = Target.ownTax(it)
             val canTarget = Target.targetable(inv, it)
@@ -141,18 +145,25 @@ object InvoiceExport {
             val sitCell = when {
                 it.kind == ItemKind.CHARGE -> Cell.Text("")
                 sit != null -> Cell.Num(sit, St.GREEN_PCT)
+                rateOnly -> Cell.Text("MRP नहीं (रेट वाला)")
                 else -> Cell.Text(NEEDS_VERIFICATION, St.WARN)
             }
             val targetCell = when {
                 canTarget -> Target.pct(inv, it)?.let { x -> Cell.Num(x, St.EDIT_PCT) } ?: Cell.Text("", St.EDIT_PCT)
-                it.kind == ItemKind.CHARGE -> Cell.Text("")
+                it.kind == ItemKind.CHARGE || rateOnly -> Cell.Text("")
                 else -> Cell.Text("MRP जाँचें", St.WARN)
             }
             val billNum = bill?.toPlainString() ?: "0"
             val amountCell: Cell = if (canTarget) {
                 val mrp = v.mrp!!.toPlainString(); val q = v.qty!!.toPlainString()
-                val rate = if (inv.sittingWithGst) "ROUND($mrp*(100-$tc$r)/(100+$g),2)" else "ROUND($mrp*(100-$tc$r)/100,2)"
-                Cell.Formula("IF($tc$r=\"\",$billNum,ROUND($rate*$q,2))", tl?.amount ?: bill ?: BigDecimal.ZERO, St.MONEY)
+                val rate = when {
+                    // With GST: cost per pair with GST = MRP × (100 − %) / 100.
+                    incl && inv.sittingWithGst -> "ROUND($mrp*(100-$tc$r)/100,2)"
+                    incl -> "ROUND(ROUND($mrp*(100-$tc$r)/100,2)*(100+$g)/100,2)"
+                    inv.sittingWithGst -> "ROUND($mrp*(100-$tc$r)/(100+$g),2)"
+                    else -> "ROUND($mrp*(100-$tc$r)/100,2)"
+                }
+                Cell.Formula("IF($tc$r=\"\",$billNum,ROUND($rate*$q,2))", tl?.let { l -> Target.newShown(inv, l) } ?: bill ?: BigDecimal.ZERO, St.MONEY)
             } else bill?.let { x -> Cell.Num(x, St.MONEY) } ?: Cell.Text("")
             s.row(cols.mapIndexed { ci, c -> printedCell(inv, it, ci, c) } + listOf(sitCell, targetCell, amountCell))
         }
@@ -171,15 +182,17 @@ object InvoiceExport {
         }
         val sumRow = last + 1
         val billCol = if (amountAt >= 0) amountAt else -1
+        val billSum = if (incl) inv.items.fold(BigDecimal.ZERO) { a, i -> a + (Target.billShown(inv, i) ?: BigDecimal.ZERO) } else t.taxable
         line("Total",
-            billCol to Cell.Num(t.taxable, St.BOLD_MONEY),
+            billCol to Cell.Num(billSum, St.BOLD_MONEY),
             qtyAt to (if (qtyAt >= 0) Cell.Text("${t.qty.toPlainString()} pairs", St.BOLD_TEXT) else Cell.Empty),
             n to (Calc.sittingTotal(inv)?.let { Cell.Num(it, St.GREEN_PCT) } ?: Cell.Empty),
-            n + 2 to Cell.Formula("SUM($ac$first:$ac$last)", sheet.taxable, St.BOLD_MONEY))
+            n + 2 to Cell.Formula("SUM($ac$first:$ac$last)", if (incl) sheet.total else sheet.taxable, St.BOLD_MONEY))
         val gstBill = t.cgst + t.sgst + t.igst
-        val gstFormula = (byRate.entries.map { (g, cells) -> "ROUND((${cells.joinToString("+")})*$g/100,2)" } +
+        // On an inclusive bill the GST is the part of the amounts it includes: amount × g / (100 + g).
+        val gstFormula = (byRate.entries.map { (g, cells) -> if (incl) "ROUND((${cells.joinToString("+")})*$g/(100+$g),2)" else "ROUND((${cells.joinToString("+")})*$g/100,2)" } +
             (if (fixedTax.signum() != 0) listOf(fixedTax.toPlainString()) else emptyList())).ifEmpty { listOf("0") }.joinToString("+")
-        line("GST (CGST ${Calc.fmt(t.cgst)} + SGST ${Calc.fmt(t.sgst)}${if (t.igst.signum() != 0) " + IGST ${Calc.fmt(t.igst)}" else ""})",
+        line((if (incl) "GST included " else "GST ") + "(CGST ${Calc.fmt(t.cgst)} + SGST ${Calc.fmt(t.sgst)}${if (t.igst.signum() != 0) " + IGST ${Calc.fmt(t.igst)}" else ""})",
             billCol to Cell.Num(gstBill, St.BOLD_MONEY),
             n + 2 to Cell.Formula(gstFormula, sheet.gst, St.BOLD_MONEY))
         val extra = (h.otherCharges ?: BigDecimal.ZERO) - (h.overallDiscount ?: BigDecimal.ZERO)
@@ -187,7 +200,7 @@ object InvoiceExport {
         line("Grand Total" + if (t.printedGrand != null) " (printed on bill)" else " (calculated)",
             billCol to Cell.Num(t.printedGrand ?: t.grand, St.BOLD_MONEY),
             n + 1 to Cell.Text("नया Total →", St.BOLD_TEXT),
-            n + 2 to Cell.Formula("ROUND($ac$sumRow+$ac${sumRow + 1}" + (if (extra.signum() != 0) "+${extra.toPlainString()}" else "") + ",0)", sheet.rounded, St.BOLD_MONEY))
+            n + 2 to Cell.Formula("ROUND($ac$sumRow" + (if (incl) "" else "+$ac${sumRow + 1}") + (if (extra.signum() != 0) "+${extra.toPlainString()}" else "") + ",0)", sheet.rounded, St.BOLD_MONEY))
         t.difference?.let { d -> if (d.signum() != 0) line("Printed total − calculated = ₹${Calc.fmt(d)} — check the bill", billCol to Cell.Num(d, St.WARN)) }
         // Company-wise: what each brand really gave and the % set for it.
         val groups = Groups.of(inv)
@@ -200,7 +213,7 @@ object InvoiceExport {
                     billCol to Cell.Num(g.billValue, St.BOLD_MONEY),
                     n to (g.sittingPct?.let { Cell.Num(it, St.GREEN_PCT) } ?: Cell.Text(NEEDS_VERIFICATION, St.WARN)),
                     n + 1 to ((g.target ?: inv.defaultTargetPct)?.let { Cell.Num(it, St.EDIT_PCT) } ?: Cell.Text("")),
-                    n + 2 to (if (lines.isNotEmpty()) Cell.Num(Calc.r2(lines.fold(BigDecimal.ZERO) { a, l -> a + l.amount }), St.BOLD_MONEY) else Cell.Text("")))
+                    n + 2 to (if (lines.isNotEmpty()) Cell.Num(Calc.r2(lines.fold(BigDecimal.ZERO) { a, l -> a + Target.newShown(inv, l) }), St.BOLD_MONEY) else Cell.Text("")))
             }
         }
         return s

@@ -64,7 +64,18 @@ object Target {
         val billAmount: BigDecimal?,
     ) {
         val difference: BigDecimal? get() = billAmount?.let { Calc.r2(amount - it) }
+        /** New line value with GST (cost per pair with GST × pairs) — for bills whose Amount includes GST. */
+        val amountWithGst: BigDecimal get() = Calc.r2(landed * (item.current.qty ?: BigDecimal.ZERO))
     }
+
+    /** The bill prints its amounts with GST (a rate with GST beside a net rate): new amounts are shown the same way. */
+    fun inclusive(inv: Invoice): Boolean = inv.columns.any { it.field == F.RATE_GST }
+
+    /** A line's amount the way this bill prints it (with GST on an inclusive bill). */
+    fun billShown(inv: Invoice, item: LineItem): BigDecimal? = if (inclusive(inv)) item.current.printedTotal ?: item.current.taxable else item.current.taxable
+
+    /** The new amount the way this bill prints amounts. */
+    fun newShown(inv: Invoice, l: Line): BigDecimal = if (inclusive(inv)) l.amountWithGst else l.amount
 
     fun line(inv: Invoice, item: LineItem): Line? {
         val p = pct(inv, item) ?: return null
@@ -133,9 +144,15 @@ object Target {
             val own = if (targetable(inv, i)) null else ownTax(i)
             if (own != null) fixedTax += own else byRate.merge(gstRate(inv, i).stripTrailingZeros(), t, BigDecimal::add)
         }
-        val gst = byRate.entries.fold(fixedTax) { a, (g, amt) -> a + Calc.r2(amt.multiply(g).divide(Calc.HUNDRED, 10, RoundingMode.HALF_UP)) }
+        var gst = byRate.entries.fold(fixedTax) { a, (g, amt) -> a + Calc.r2(amt.multiply(g).divide(Calc.HUNDRED, 10, RoundingMode.HALF_UP)) }
         val bill = Totals.of(inv)
-        val total = Calc.r2(taxable + gst + (inv.header.otherCharges ?: z) - (inv.header.overallDiscount ?: z))
+        var total = Calc.r2(taxable + gst + (inv.header.otherCharges ?: z) - (inv.header.overallDiscount ?: z))
+        if (inclusive(inv)) {
+            // Amounts with GST added up, as the bill does; the GST is what they include.
+            val withGst = lines.fold(z) { a, l -> a + l.amountWithGst } + untouched.fold(z) { a, i -> a + (i.current.printedTotal ?: i.current.taxable ?: z) }
+            total = Calc.r2(withGst + (inv.header.otherCharges ?: z) - (inv.header.overallDiscount ?: z))
+            gst = total - taxable
+        }
         return Sheet(lines, untouched, Calc.r2(taxable), Calc.r2(gst), total, total.setScale(0, RoundingMode.HALF_UP).setScale(2), bill.printedGrand ?: bill.grand)
     }
 }
