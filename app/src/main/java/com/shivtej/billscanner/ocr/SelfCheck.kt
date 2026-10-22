@@ -31,8 +31,8 @@ object SelfCheck {
 
     suspend fun run(
         pages: List<OcrPage>, sources: List<Source?>, parse: (List<OcrPage>) -> ParsedInvoice,
-        onProgress: (Int, Int) -> Unit = { _, _ -> },
         budgetMs: Long = 15_000,
+        onProgress: (Int, Int) -> Unit = { _, _ -> },
     ): Result = withContext(Dispatchers.Default) {
         // Kept quick: the person is waiting. Lines a finger or an icon covered cannot be read anyway.
         val deadline = System.currentTimeMillis() + budgetMs
