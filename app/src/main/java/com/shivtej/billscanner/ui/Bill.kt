@@ -287,11 +287,15 @@ private fun SmallToggle(text: String, on: Boolean, onClick: () -> Unit) = Text(
 
 // ================================================================ Excel-like grid
 
-private val FROZEN = 132.dp
+private val FROZEN = 120.dp
+
+/** On the phone the columns you decide with come first: MRP, rate, bill %, बैठा %, then the rest in bill order. */
+private val FIRST = listOf(F.MRP, F.RATE, F.DISC_PCT)
+private val AFTER_BAITHA = listOf(F.QTY, F.TAXABLE, F.TOTAL)
 
 private fun widthOf(f: F?): Dp = when (f) {
-    F.SR -> 36.dp; F.HSN -> 76.dp; F.GST_PCT -> 50.dp; F.SIZE -> 64.dp; F.COLOUR -> 84.dp; F.MRP -> 64.dp; F.QTY -> 60.dp
-    F.RATE -> 70.dp; F.GROSS -> 78.dp; F.DISC_PCT -> 64.dp; F.DISC_AMT -> 70.dp; F.TAXABLE -> 84.dp; F.TOTAL -> 84.dp
+    F.SR -> 36.dp; F.HSN -> 76.dp; F.GST_PCT -> 50.dp; F.SIZE -> 64.dp; F.COLOUR -> 84.dp; F.MRP -> 60.dp; F.QTY -> 58.dp
+    F.RATE -> 66.dp; F.GROSS -> 78.dp; F.DISC_PCT -> 58.dp; F.DISC_AMT -> 70.dp; F.TAXABLE -> 84.dp; F.TOTAL -> 84.dp
     F.CGST_PCT, F.SGST_PCT, F.IGST_PCT -> 52.dp; F.CGST_AMT, F.SGST_AMT, F.IGST_AMT -> 66.dp; else -> 74.dp
 }
 
@@ -321,7 +325,10 @@ private fun DataCell(text: String, w: Dp, tone: Tone, right: Boolean, warn: Bool
 fun BillGrid(inv: Invoice, onRow: (String) -> Unit, onColumn: (Int) -> Unit, modifier: Modifier = Modifier, hs: ScrollState = rememberScrollState()) {
     val cols = InvoiceExport.printedColumns(inv)
     val frozen = cols.indices.filter { cols[it].field == F.SR || cols[it].field == F.ARTICLE }
-    val rest = cols.indices - frozen.toSet()
+    val others = cols.indices - frozen.toSet()
+    val first = FIRST.flatMap { f -> others.filter { cols[it].field == f } }
+    val after = AFTER_BAITHA.flatMap { f -> others.filter { cols[it].field == f } }
+    val tail = others - first.toSet() - after.toSet()
     val sheet = Target.sheet(inv)
     val lines = sheet.lines.associateBy { it.item.id }
     val t = Totals.of(inv)
@@ -329,34 +336,38 @@ fun BillGrid(inv: Invoice, onRow: (String) -> Unit, onColumn: (Int) -> Unit, mod
         Row {
             HeadCell(tr("आर्टिकल (टैप = बदलें)", "Article (tap = edit)"), FROZEN, Tone.NORMAL)
             Row(Modifier.horizontalScroll(hs)) {
-                rest.forEach { ci -> HeadCell(cols[ci].label + " ▾", widthOf(cols[ci].field), if (cols[ci].field == F.DISC_PCT) Tone.ORANGE else Tone.NORMAL) { onColumn(ci) } }
-                HeadCell(tr("बैठा %", "Baitha %"), 66.dp, Tone.GREEN)
+                @Composable fun head(ci: Int) = HeadCell(cols[ci].label + " ▾", widthOf(cols[ci].field), if (cols[ci].field == F.DISC_PCT) Tone.ORANGE else Tone.NORMAL) { onColumn(ci) }
+                first.forEach { head(it) }
+                HeadCell(tr("बैठा %", "Baitha %"), 62.dp, Tone.GREEN)
                 if (sheet.any) {
                     HeadCell(tr("टार्गेट %", "Target %"), 60.dp, Tone.TARGET)
                     HeadCell(tr("नया रेट", "New rate"), 70.dp, Tone.TARGET)
-                    HeadCell(tr("नई रकम", "New amount"), 84.dp, Tone.TARGET)
                 }
+                after.forEach { head(it) }
+                if (sheet.any) HeadCell(tr("नई रकम", "New amount"), 84.dp, Tone.TARGET)
+                tail.forEach { head(it) }
             }
         }
         LazyColumn(Modifier.weight(1f, fill = false)) {
             items(inv.items, key = { it.id }) { item ->
-                GridRow(inv, item, cols, frozen, rest, lines[item.id], sheet.any, hs) { onRow(item.id) }
+                GridRow(inv, item, cols, frozen, first, after, tail, lines[item.id], sheet.any, hs) { onRow(item.id) }
                 Box(Modifier.fillMaxWidth().height(1.dp).background(C.line))
             }
             item {
                 Row(Modifier.background(C.navySoft)) {
                     DataCell(tr("कुल", "Total"), FROZEN, Tone.NORMAL, false, bold = true)
                     Row(Modifier.horizontalScroll(hs)) {
-                        rest.forEach { ci ->
+                        @Composable fun tot(ci: Int) {
                             val f = cols[ci].field
                             val v = when (f) { F.QTY -> qtyText(t.qty); F.TAXABLE -> num(t.taxable); F.GROSS -> num(t.gross); F.DISC_AMT -> num(t.discount); else -> "" }
-                            DataCell(v, widthOf(f), Tone.NORMAL, true, bold = true)
+                            DataCell(v, widthOf(f), if (f == F.DISC_PCT) Tone.ORANGE else Tone.NORMAL, true, bold = true)
                         }
-                        DataCell(pct(Calc.sittingTotal(inv)), 66.dp, Tone.GREEN, true, bold = true)
-                        if (sheet.any) {
-                            DataCell("", 60.dp, Tone.TARGET, true); DataCell("", 70.dp, Tone.TARGET, true)
-                            DataCell(num(sheet.lines.fold(BigDecimal.ZERO) { a, l -> a + l.amount }), 84.dp, Tone.TARGET, true, bold = true)
-                        }
+                        first.forEach { tot(it) }
+                        DataCell(pct(Calc.sittingTotal(inv)), 62.dp, Tone.GREEN, true, bold = true)
+                        if (sheet.any) { DataCell("", 60.dp, Tone.TARGET, true); DataCell("", 70.dp, Tone.TARGET, true) }
+                        after.forEach { tot(it) }
+                        if (sheet.any) DataCell(num(sheet.lines.fold(BigDecimal.ZERO) { a, l -> a + l.amount }), 84.dp, Tone.TARGET, true, bold = true)
+                        tail.forEach { tot(it) }
                     }
                 }
             }
@@ -366,7 +377,8 @@ fun BillGrid(inv: Invoice, onRow: (String) -> Unit, onColumn: (Int) -> Unit, mod
 
 @Composable
 private fun GridRow(
-    inv: Invoice, item: LineItem, cols: List<BillColumn>, frozen: List<Int>, rest: List<Int>, line: Target.Line?, anyTarget: Boolean, hs: ScrollState, onClick: () -> Unit,
+    inv: Invoice, item: LineItem, cols: List<BillColumn>, frozen: List<Int>, first: List<Int>, after: List<Int>, tail: List<Int>,
+    line: Target.Line?, anyTarget: Boolean, hs: ScrollState, onClick: () -> Unit,
 ) {
     val warnRow = item.needs.isNotEmpty()
     Row(Modifier.clickable(onClick = onClick)) {
@@ -374,20 +386,23 @@ private fun GridRow(
             .ifEmpty { "${item.current.sr ?: ""} ${item.current.article}".trim() } + if (item.kind == ItemKind.CHARGE) tr(" (चार्ज)", " (charge)") else ""
         DataCell(left, FROZEN, Tone.NORMAL, false, warn = warnRow && (F.ARTICLE in item.needs || F.SR in item.needs))
         Row(Modifier.horizontalScroll(hs)) {
-            rest.forEach { ci ->
+            @Composable fun cell(ci: Int) {
                 val col = cols[ci]
                 val text = InvoiceExport.printedText(item, ci, col).ifEmpty { if (col.field == F.DISC_PCT && item.current.discPct == null) "Needs Verif." else "" }
                 val isNum = col.field != null && col.field !in setOf(F.SIZE, F.COLOUR, F.HSN, F.ARTICLE)
                 DataCell(text, widthOf(col.field), if (col.field == F.DISC_PCT) Tone.ORANGE else Tone.NORMAL, isNum,
                     warn = col.field != null && col.field in item.needs, edited = InvoiceExport.isEdited(item, col))
             }
+            first.forEach { cell(it) }
             val s = Calc.sittingPct(item.current, inv.header, inv.sittingWithGst)
-            DataCell(if (item.kind == ItemKind.CHARGE) "" else pct(s), 66.dp, Tone.GREEN, true, warn = s == null && item.kind == ItemKind.ARTICLE)
+            DataCell(if (item.kind == ItemKind.CHARGE) "" else pct(s), 62.dp, Tone.GREEN, true, warn = s == null && item.kind == ItemKind.ARTICLE)
             if (anyTarget) {
                 DataCell(line?.let { pct(it.pct) + if (item.targetPct != null) "*" else "" } ?: "—", 60.dp, Tone.TARGET, true)
                 DataCell(line?.let { num(it.net) } ?: "", 70.dp, Tone.TARGET, true)
-                DataCell(line?.let { num(it.amount) } ?: "", 84.dp, Tone.TARGET, true)
             }
+            after.forEach { cell(it) }
+            if (anyTarget) DataCell(line?.let { num(it.amount) } ?: "", 84.dp, Tone.TARGET, true)
+            tail.forEach { cell(it) }
         }
     }
 }
