@@ -102,6 +102,16 @@ class RealOcrTest {
         assertTrue("difference ${t.difference}", t.difference == null || t.difference!!.abs() <= BigDecimal.ONE)
     }
 
+    /** The same Lakhani PDF as the phone reads it (its own text, letter-tall boxes): heading on two lines far apart, IGST amount apart. */
+    @Test fun lakhaniPdfAsThePhoneReadsIt() {
+        val p = InvoiceParser.parse(listOf(page("lakhani_1972_phone.tsv")))
+        assertEquals((1..9).toList(), p.items.map { it.current.sr })
+        assertTrue(p.items.all { it.needs.isEmpty() && it.current.qty!!.toInt() == 12 })
+        assertEquals(0, p.header.igstAmt!!.compareTo(bd("5054.87")))
+        val inv = Invoice("l", 0, p.header, p.header, p.items, columns = p.columns)
+        assertEquals(0, Totals.of(inv).difference!!.signum())
+    }
+
     @Test fun sameBillAddedTwiceKeepsOneCopy() {
         val pg = page("v3617_1.tsv")
         val p = InvoiceParser.parse(listOf(pg, pg))

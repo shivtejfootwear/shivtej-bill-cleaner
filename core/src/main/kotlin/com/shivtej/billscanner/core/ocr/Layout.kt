@@ -1,5 +1,7 @@
 package com.shivtej.billscanner.core.ocr
 
+import java.math.BigDecimal
+
 import kotlin.math.abs
 import kotlin.math.atan
 import kotlin.math.cos
@@ -179,7 +181,19 @@ object Layout {
             if (bestRow >= 0) { rows[bestRow].addAll(ch); rowSlope[bestRow] = tilt(rows[bestRow]) }
             else { rows += ch.toMutableList(); rowSlope += tilt(ch) }
         }
-        return rows.map { r -> Row(r.sortedBy { it.box.l }, r.map { it.box.cy }.average()) }.sortedBy { it.y }
+        // Two pieces at the same height that do not overlap side by side are one line
+        // ("ADD : IGST @ 5.00%" … "5054.87" when a short piece's own tilt sent them apart).
+        val built = rows.map { r -> Row(r.sortedBy { it.box.l }, r.map { it.box.cy }.average()) }.sortedBy { it.y }.toMutableList()
+        var k = 0
+        while (k < built.size - 1) {
+            val a = built[k]; val b = built[k + 1]
+            val apart = a.words.last().box.r < b.words.first().box.l || b.words.last().box.r < a.words.first().box.l
+            if (abs(b.y - a.y) < 0.35 * mh && apart) {
+                val ws = (a.words + b.words).sortedBy { it.box.l }
+                built[k] = Row(ws, ws.map { it.box.cy }.average()); built.removeAt(k + 1)
+            } else k++
+        }
+        return built
     }
 
     // ---------------------------------------------------------------- words the OCR glued together
@@ -245,6 +259,81 @@ object Layout {
         sizeSplit(t)?.let { return@flatMap again(it) }
         listOf(w)
     }
+
+    private val CURRENCY = Regex("""(?i)^(₹|rs\.?|inr|`)$""")
+    private val PAREN_PCT = Regex("""^\((\d{1,2}(?:\.\d{1,3})?)\s*%\)$""")
+    private val PLAIN_NUM = Regex("""^-?\d[\d,]*(\.\d+)?$""")
+
+    /**
+     * "₹ 1,129.84" and "392.52 (7.45%)" (Vyapar and other apps): the ₹ sign and the % in brackets are glued to their
+     * number, so each cell is one word under its heading.
+     */
+    private val MONEY2 = Regex("""^\d{1,3}(,\d{2,3})+\.\d{2}$|^\d+\.\d{2}$""")
+
+    /**
+     * A number the OCR broke in two with almost no gap ("176.2" "3", "2,881" ".53", "44" "9.00", HSN "6403" "9990"):
+     * put back together when the joined text is a proper amount (or an 8-digit HSN) and the pieces are not two amounts.
+     */
+    fun mendSplitNumbers(words: List<OcrWord>): List<OcrWord> {
+        val byLine = words.sortedBy { it.box.l }
+        val used = HashSet<Int>()
+        val out = ArrayList<OcrWord>(words.size)
+        val idx = byLine.indices.toList()
+        for (i in idx) {
+            if (i in used) continue
+            val a = byLine[i]
+            var merged: OcrWord? = null
+            if (a.text.any(Char::isDigit) && a.text.all { it.isDigit() || it == ',' || it == '.' }) {
+                for (j in i + 1 until byLine.size) {
+                    val b = byLine[j]
+                    if (b.box.l - a.box.r > 0.3 * max(a.box.h, b.box.h)) break
+                    if (j in used || b.box.l < a.box.r - 2) continue
+                    if (min(a.box.b, b.box.b) - max(a.box.t, b.box.t) < 0.6 * min(a.box.h, b.box.h)) continue
+                    if (!b.text.all { it.isDigit() || it == ',' || it == '.' } || b.text.none(Char::isDigit) && b.text != ".") continue
+                    val t = a.text + b.text
+                    val money = MONEY2.matches(t) && !(MONEY2.matches(a.text) && MONEY2.matches(b.text))
+                    val hsn = a.text.all(Char::isDigit) && b.text.all(Char::isDigit) && t.length == 8 && a.text.length >= 2 && b.text.length >= 2 && t.startsWith("6")
+                    if (money || hsn) { merged = OcrWord(t, Box(a.box.l, min(a.box.t, b.box.t), b.box.r, max(a.box.b, b.box.b))); used += j }
+                    break
+                }
+            }
+            out += merged ?: a
+        }
+        return out
+    }
+
+    fun glue(words0: List<OcrWord>): List<OcrWord> {
+        val words = mendSplitNumbers(words0)
+        if (words.none { CURRENCY.matches(it.text) || PAREN_PCT.matches(it.text) }) return words
+        val gone = HashSet<OcrWord>()
+        val out = words.toMutableList()
+        fun sameLine(a: OcrWord, b: OcrWord) = min(a.box.b, b.box.b) - max(a.box.t, b.box.t) >= 0.5 * min(a.box.h, b.box.h)
+        fun merge(a: OcrWord, b: OcrWord, text: String) = OcrWord(text, Box(min(a.box.l, b.box.l), min(a.box.t, b.box.t), max(a.box.r, b.box.r), max(a.box.b, b.box.b)))
+        for (i in out.indices) {
+            val w = out[i]
+            if (w in gone || !CURRENCY.matches(w.text)) continue
+            val n = out.filter { it !== w && it !in gone && sameLine(w, it) && it.box.l >= w.box.r - 2 && it.box.l - w.box.r <= 1.5 * max(w.box.h, it.box.h) }
+                .minByOrNull { it.box.l } ?: continue
+            if (!PLAIN_NUM.matches(n.text)) continue
+            val j = out.indexOf(n)
+            out[j] = merge(w, n, (if (w.text == "₹") "₹" else "") + n.text); gone += w
+        }
+        val mid = out.filterNot { it in gone }.toMutableList()
+        val gone2 = HashSet<OcrWord>()
+        for (k in mid.indices) {
+            val p = mid[k]
+            val m = PAREN_PCT.matchEntire(p.text) ?: continue
+            val n = mid.filter { it !== p && it !in gone2 && sameLine(p, it) && it.box.r <= p.box.l + 2 && p.box.l - it.box.r <= 1.5 * max(p.box.h, it.box.h) }
+                .maxByOrNull { it.box.r } ?: continue
+            if (!PLAIN_NUM.matches(n.text.removePrefix("₹"))) continue
+            val j = mid.indexOf(n)
+            mid[j] = merge(n, p, n.text + "(" + m.groupValues[1] + "%)"); gone2 += p
+        }
+        return mid.filterNot { it in gone2 }
+    }
+
+    /** "392.52(7.45%)": the % in brackets glued to an amount by [glue]. */
+    fun bracketPct(text: String): BigDecimal? = Regex("""\((\d{1,2}(?:\.\d{1,3})?)%\)$""").find(text.trim())?.groupValues?.get(1)?.toBigDecimalOrNull()
 
     /** The same word read twice (e.g. overlapping OCR strips): keep one. */
     fun dedupe(ws: List<OcrWord>): List<OcrWord> {
