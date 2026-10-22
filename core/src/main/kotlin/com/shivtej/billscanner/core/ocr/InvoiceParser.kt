@@ -42,7 +42,9 @@ object InvoiceParser {
     /** Words that are labels on a bill, never a name. */
     private val LABELS = Regex("""(?i)^\s*(address|invoice|date|state|place|gstin|party|dc\s*no|eway|pay\s*mode|due|mobile|phone|contact)\b""")
     /** Words of the lines under an item table (tax, totals, bank, signature): such a line is not an article. */
-    private val FOOTERISH = Regex("""(?i)\b(c\s*gst|s\s*gst|igst|utgst|hsn|taxable|total|round|bank|a/c|ifsc?|e\s*&\s*o|rupees|in\s*words|signatory)\b|\bfor\s*:""")
+    private val FOOTERISH = Regex("""(?i)\b(c\s*gst|s\s*gst|igst|utgst|hsn|taxable|total|round|bank|branch|a\s*[/l1i]\s*c|ifsc?|e\s*&\s*o|rupees|in\s*words|signatory|declaration)\b|\bfor\s*:""")
+    /** Text this app prints on its own files (a photo PDF shared back into the app): never part of a bill. */
+    private val OWN_TEXT = Regex("""(?i)(original\s+invoice\s+photo|copy\s+for\s+refere|shivtej\s+bill\s+scanner|not\s+an\s+official\s+digital|not\s+the\s+supplier'?s\s+original).*$""")
     private val DOTTED = Regex("""^\d{1,3}(\.\d{3})+\.\d{2}$""")
     private val UNITS = setOf("pair", "pairs", "prs", "pr", "pcs", "pc", "nos", "no", "set", "sets", "%", "pkt", "box", "dz", "doz")
     private val STOP = Regex("""(?i)\b(continued|amount\s*(rs\.?)?\s*in\s*words|rupees|e\s*&\s*o\s*e|our\s+bankers|bank\s+(name|details)|terms\s*(&|and)?\s*conditions|declaration|authori[sz]ed\s+signatory|output\s*[cs]gst|sub\s*-?\s*total|grand\s*total|round\s*off)\b""")
@@ -89,8 +91,18 @@ object InvoiceParser {
             val drop = mutableSetOf<Int>()
             for (j in items.indices) {
                 val sj = items[j].current.sr ?: continue
-                val i = (0 until j).firstOrNull { it !in drop && items[it].current.sr == sj && key(items[it]) == key(items[j]) && key(items[j]).isNotEmpty() } ?: continue
-                if (items[j].needs.size < items[i].needs.size) items[i] = items[j]
+                fun same(a: LineItem, b: LineItem): Boolean {
+                    if (a.current.sr != b.current.sr) return false
+                    if (key(a).isNotEmpty() && key(a) == key(b)) return true
+                    // Article text misread in one copy: the same serial with the same printed numbers is the same line.
+                    fun eq(x: BigDecimal?, y: BigDecimal?) = x != null && y != null && x.compareTo(y) == 0
+                    val va = a.current; val vb = b.current
+                    return eq(va.taxable, vb.taxable) && (eq(va.mrp, vb.mrp) || eq(va.rate, vb.rate) || eq(va.qty, vb.qty))
+                }
+                val i = (0 until j).firstOrNull { it !in drop && same(items[it], items[j]) } ?: continue
+                // The better reading: fewer doubtful fields, then the longer article text.
+                val better = compareValuesBy(items[j], items[i], { -it.needs.size }, { it.current.article.length }) > 0
+                if (better) items[i] = items[j]
                 drop += j
             }
             if (drop.isNotEmpty()) {
@@ -865,7 +877,7 @@ object InvoiceParser {
         val srCol = cols.indexOfFirst { it.kind == Kind.SR }
         var sr = if (srCol >= 0) serialOf(cellText(first[srCol])) else null
         // Description lines (and anything in an unnamed column on its left).
-        var descLines = cols.withIndex().filter { it.value.kind == Kind.DESC }.flatMap { (ci, _) -> block.map { cellText(it[ci]) } }.filter { it.isNotEmpty() }.toMutableList()
+        var descLines = cols.withIndex().filter { it.value.kind == Kind.DESC }.flatMap { (ci, _) -> block.map { cellText(it[ci]).replace(OWN_TEXT, "").trim() } }.filter { it.isNotEmpty() }.toMutableList()
         if (sr == null && descLines.isNotEmpty()) {
             // "1 1180-Paralite…" when there is no Sr heading.
             val t = descLines[0].split(' ')
@@ -937,7 +949,7 @@ object InvoiceParser {
 
         // ---- a decimal point the photo lost or misread ("745 %" for 7.45 %, "1.29 5.68" for 1,295.68):
         // the reading that makes the line's own arithmetic work is taken, and the printed cell shown that way.
-        val raw = cols.indices.map { ci -> block.mapNotNull { cellText(it[ci]).ifEmpty { null } }.joinToString(" ") }.toMutableList()
+        val raw = cols.indices.map { ci -> block.mapNotNull { cellText(it[ci]).replace(OWN_TEXT, "").trim().ifEmpty { null } }.joinToString(" ") }.toMutableList()
         if (v.taxable == null || v.qty == null || (v.discPct ?: BigDecimal.ZERO) >= BigDecimal(100) || Calc.checkLine(v).isNotEmpty())
             repairDecimals(v, cols, raw)?.let { v = it }
         // "640299905" + "%": the GST % glued to an 8-digit HSN code.

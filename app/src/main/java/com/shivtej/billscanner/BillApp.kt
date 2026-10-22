@@ -74,6 +74,10 @@ class Container(val ctx: Context, db: BillDb) {
                         val src = withContext(Dispatchers.IO) { pages.keepFile(id, item.uri, "bill_${k + 1}.pdf") }
                         if (!withContext(Dispatchers.IO) { firstTime(src) }) continue
                         val read = PdfBill.read(ctx, src) { n, total -> pageNow = files.size + 1; progress = 0.1f + 0.6f * n / total }
+                        // A report or new-bill PDF made by this app is not a supplier's bill.
+                        val txt = read.filter { it.fromText }.flatMap { it.words.words }.joinToString(" ") { it.text }
+                        if (txt.contains("Shivtej Bill Scanner") && Regex("""(?i)bill\s+report|calculation\s+at\s+target""").containsMatchIn(txt))
+                            error("यह PDF इसी app की बनाई रिपोर्ट है, सप्लायर का बिल नहीं। सप्लायर का असली PDF (WhatsApp वाला) या बिल की फ़ोटो चुनें।")
                         read.forEachIndexed { i, pg ->
                             ocr += pg.words
                             files += withContext(Dispatchers.IO) {
