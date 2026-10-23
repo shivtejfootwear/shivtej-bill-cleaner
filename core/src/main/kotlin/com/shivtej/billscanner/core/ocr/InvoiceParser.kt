@@ -1455,6 +1455,12 @@ object InvoiceParser {
             val base = v.qty?.let { q -> v.rate?.let { Calc.r2(q * it) } }?.let { g -> g - (v.discAmt ?: BigDecimal.ZERO) }
             if (base != null && (base + tax - v.taxable!!).abs() <= BigDecimal("1.00")) v = v.copy(printedTotal = v.taxable, taxable = v.taxable!! - tax)
         }
+        // Pairs not found under a Qty heading (its heading misread and joined to the next): "42 Pairs" anywhere on the line.
+        val qtyCell = cols.indexOfFirst { it.kind == Kind.QTY }.takeIf { it >= 0 }?.let { ci -> block.joinToString(" ") { cellText(it[ci]) } }
+        if (v.qty == null && (qtyCell == null || Regex("""\b6\d{3,7}\b""").containsMatchIn(qtyCell))) {
+            val all = cols.indices.filter { cols[it].kind != Kind.DESC }.joinToString(" ") { ci -> block.joinToString(" ") { cellText(it[ci]) } }
+            Regex("""(?i)(?<![\d.,])(\d{1,4})\s*(pa[il1]?rs?|prs)\b""").findAll(all).map { it.groupValues[1] }.distinct().singleOrNull()?.toBigDecimalOrNull()?.let { v = v.copy(qty = it) }
+        }
         // "MRP 0.00": a line without MRP (non-brand goods billed by rate only) — not a misreading.
         if (v.mrp?.signum() == 0) v = v.copy(mrp = null)
         // "CD% 10.00" printed on the line but Amount = pairs × rate: the cash discount is taken at the bill's foot
