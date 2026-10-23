@@ -112,6 +112,33 @@ class RealOcrTest {
         assertEquals(0, Totals.of(inv).difference!!.signum())
     }
 
+    /**
+     * Yash Enterprises (Tally, creased photo): "HSW-012-NAVY-239" = article - colour - MRP, no MRP column, serial heading
+     * read as just "No.", "Less : Dis (-)5 %" and CGST/SGST without % under the lines, a strip of another sheet at the edge.
+     */
+    @Test fun yashArticleColourMrpCodes() {
+        val p = InvoiceParser.parse(listOf(page("yash_ye0393_1.tsv")))
+        assertEquals("Yash Enterprises", p.header.supplierName)
+        assertEquals("SHIVTEJ FOOTWEAR-AKLUJ", p.header.buyerName)
+        assertEquals((1..25).toList(), p.items.map { it.current.sr })
+        val l1 = p.items[0].current
+        assertEquals(0, l1.mrp!!.compareTo(BigDecimal(319))); assertEquals(8, l1.qty!!.toInt()); assertEquals(0, l1.taxable!!.compareTo(bd("1580.00")))
+        assertEquals(0, p.items[23].current.mrp!!.compareTo(BigDecimal(599)))
+        assertEquals("NAVY", p.items[1].current.colour)
+        // Every line has its MRP, so a % can be set; line 19's amount is smudged on the photo and is not marked sure.
+        assertTrue(p.items.all { it.current.mrp != null })
+        assertTrue(p.items.filter { it.current.sr != 19 }.all { com.shivtej.billscanner.core.ocr.Heal.sure(it) })
+        assertTrue(!com.shivtej.billscanner.core.ocr.Heal.sure(p.items[18]))
+        assertEquals(0, p.header.printedGrandTotal!!.compareTo(bd("37482.00")))
+        assertEquals(0, p.header.overallDiscount!!.compareTo(bd("1878.82")))
+        assertEquals(0, p.header.sgstAmt!!.compareTo(bd("892.46")))
+        val inv = Invoice("y", 0, p.header, p.header, p.items, columns = p.columns)
+        // Baitha % with the bill's 5 % discount and 5 % GST: 319 − 197.50 × 0.95 × 1.05 = 38.2 %.
+        val b = com.shivtej.billscanner.core.model.Calc.sittingPct(p.items[0].current, p.header)!!
+        assertTrue("baitha $b", (b - bd("38.25")).abs() <= bd("0.1"))
+        assertEquals(0, Totals.of(inv).difference!!.compareTo(bd("30.00")))   // the smudged line 19 (1,232 read as 1,202)
+    }
+
     @Test fun sameBillAddedTwiceKeepsOneCopy() {
         val pg = page("v3617_1.tsv")
         val p = InvoiceParser.parse(listOf(pg, pg))
