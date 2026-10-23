@@ -153,6 +153,9 @@ class OcrOnRealInvoiceTest {
         report("${name}_selfcheck", dir2, checked.pages)
     }
 
+    /** Yash Enterprises (Tally), creased paper: article-colour-MRP in one code ("HSW-012-NAVY-239"), "Less : Dis (-)5 %". */
+    @Test fun yash() = read("yash", listOf("yash_ye0393.jpg"))
+
     @Test fun patel() = read("patel", listOf("patel_tradelines_g2_2627_1309.jpg"))
 
     /** PATEL TRADING CORPORATION (EBase): rate with GST + net rate, amounts with GST, MRP 0.00 on non-brand goods. */
