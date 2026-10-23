@@ -188,7 +188,8 @@ object Layout {
         while (k < built.size - 1) {
             val a = built[k]; val b = built[k + 1]
             val apart = a.words.last().box.r < b.words.first().box.l || b.words.last().box.r < a.words.first().box.l
-            if (abs(b.y - a.y) < 0.35 * mh && apart) {
+            // (Almost the same height — a quarter of a letter — is one line even when a smudge overlaps a word of it.)
+            if ((abs(b.y - a.y) < 0.35 * mh && apart) || abs(b.y - a.y) < 0.25 * mh) {
                 val ws = (a.words + b.words).sortedBy { it.box.l }
                 built[k] = Row(ws, ws.map { it.box.cy }.average()); built.removeAt(k + 1)
             } else k++
@@ -262,7 +263,7 @@ object Layout {
         listOf(w)
     }
 
-    private val CURRENCY = Regex("""(?i)^(₹|rs\.?|inr|`)$""")
+    private val CURRENCY = Regex("""(?i)^(₹|rs\.?|inr|`)$|^R$""")
     private val PAREN_PCT = Regex("""^\((\d{1,2}(?:\.\d{1,3})?)\s*%\)$""")
     private val PLAIN_NUM = Regex("""^-?\d[\d,]*(\.\d+)?$""")
 
@@ -288,14 +289,22 @@ object Layout {
             if (a.text.any(Char::isDigit) && a.text.all { it.isDigit() || it == ',' || it == '.' }) {
                 for (j in i + 1 until byLine.size) {
                     val b = byLine[j]
-                    if (b.box.l - a.box.r > 0.3 * max(a.box.h, b.box.h)) break
+                    if (b.box.l - a.box.r > 0.6 * max(a.box.h, b.box.h)) break
+                    val tight = b.box.l - a.box.r <= 0.3 * max(a.box.h, b.box.h)
                     if (j in used || b.box.l < a.box.r - 2) continue
                     if (min(a.box.b, b.box.b) - max(a.box.t, b.box.t) < 0.6 * min(a.box.h, b.box.h)) continue
+                    if (Regex("""^\d[\d,]*$""").matches(a.text) && b.text in setOf("D0", "DO", "OO", "O0", "0O", ".D0", ".OO", ".O0") && b.box.l - a.box.r <= 0.6 * max(a.box.h, b.box.h)) {
+                        merged = OcrWord(a.text + ".00", Box(a.box.l, min(a.box.t, b.box.t), b.box.r, max(a.box.b, b.box.b))); used += j; break
+                    }
                     if (!b.text.all { it.isDigit() || it == ',' || it == '.' } || b.text.none(Char::isDigit) && b.text != ".") continue
+                    // "4449 52": the point itself lost; "12385 D0": ".00" read as letters.
+                    val lostPoint = Regex("""^\d{1,3}(,\d{2,3})+$|^\d{3,}$""").matches(a.text) && Regex("""^\d{2}$""").matches(b.text) &&
+                        !(a.text.startsWith("6") && a.text.length in 4..6)      // not an HSN code broken in two
+                    if (lostPoint) { merged = OcrWord(a.text + "." + b.text, Box(a.box.l, min(a.box.t, b.box.t), b.box.r, max(a.box.b, b.box.b))); used += j; break }
                     val t = a.text + b.text
                     val money = MONEY2.matches(t) && !(MONEY2.matches(a.text) && MONEY2.matches(b.text))
                     val hsn = a.text.all(Char::isDigit) && b.text.all(Char::isDigit) && t.length == 8 && a.text.length >= 2 && b.text.length >= 2 && t.startsWith("6")
-                    if (money || hsn) { merged = OcrWord(t, Box(a.box.l, min(a.box.t, b.box.t), b.box.r, max(a.box.b, b.box.b))); used += j }
+                    if (tight && (money || hsn)) { merged = OcrWord(t, Box(a.box.l, min(a.box.t, b.box.t), b.box.r, max(a.box.b, b.box.b))); used += j }
                     break
                 }
             }
@@ -318,7 +327,7 @@ object Layout {
                 .minByOrNull { it.box.l } ?: continue
             if (!PLAIN_NUM.matches(n.text)) continue
             val j = out.indexOf(n)
-            out[j] = merge(w, n, (if (w.text == "₹") "₹" else "") + n.text); gone += w
+            out[j] = merge(w, n, (if (w.text == "₹" || w.text == "R") "₹" else "") + n.text); gone += w
         }
         val mid = out.filterNot { it in gone }.toMutableList()
         val gone2 = HashSet<OcrWord>()

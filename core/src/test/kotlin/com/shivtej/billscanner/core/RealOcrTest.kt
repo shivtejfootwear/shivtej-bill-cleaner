@@ -157,6 +157,24 @@ class RealOcrTest {
         assertEquals(0, Totals.of(ib).difference!!.signum())
     }
 
+    /**
+     * Charan Care / Next Grip memos (CD% on the line, cash discount at the foot, pen ticks beside the pairs), Patel Trading,
+     * and Taha Foot Lines (GST only in the total, empty pre-numbered lines). As the phone reads the screenshots.
+     */
+    @Test fun memosAndSmallSuppliers() {
+        fun read(n: String) = InvoiceParser.parse(listOf(page("${n}_1.tsv"))).let { p -> p to Totals.of(Invoice(n, 0, p.header, p.header, p.items, columns = p.columns)) }
+        fun sure(p: com.shivtej.billscanner.core.ocr.ParsedInvoice) = p.items.count { com.shivtej.billscanner.core.ocr.Heal.sure(it) }
+        val (c77, t77) = read("charan_d77"); assertEquals(3, sure(c77)); assertTrue("${t77.difference}", t77.difference!!.abs() < BigDecimal.ONE)
+        // CD 10 % at the foot is in the baitha %: 899 − 556.19 × 0.90 × 1.05 = 41.5 %
+        assertTrue((com.shivtej.billscanner.core.model.Calc.sittingPct(c77.items[0].current, c77.header)!! - bd("41.53")).abs() < bd("0.1"))
+        val (c61, t61) = read("charan_d61"); assertEquals((1..15).toList(), c61.items.map { it.current.sr }); assertEquals(15, sure(c61)); assertTrue(t61.difference!!.abs() < BigDecimal(5))
+        val (n130, t130) = read("nextgrip_d130"); assertEquals(5, sure(n130)); assertEquals(6, n130.items[1].current.qty!!.toInt()); assertTrue(t130.difference!!.abs() < BigDecimal.ONE)
+        val (n132, _) = read("nextgrip_d132"); assertEquals((1..6).toList(), n132.items.map { it.current.sr }); assertEquals(0, n132.header.printedGrandTotal!!.compareTo(bd("15983.00")))
+        val (pt, tpt) = read("patel_trading_alt427"); assertEquals(2, sure(pt)); assertTrue(tpt.difference!!.abs() < BigDecimal.ONE)
+        val (taha, tt) = read("taha_0754"); assertEquals(11, taha.items.size); assertEquals(11, sure(taha)); assertEquals(0, tt.difference!!.signum())
+        assertEquals("0754", taha.header.invoiceNo)
+    }
+
     @Test fun sameBillAddedTwiceKeepsOneCopy() {
         val pg = page("v3617_1.tsv")
         val p = InvoiceParser.parse(listOf(pg, pg))
