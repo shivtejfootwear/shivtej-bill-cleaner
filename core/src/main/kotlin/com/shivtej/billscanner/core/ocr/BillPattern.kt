@@ -71,7 +71,13 @@ data class BillPattern(
          * Reads the bill: as usual first; when a pasted pattern is for this supplier, again with it.
          * [base] is what the person taught by hand (it still comes first for a heading it knows).
          */
-        fun parse(pages: List<OcrPage>, patterns: List<BillPattern>, base: LayoutMemory? = null): ParsedInvoice {
+        fun parse(pages: List<OcrPage>, patterns: List<BillPattern>, base: LayoutMemory? = null): ParsedInvoice = runCatching { parseOrThrow(pages, patterns, base) }.getOrElse { e ->
+            // Never lose the scan: the bill is kept with its photo, to be filled in or sent to Claude.
+            runCatching { InvoiceParser.parse(pages) }.getOrNull()
+                ?: ParsedInvoice(Header(), emptyList(), listOf("यह बिल अपने आप नहीं पढ़ा जा सका (${e::class.simpleName}) — \"📤 Claude को भेजें\" दबाएँ या लाइनें हाथ से जोड़ें।"), emptyList())
+        }
+
+        private fun parseOrThrow(pages: List<OcrPage>, patterns: List<BillPattern>, base: LayoutMemory?): ParsedInvoice {
             val first = InvoiceParser.parse(pages, base)
             val p = patterns.firstOrNull { it.matches(first.header) } ?: return first
             val memory = object : LayoutMemory {

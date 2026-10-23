@@ -24,7 +24,7 @@ import kotlin.random.Random
  *  SIMPLE    Sr | Article | Colour | Size | HSN | GST% | MRP | Pairs | Rate | Disc% | Amount; CGST / SGST / Round Off / Grand Total.
  */
 object SynthBill {
-    enum class Style { TALLY, BUSY, MARG, VYAPAR, BRAND, CRYSTAL, EBASE, ESTIMATE, SIMPLE, MATRIX, SCHEME }
+    enum class Style { TALLY, BUSY, MARG, VYAPAR, BRAND, CRYSTAL, EBASE, ESTIMATE, SIMPLE, MATRIX, SCHEME, MEMO, TAHA }
 
     data class TLine(
         val sr: Int, val article: String, val colour: String, val size: String, val hsn: String,
@@ -179,6 +179,8 @@ object SynthBill {
         val perPrs = st == Style.TALLY && chance(0.5)
         // "Less : Dis (-)5 % (-)1,878.82" under the lines, GST on what is left.
         val tallyDisc = st == Style.TALLY && chance(0.35)
+        // Charan Care / Next Grip memos: "CD% 10.00" on every line (or empty), taken off at the foot as "Cash Discount".
+        val memoCd = if (st == Style.MEMO && chance(0.6)) BigDecimal("10.00") else null
         val lines = (1..n).map { k ->
             val brand = pick(BRANDS); val code = when (rnd.nextInt(5)) { 0 -> "${rnd.nextInt(100, 9999)}"; 1 -> "${pick(listOf("SM", "FL", "BH", "W", "PU", "TG", "DX"))}-${rnd.nextInt(10, 999)}"
                 2 -> "${pick(listOf("SM", "FL", "BH", "W", "PU"))} ${rnd.nextInt(10, 999)}"; 3 -> "${rnd.nextInt(10, 99)}-${rnd.nextInt(100, 999)}"; else -> "${rnd.nextInt(1000, 99999)}" }
@@ -208,6 +210,11 @@ object SynthBill {
                 val g = r2(r * BigDecimal(qty)); val a1 = r2(g * d1 / BigDecimal(100)); val a2 = r2((g - a1) * d2 / BigDecimal(100))
                 val tx = g - a1 - a2; val tax = r2(tx * gst / BigDecimal(100))
                 TLine(k, article, pick(COLOURS), sizeText(), pick(HSNS), qty, cartons, mrpV, null, r, d1, a1 + a2, g, tx, gst, tax, tx + tax, null, d2, a1, a2)
+            } else if (st == Style.MEMO || st == Style.TAHA) {
+                // Amount = pairs × rate; the cash discount (MEMO) is taken at the bill's foot. TAHA rates have one decimal.
+                val r = if (st == Style.TAHA) BigDecimal(landed / 1.05).setScale(1, RoundingMode.HALF_UP).setScale(2) else bd(landed / 1.05 / 0.9)
+                val g = r2(r * BigDecimal(qty))
+                TLine(k, article, pick(COLOURS), sizeText(), pick(HSNS), qty, cartons, mrpV, null, r, memoCd, BigDecimal.ZERO, g, g, gst, r2(g * gst / BigDecimal(100)), g + r2(g * gst / BigDecimal(100)), null)
             } else if (st == Style.MATRIX) {
                 val sizes = matrixSizes.size
                 val per = IntArray(sizes); repeat(qty) { per[rnd.nextInt(sizes)]++ }
@@ -354,6 +361,29 @@ object SynthBill {
                 cols += C(listOf("Amount"), true, { fmt(it.taxable) }, fmt(sumTaxable))
             }
             Style.MATRIX, Style.SCHEME -> {}
+            Style.MEMO -> {
+                cols += C(listOf("Sr."), true, { "${it.sr}" })
+                cols += C(listOf("Item"), false, { it.article.split(' ').take(2).joinToString(" ") + " " + it.size })
+                cols += C(listOf("Colour"), false, { it.colour.uppercase() })
+                cols += C(listOf("HSN"), false, { it.hsn })
+                cols += C(listOf("M.R.P."), true, { plain(it.mrp!!) })
+                cols += C(listOf("GST%"), true, { "5.0" })
+                cols += C(listOf("Qty"), true, { "${it.qty}" })
+                cols += C(listOf("Rate"), true, { plain(it.rate) })
+                cols += C(listOf("CD%"), true, { it.discPct?.let { d -> plain(d) } ?: "" })
+                cols += C(listOf("Amount"), true, { plain(it.taxable) })
+                features += if (memoCd != null) "cd-at-foot" else "cd-empty"
+            }
+            Style.TAHA -> {
+                cols += C(listOf("No."), true, { "${it.sr}" })
+                cols += C(listOf("Name Of Product"), false, { it.article.split(' ').take(2).joinToString(".") })
+                cols += C(listOf("HSN"), false, { "" })
+                cols += C(listOf("QTY"), true, { "${it.qty}" }, "$sumQty")
+                cols += C(listOf("Size"), false, { it.size.replace('X', '\\').replace('x', '\\') })
+                cols += C(listOf("M R P"), true, { it.mrp!!.setScale(0).toPlainString() })
+                cols += C(listOf("Rate"), true, { it.rate.stripTrailingZeros().toPlainString().let { r -> if (chance(0.15)) r.replace('.', ',') else r } })
+                cols += C(listOf("Amount"), true, { it.taxable.stripTrailingZeros().toPlainString() })
+            }
             Style.SIMPLE -> {
                 cols += C(listOf(pick(listOf("Sr", "Sr.No", "S.No."))), true, { "${it.sr}" })
                 cols += C(listOf(pick(listOf("Article", "Item Description", "Particulars", "Product Name"))), false, ::desc)
@@ -524,6 +554,31 @@ object SynthBill {
                 ink.at(20, y, "Tax Amount (in words) : INR ${words(sumTax)} Only"); y += rowH
                 ink.at(20, y, "Declaration"); ink.at(ar - 400, y, "for SUPPLIER NAME"); y += rowH
                 ink.at(ar - 300, y, "Authorised Signatory"); y += rowH
+                return y to gr
+            }
+            Style.MEMO -> {
+                ink.right(ar, y, plain(sumTaxable)); y += rowH
+                val cd = lines.first().discPct
+                val d = cd?.let { r2(sumTaxable * it / BigDecimal(100)) } ?: BigDecimal.ZERO.setScale(2)
+                lv("Cash Discount", if (cd != null) plain(d) else "", rightX)
+                lv("SUB TOTAL", "0.00", rightX)
+                val base = sumTaxable - d; val h1 = r2(base * g / BigDecimal(200))
+                lv("CGST", plain(h1), rightX); lv("SGST", plain(h1), rightX)
+                val total = base + h1 + h1; val gr = round(total)
+                if (gr.compareTo(total) != 0) { ink.right(ar, y, plain(gr - total)); y += rowH }
+                lv("Total Amount", plain(gr), rightX)
+                ink.at(20, y, "Rs. : ${words(gr)} Only"); y += rowH
+                ink.at(20, y, "Bank Name : AXIS BANK"); y += rowH
+                if (cd != null) features += "bill-cash-discount"
+                return y to gr
+            }
+            Style.TAHA -> {
+                val gr = round(sumTaxable * BigDecimal("1.05"))
+                ink.right(cols[3].x + cols[3].w - ch.toInt(), y, "${lines.sumOf { it.qty }}"); ink.right(ar, y, "₹ " + indian(gr).removeSuffix(".00")); y += rowH
+                ink.at(cols[3].x, y, "Total Invoice Amount"); y += rowH
+                ink.at(200, y, words(gr).lowercase()); y += rowH
+                ink.at(100, y, "HSN / SAC"); ink.at(500, y, "Taxable"); ink.at(700, y, "State Tax"); y += rowH
+                ink.at(100, y, "6402"); ink.right(640, y, sumTaxable.setScale(0, RoundingMode.HALF_UP).toPlainString()); ink.at(700, y, "5.00%"); ink.right(980, y, "₹ " + indian(gr - sumTaxable)); y += rowH
                 return y to gr
             }
             Style.BUSY, Style.SIMPLE, Style.MARG, Style.MATRIX, Style.SCHEME -> {

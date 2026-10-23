@@ -9,7 +9,7 @@ mkdir -p ocr
   echo "== packages"; adb shell pm list instrumentation
 } > ocr/setup.txt 2>&1
 adb logcat -c
-timeout 1200 adb shell am instrument -w -r -e class com.shivtej.billscanner.OcrOnRealInvoiceTest \
+timeout 3000 adb shell am instrument -w -r -e class com.shivtej.billscanner.OcrOnRealInvoiceTest \
   com.shivtej.billscanner.test/androidx.test.runner.AndroidJUnitRunner > ocr/instrument.txt 2>&1
 adb logcat -d -s OCRTEST:I > ocr/ocr-log.txt 2>&1
 adb logcat -d -t 600 > ocr/logcat-tail.txt 2>&1

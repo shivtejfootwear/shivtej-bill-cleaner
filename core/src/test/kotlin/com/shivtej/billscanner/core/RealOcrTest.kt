@@ -139,6 +139,24 @@ class RealOcrTest {
         assertEquals(0, Totals.of(inv).difference!!.compareTo(bd("30.00")))   // the smudged line 19 (1,232 read as 1,202)
     }
 
+    /** S H Patel & Sons (Bata) and S.H. Patel Agencies (Red Chief), Tally, with another book's edge in the photo. */
+    @Test fun shPatelBillsWithAnotherBooksEdge() {
+        val a = InvoiceParser.parse(listOf(page("shpatel_1221_1.tsv")))
+        assertEquals(15, a.items.size)
+        assertTrue(a.items.all { com.shivtej.billscanner.core.ocr.Heal.sure(it) && it.current.mrp != null })
+        assertEquals(0, a.items[0].current.mrp!!.compareTo(bd("1099.00")))
+        assertEquals("SHIVTEJ FOOTWEAR", a.header.buyerName)
+        val ia = Invoice("a", 0, a.header, a.header, a.items, columns = a.columns)
+        assertEquals(0, Totals.of(ia).difference!!.signum())
+        val b = InvoiceParser.parse(listOf(page("shpatel_agencies_684_1.tsv")))
+        assertEquals((1..16).toList(), b.items.map { it.current.sr })
+        assertTrue(b.items.all { com.shivtej.billscanner.core.ocr.Heal.sure(it) })
+        assertEquals(0, b.items[14].current.rate!!.compareTo(bd("256.57")))      // "25657" with its point lost
+        assertTrue(b.header.supplierName.orEmpty(), b.header.supplierName!!.contains("PATEL AGENCIES"))
+        val ib = Invoice("b", 0, b.header, b.header, b.items, columns = b.columns)
+        assertEquals(0, Totals.of(ib).difference!!.signum())
+    }
+
     @Test fun sameBillAddedTwiceKeepsOneCopy() {
         val pg = page("v3617_1.tsv")
         val p = InvoiceParser.parse(listOf(pg, pg))

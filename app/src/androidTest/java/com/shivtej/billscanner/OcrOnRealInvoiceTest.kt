@@ -162,6 +162,24 @@ class OcrOnRealInvoiceTest {
     /** S.H. Patel Agencies (Red Chief, Tally): "( STRIKER1 ) 7*10", "229.00/Pairs". */
     @Test fun shPatelAgencies() = read("shpatel_agencies", listOf("shpatel_agencies_684.jpg"))
 
+    /** Charan Care memo: CD% on lines, Cash Discount at the foot. */
+    @Test fun charanD77() = read("charan_d77", listOf("charan_d77.jpg"))
+
+    /** Next Grip memo (scanner preview screenshot) — crashed the app. */
+    @Test fun nextgripD132() = read("nextgrip_d132", listOf("nextgrip_d132.jpg"))
+
+    /** Next Grip memo, empty CD%. */
+    @Test fun nextgripD130() = read("nextgrip_d130", listOf("nextgrip_d130.jpg"))
+
+    /** Charan Care memo, 15 lines. */
+    @Test fun charanD61() = read("charan_d61", listOf("charan_d61.jpg"))
+
+    /** Patel Trading 2-line EBase bill. */
+    @Test fun patelTradingAlt427() = read("patel_trading_alt427", listOf("patel_trading_alt427.jpg"))
+
+    /** Taha Foot Lines: rate 209,3, total with ₹ in the table foot. */
+    @Test fun taha0754() = read("taha_0754", listOf("taha_0754.jpg"))
+
     @Test fun patel() = read("patel", listOf("patel_tradelines_g2_2627_1309.jpg"))
 
     /** PATEL TRADING CORPORATION (EBase): rate with GST + net rate, amounts with GST, MRP 0.00 on non-brand goods. */

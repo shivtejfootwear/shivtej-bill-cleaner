@@ -98,7 +98,7 @@ jobs:
   # Real on-device OCR on the real invoice photo, on an Android emulator. Only for checking accuracy.
   ocr-check:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 110
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
@@ -127,7 +127,7 @@ jobs:
         run: gradle --no-daemon :app:assembleDebug :app:assembleDebugAndroidTest
 
       - name: Start an emulator and read the real bill photos
-        timeout-minutes: 35
+        timeout-minutes: 75
         run: |
           set +e
           mkdir -p ocr
