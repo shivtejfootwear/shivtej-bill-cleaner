@@ -39,3 +39,17 @@ class BillPatternTest {
         assertEquals(b.lines.size, r.items.count { it.current.mrp != null })
     }
 }
+
+class BackupAndKnownTest {
+    @Test fun aBackupComesBackWhole() {
+        val p = com.shivtej.billscanner.core.ocr.KnownPatterns.ALL.first()
+        val text = com.shivtej.billscanner.core.store.Backup.write(listOf(p), "{\"x\":1}", "a\u001Fb\u001FQTY")
+        val back = com.shivtej.billscanner.core.store.Backup.read(text)
+        assertEquals(listOf(p), back.patterns); assertEquals("{\"x\":1}", back.learnt); assertEquals("a\u001Fb\u001FQTY", back.taught)
+    }
+
+    @Test fun patelTradingComesWithTheApp() {
+        assertTrue(com.shivtej.billscanner.core.ocr.KnownPatterns.ALL.any { it.name == "Patel Trading Corporation" })
+        assertTrue(com.shivtej.billscanner.core.ocr.KnownPatterns.ALL.first().matches(com.shivtej.billscanner.core.model.Header(supplierGstin = "27ABWPP2432J1Z5")))
+    }
+}

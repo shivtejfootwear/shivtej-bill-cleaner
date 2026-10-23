@@ -112,7 +112,7 @@ class Container(val ctx: Context, db: BillDb) {
                 // The scanner checks itself: lines that do not add up are cut out, enlarged and read again.
                 step = ScanStep.CHECK; progress = 0.8f
                 val learnt = prefs.learnt
-                val patterns = prefs.patterns
+                val patterns = prefs.allPatterns
                 val read = { ps: List<OcrPage> -> Learning.apply(learnt, com.shivtej.billscanner.core.ocr.BillPattern.parse(ps, patterns, memory)).first }
                 val checked = SelfCheck.run(ocr, sources, read) { n, total ->
                     checkNow = n; checkTotal = total; progress = 0.8f + 0.18f * n / total
@@ -144,7 +144,7 @@ suspend fun Container.teachColumn(inv: Invoice, label: String, kind: InvoicePars
     prefs.taught = all
     val ocr = withContext(Dispatchers.IO) { pages.loadOcr(inv.id) }
     if (ocr.isEmpty()) return null
-    val p = withContext(Dispatchers.Default) { Learning.apply(prefs.learnt, com.shivtej.billscanner.core.ocr.BillPattern.parse(ocr, prefs.patterns, TaughtLayouts(all))).first }
+    val p = withContext(Dispatchers.Default) { Learning.apply(prefs.learnt, com.shivtej.billscanner.core.ocr.BillPattern.parse(ocr, prefs.allPatterns, TaughtLayouts(all))).first }
     val now = System.currentTimeMillis()
     val again = inv.copy(
         headerOriginal = p.header, header = p.header, items = p.items, columns = p.columns, status = com.shivtej.billscanner.core.model.InvoiceStatus.DRAFT,
@@ -174,7 +174,7 @@ suspend fun Container.reread(inv: Invoice): Invoice? {
     val ocr = withContext(Dispatchers.IO) { pages.loadOcr(inv.id) }
     if (ocr.isEmpty()) return null
     val p = withContext(Dispatchers.Default) {
-        Learning.apply(prefs.learnt, com.shivtej.billscanner.core.ocr.BillPattern.parse(ocr, prefs.patterns, TaughtLayouts(prefs.taught))).first
+        Learning.apply(prefs.learnt, com.shivtej.billscanner.core.ocr.BillPattern.parse(ocr, prefs.allPatterns, TaughtLayouts(prefs.taught))).first
     }
     val now = System.currentTimeMillis()
     val again = inv.copy(

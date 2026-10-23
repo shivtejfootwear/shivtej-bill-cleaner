@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Google backup (Android 6–11): the bill codes, what the scanner learnt, settings and the bill records.
+     Bill photos are left out: they are large and would stop the whole backup. -->
+<full-backup-content>
+    <include domain="sharedpref" path="." />
+    <include domain="database" path="." />
+</full-backup-content>

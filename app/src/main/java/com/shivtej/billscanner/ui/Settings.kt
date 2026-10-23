@@ -53,36 +53,61 @@ fun SettingsScreen(onBack: () -> Unit) {
  */
 @Composable
 fun PatternsCard() {
-    val c = LocalContext.current.container
+    val ctx = LocalContext.current
+    val c = ctx.container
     var list by remember { mutableStateOf(c.prefs.patterns) }
     var code by remember { mutableStateOf("") }
     var msg by remember { mutableStateOf<String?>(null) }
     val lang = c.lang
+    // Everything taught, as one small file in Download/Shivtej Bills (kept even if the app is removed).
+    fun backupNow(): String? = runCatching {
+        val text = com.shivtej.billscanner.core.store.Backup.write(c.prefs.patterns, c.prefs.learnt.encode(), c.prefs.taughtRaw)
+        Files.saveToDownloads(ctx, "Shivtej_Bill_Codes_Backup.txt", "text/plain", text.toByteArray(Charsets.UTF_8))
+    }.getOrNull()
+    val restore = androidx.activity.compose.rememberLauncherForActivityResult(androidx.activity.result.contract.ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        val text = runCatching { ctx.contentResolver.openInputStream(uri)!!.use { it.readBytes().toString(Charsets.UTF_8) } }.getOrNull()
+        val b = text?.let { com.shivtej.billscanner.core.store.Backup.read(it) }
+        if (b == null || (b.patterns.isEmpty() && b.learnt == null && b.taught == null)) { msg = tr2(lang, "इस फ़ाइल में कोई कोड नहीं मिला।", "No codes in this file."); return@rememberLauncherForActivityResult }
+        list = (b.patterns + list).distinctBy { it.name.uppercase() }; c.prefs.patterns = list
+        b.learnt?.let { l -> if (c.prefs.learnt.size == 0) c.prefs.learnt = com.shivtej.billscanner.core.ocr.Learnt.decode(l) }
+        b.taught?.let { t -> if (c.prefs.taughtRaw.isBlank()) c.prefs.taughtRaw = t }
+        msg = tr2(lang, "✓ बैकअप से ${b.patterns.size} कोड वापस आ गए।", "✓ ${b.patterns.size} codes restored from the backup.")
+    }
     Card {
         Title(tr("🧩 बिल समझने का कोड (नई पार्टी)", "🧩 Bill pattern codes (new suppliers)"))
-        Muted(tr("कोई बिल समझ न आए: बिल खोलकर \"📤 Claude को भेजें\" दबाएँ। Claude जो कोड (SBP1:…) देगा उसे यहाँ पेस्ट करके \"जोड़ें\" दबाएँ, फिर बिल में \"🔄 दोबारा पढ़ें\"। उस पार्टी के आगे के बिल अपने आप इसी तरह पढ़े जाएँगे।",
-            "A bill not understood: open it and tap \"📤 Send to Claude\". Paste the code (SBP1:…) you get here and tap Add, then \"🔄 Read again\" on the bill. That supplier's next bills are read the same way."))
+        Muted(tr("कोई बिल समझ न आए: बिल खोलकर \"📤 Claude को भेजें\" दबाएँ। Claude जो कोड (SBP1:…) देगा उसे यहाँ पेस्ट करके \"जोड़ें\" दबाएँ, फिर बिल में \"🔄 दोबारा पढ़ें\"। कोड एक बार डालना काफ़ी है — ऐप याद रखता है, और अगले अपडेट में वह ऐप के अंदर ही आ जाता है।",
+            "A bill not understood: open it and tap \"📤 Send to Claude\". Paste the code (SBP1:…) here, tap Add, then \"🔄 Read again\". Once is enough — the app keeps it, and the next update has it built in."))
         OutlinedTextField(code, { code = it; msg = null }, label = { Text(tr("कोड यहाँ पेस्ट करें", "Paste the code here")) }, modifier = Modifier.fillMaxWidth(), maxLines = 4)
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextButton(onClick = {
-                val p = com.shivtej.billscanner.core.ocr.BillPattern.decode(code)
-                if (p == null) msg = tr2(lang, "यह कोड सही नहीं है — पूरा कोड (SBP1: से शुरू) पेस्ट करें।", "Not a valid code — paste the whole code starting with SBP1:")
+                val got = com.shivtej.billscanner.core.store.Backup.read(code).patterns
+                if (got.isEmpty()) msg = tr2(lang, "यह कोड सही नहीं है — पूरा कोड (SBP1: से शुरू) पेस्ट करें।", "Not a valid code — paste the whole code starting with SBP1:")
                 else {
-                    list = list.filterNot { it.name == p.name } + p; c.prefs.patterns = list; code = ""
-                    msg = tr2(lang, "✓ \"${p.name}\" जुड़ गया। अब उस पार्टी का बिल खोलकर \"🔄 दोबारा पढ़ें\" दबाएँ।", "✓ \"${p.name}\" added. Open that supplier's bill and tap \"🔄 Read again\".")
+                    list = (got + list).distinctBy { it.name.uppercase() }; c.prefs.patterns = list; code = ""
+                    val saved = backupNow()
+                    msg = tr2(lang, "✓ ${got.joinToString { "\"${it.name}\"" }} जुड़ गया और याद रख लिया" + (if (saved != null) " (बैकअप: Download/Shivtej Bills)" else "") + "। अब बिल खोलकर \"🔄 दोबारा पढ़ें\" दबाएँ।",
+                        "✓ ${got.joinToString { "\"${it.name}\"" }} added and kept" + (if (saved != null) " (backup in Download/Shivtej Bills)" else "") + ". Open the bill and tap \"🔄 Read again\".")
                 }
             }) { Text(tr("जोड़ें", "Add"), color = C.orangeDark) }
             msg?.let { Text(it, fontSize = 13.sp, color = C.navy, modifier = Modifier.weight(1f)) }
         }
-        list.forEach { p ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(p.name, fontSize = 15.sp, color = C.navy)
-                    p.note?.let { Muted(it) }
-                }
-                TextButton(onClick = { list = list - p; c.prefs.patterns = list }) { Text(tr("हटाएँ", "Remove"), color = C.err) }
+        // Codes in use: the owner's, then those built into the app. They are not removed by mistake.
+        val builtIn = com.shivtej.billscanner.core.ocr.KnownPatterns.ALL.map { it.name.uppercase() }.toSet()
+        com.shivtej.billscanner.core.ocr.KnownPatterns.withOwn(list).forEach { p ->
+            Column(Modifier.padding(vertical = 4.dp)) {
+                Text("✓ " + p.name + if (p.name.uppercase() in builtIn) tr("  · ऐप में पक्का", "  · built in") else tr("  · याद रखा", "  · kept"), fontSize = 15.sp, color = C.ok)
+                p.note?.let { Muted(it) }
             }
         }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = { msg = if (backupNow() != null) tr2(lang, "✓ बैकअप Download/Shivtej Bills में सेव हुआ (Shivtej_Bill_Codes_Backup.txt)।", "✓ Backup saved in Download/Shivtej Bills.") else tr2(lang, "बैकअप सेव नहीं हुआ।", "Backup not saved.") }) {
+                Text(tr("💾 बैकअप सेव करें", "💾 Save backup"), color = C.navy)
+            }
+            TextButton(onClick = { restore.launch(arrayOf("text/plain", "*/*")) }) { Text(tr("📂 बैकअप से वापस लाएँ", "📂 Restore backup"), color = C.navy) }
+        }
+        Muted(tr("नया फ़ोन या ऐप दोबारा install किया? \"📂 बैकअप से वापस लाएँ\" से Download/Shivtej Bills वाली फ़ाइल चुनें। Google बैकअप चालू हो तो कोड और सेटिंग अपने आप भी वापस आते हैं।",
+            "New phone or reinstalled? Pick the file in Download/Shivtej Bills with \"📂 Restore backup\". With Google backup on, codes and settings also come back by themselves."))
     }
 }
 

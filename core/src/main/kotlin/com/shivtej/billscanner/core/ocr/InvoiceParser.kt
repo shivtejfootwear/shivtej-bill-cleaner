@@ -554,11 +554,19 @@ object InvoiceParser {
             val t = v(Kind.TAXABLE) ?: v(Kind.AMOUNT) ?: v(Kind.GROSS) ?: return false
             val d = v(Kind.DISC_PCT) ?: BigDecimal.ZERO
             val e = q * r * (BigDecimal(100) - d) / BigDecimal(100)
-            return (e - t).abs() <= BigDecimal("0.06") + t.abs() * BigDecimal("0.002") || (q * r - t).abs() <= BigDecimal("0.06")
+            // Rate with GST × pairs = the amount with GST (EBase).
+            val withGst = v(Kind.RATE_GST)?.let { rg -> v(Kind.TOTAL)?.let { tt -> (q * rg - tt).abs() <= BigDecimal("0.06") } } == true
+            return withGst || (e - t).abs() <= BigDecimal("0.06") + t.abs() * BigDecimal("0.002") || (q * r - t).abs() <= BigDecimal("0.06")
+        }
+        // A row with its own description, pairs and amount is a line of its own, even when its serial is hidden (a ring hole).
+        fun ownLine(cells: Map<Int, List<OcrWord>>): Boolean {
+            fun has(vararg k: Kind) = cols.withIndex().any { (ci, c) -> c.kind in k && number(cellText(cells[ci])) != null }
+            val desc = cols.withIndex().any { (ci, c) -> c.kind == Kind.DESC && cellText(cells[ci]).count(Char::isLetter) >= 3 }
+            return desc && has(Kind.QTY) && has(Kind.TOTAL, Kind.TAXABLE, Kind.AMOUNT) && (has(Kind.RATE) || has(Kind.RATE_GST))
         }
         val starts = assigned.mapIndexed { idx, (_, cells) ->
             val hasSr = srCol >= 0 && cells[srCol]?.let { ws -> serialOf(ws.joinToString("") { it.text }) } != null
-            startsItem(cells) && (srCol < 0 || hasSr || idx < serialAt || fits(cells))
+            startsItem(cells) && (srCol < 0 || hasSr || idx < serialAt || fits(cells) || ownLine(cells))
         }
         val lastStart = starts.lastIndexOf(true)
         var lastItemRowIdx = -1
@@ -666,6 +674,9 @@ object InvoiceParser {
                         items[k] = readItem(listOf(first) + b.drop(1), cols, startIndex + k + 1).let { it.copy(current = it.current.copy(sr = expect), original = it.original.copy(sr = expect)) }
                     }
                 }
+                // "1" for 21 (its first digit under a ring hole): the end of the serial that comes next.
+                else if (sr != null && prev != null && sr <= prev && "$expect".endsWith(st!!) && (next == null || next == expect + 1))
+                    items[k] = items[k].let { it.copy(current = it.current.copy(sr = expect), original = it.original.copy(sr = expect)) }
                 prev = items[k].current.sr ?: prev?.plus(1)
             }
         }
@@ -1747,7 +1758,8 @@ object InvoiceParser {
                 continue
             }
             // The table's total row (numbers only, under the item columns): pairs, and the amount with GST when the bill prints one.
-            if (cols.isNotEmpty() && ns.size >= 3 && t.none { it.isLetter() }) {
+            // ("Items: 21" printed at its start, EBase).
+            if (cols.isNotEmpty() && ns.size >= 3 && t.replace(Regex("""(?i)\bitems?\s*:?\s*\d+"""), "").none { it.isLetter() }) {
                 val cells = assign(r, cols, bounds, mh)
                 fun at(vararg k: Kind) = cols.indexOfFirst { it.kind in k }.takeIf { it >= 0 }?.let { ci -> cells[ci]?.let { number(cellText(it)) } }
                 at(Kind.QTY)?.takeIf { it.stripTrailingZeros().scale() <= 0 }?.let { qty = it }

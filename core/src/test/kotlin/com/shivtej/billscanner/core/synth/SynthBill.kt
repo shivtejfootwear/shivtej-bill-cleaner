@@ -442,6 +442,9 @@ object SynthBill {
         val supplier = pick(SUPPLIERS)
         val invNo = when (rnd.nextInt(4)) { 0 -> "${rnd.nextInt(1, 999)}"; 1 -> "GST/${rnd.nextInt(1, 999)}/26-27"; 2 -> "${pick(listOf("A", "R", "SI", "V"))}-${rnd.nextInt(100, 9999)}"; else -> "26-27/${rnd.nextInt(1, 999)}" }
         val pages = mutableListOf<OcrPage>()
+        val hiddenSr = if (chance(0.2) && n >= 4) rnd.nextInt(2, n + 1) else -1
+        if (hiddenSr > 0) features += "hidden-serial"
+        itemsSameRow = chance(0.5)
         val perPage = if (multiline) 14 else 26
         val chunks = lines.chunked(perPage)
         val amountCol = cols.last()
@@ -482,6 +485,8 @@ object SynthBill {
             for (l in chunk) {
                 for (c in cols) {
                     val t = c.cell(l); if (t.isEmpty()) continue
+                    // A serial hidden by the file's ring hole.
+                    if (l.sr == hiddenSr && c === cols.first() && c.right && t == "${l.sr}") continue
                     if (c.right) ink.right(c.x + c.w - ch.toInt(), y, t) else ink.at(c.x + (ch / 2).toInt(), y, t)
                 }
                 y += rowH
@@ -502,6 +507,7 @@ object SynthBill {
 
     private var grandOut: BigDecimal? = null
     private var tallyDiscOut = false
+    private var itemsSameRow = false
 
     /** The rows under the items; returns the y after them and the bill's grand total. */
     private fun footer(
@@ -642,8 +648,8 @@ object SynthBill {
                 return y to gr
             }
             Style.EBASE -> {
-                totalRow(null)
-                ink.at(60, y, "Items: ${lines.size}"); y += rowH
+                if (itemsSameRow) { ink.at(60, y, "Items: ${lines.size}"); totalRow(null); features += "items-same-row" }
+                else { totalRow(null); ink.at(60, y, "Items: ${lines.size}"); y += rowH }
                 val gr = round(sumWith)
                 ink.at(20, y, "Total Amount in Words : ${words(gr)} Only"); y += rowH
                 val a = 250

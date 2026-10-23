@@ -121,10 +121,18 @@ class Prefs(ctx: Context) {
         get() = com.shivtej.billscanner.core.ocr.Learnt.decode(p.getString("learnt", ""))
         set(v) { p.edit().putString("learnt", v.encode()).apply() }
 
+    /** Every bill pattern in use: the owner's pasted codes, then those that come with the app. */
+    val allPatterns: List<com.shivtej.billscanner.core.ocr.BillPattern> get() = com.shivtej.billscanner.core.ocr.KnownPatterns.withOwn(patterns)
+
     /** Bill patterns the owner pasted ("SBP1:…" codes, one per line). */
     var patterns: List<com.shivtej.billscanner.core.ocr.BillPattern>
         get() = (p.getString("patterns", "") ?: "").lines().mapNotNull { com.shivtej.billscanner.core.ocr.BillPattern.decode(it) }
         set(v) { p.edit().putString("patterns", v.joinToString("\n") { it.encode() }).apply() }
+
+    /** The taught columns as stored (for the backup file). */
+    var taughtRaw: String
+        get() = p.getString("taught", "") ?: ""
+        set(v) { p.edit().putString("taught", v).apply() }
 
     /** Column meanings the person taught, per supplier: "supplier\u001Fheading\u001FKIND" lines. */
     var taught: Map<String, Map<String, com.shivtej.billscanner.core.ocr.InvoiceParser.Kind>>

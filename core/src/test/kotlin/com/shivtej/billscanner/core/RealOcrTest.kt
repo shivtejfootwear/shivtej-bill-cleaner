@@ -175,6 +175,19 @@ class RealOcrTest {
         assertEquals("0754", taha.header.invoiceNo)
     }
 
+    /** Patel Trading FLT-126: local brands with MRP 0.00 (rate only), the last line's serial under the ring hole, "Items: 21" on the total row. */
+    @Test fun patelTradingRateOnlyAndHiddenSerial() {
+        val p = InvoiceParser.parse(listOf(page("patel_trading_flt126_1.tsv")))
+        assertEquals((1..21).toList(), p.items.map { it.current.sr })
+        assertTrue(p.items.all { com.shivtej.billscanner.core.ocr.Heal.sure(it) && it.needs.isEmpty() })
+        assertEquals(17, p.items.count { it.current.mrp == null })          // rate only: no MRP asked
+        assertEquals(0, p.header.printedGrandTotal!!.compareTo(bd("40494.00")))
+        val t = Totals.of(Invoice("p", 0, p.header, p.header, p.items, columns = p.columns))
+        assertEquals(234, t.qty.toInt()); assertTrue(t.difference!!.abs() < BigDecimal("0.05"))
+        // No cell holds two lines' numbers.
+        assertTrue(p.items.all { i -> i.raw.none { c -> Regex("""\d\.\d{2}\s+\d[\d,]*\.\d{2}""").containsMatchIn(c) } })
+    }
+
     @Test fun sameBillAddedTwiceKeepsOneCopy() {
         val pg = page("v3617_1.tsv")
         val p = InvoiceParser.parse(listOf(pg, pg))
