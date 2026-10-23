@@ -152,10 +152,11 @@ object SynthBill {
         val whole = style0(st) == Style.ESTIMATE && chance(0.4)
         val fmt0: (BigDecimal) -> String = when (rnd.nextInt(3)) { 0 -> { x -> indian(x) }; 1 -> { x -> western(x) }; else -> { x -> plain(x) } }
         val fmt: (BigDecimal) -> String = if (whole) { x -> fmt0(x).removeSuffix(".00") } else fmt0
+        val codeMrpEarly = st == Style.TALLY && rnd.nextDouble() < 0.35
         val interState = st == Style.CRYSTAL || chance(0.15)
         val gst = BigDecimal(if (chance(0.9)) 5 else 18)
         val noGst = st == Style.ESTIMATE
-        val hasMrp = when (st) { Style.TALLY, Style.BUSY -> chance(0.4); Style.ESTIMATE -> chance(0.5); Style.VYAPAR -> chance(0.3); else -> true }
+        val hasMrp = when (st) { Style.TALLY, Style.BUSY -> chance(0.4) || st == Style.TALLY && codeMrpEarly; Style.ESTIMATE -> chance(0.5); Style.VYAPAR -> chance(0.3); else -> true }
         val hasDisc = when (st) { Style.CRYSTAL, Style.EBASE, Style.SCHEME -> false; Style.ESTIMATE -> !whole && chance(0.3); else -> chance(0.7) }
         val sameDisc = chance(0.6)
         val billDisc = st == Style.CRYSTAL || (st == Style.ESTIMATE && chance(0.5))
@@ -172,6 +173,12 @@ object SynthBill {
 
         val matrixSizes = pick(listOf(listOf("6", "7", "8", "9", "10"), listOf("5", "6", "7", "8", "9"), listOf("1", "2", "3", "4", "5"), listOf("40", "41", "42", "43", "44", "45"), listOf("6", "7", "8", "9", "10", "11")))
         val mrpInDesc = st == Style.SIMPLE && chance(0.3)
+        // Tally bills of wholesalers: "HSW-012-NAVY-239" = article - colour - MRP, no MRP column (Yash Enterprises).
+        val codeMrp = codeMrpEarly
+        // "1,099.00/prs" in the MRP/Marginal column (S H Patel & Sons / Bata).
+        val perPrs = st == Style.TALLY && chance(0.5)
+        // "Less : Dis (-)5 % (-)1,878.82" under the lines, GST on what is left.
+        val tallyDisc = st == Style.TALLY && chance(0.35)
         val lines = (1..n).map { k ->
             val brand = pick(BRANDS); val code = when (rnd.nextInt(5)) { 0 -> "${rnd.nextInt(100, 9999)}"; 1 -> "${pick(listOf("SM", "FL", "BH", "W", "PU", "TG", "DX"))}-${rnd.nextInt(10, 999)}"
                 2 -> "${pick(listOf("SM", "FL", "BH", "W", "PU"))} ${rnd.nextInt(10, 999)}"; 3 -> "${rnd.nextInt(10, 99)}-${rnd.nextInt(100, 999)}"; else -> "${rnd.nextInt(1000, 99999)}" }
@@ -218,8 +225,11 @@ object SynthBill {
         if (n > 26) features += "two-pages"
 
         if (mrpInDesc) features += "mrp-in-desc"
+        if (codeMrp) features += "code-mrp"
+        if (tallyDisc) features += "tally-dis"
         if (whole) features += "whole-rupees"
         fun desc(l: TLine) = buildString {
+            if (codeMrp) { val tk = l.article.split(' '); val k = tk.indexOfFirst { t -> t.any(Char::isDigit) }.coerceAtLeast(0); append(tk.subList(maxOf(0, k - 1), k + 1).joinToString("-")).append('-').append(l.colour.replace(' ', '.').uppercase()).append('-').append(l.mrp!!.setScale(0).toPlainString()); return@buildString }
             append(l.article)
             if (!multiline) { if (colourInDesc) append(" ").append(l.colour); if (sizeInDesc && l.size.isNotEmpty()) append(" ").append(l.size) }
             if (mrpInDesc) append(" MRP ").append(l.mrp!!.setScale(0).toPlainString())
@@ -241,7 +251,7 @@ object SynthBill {
                 cols += C(listOf("Description of Goods"), false, ::desc)
                 cols += C(listOf("HSN/SAC"), false, { it.hsn })
                 if (chance(0.5)) cols += C(listOf("GST", "Rate"), true, { pct(it.gstPct) + " %" })
-                if (hasMrp) cols += C(listOf("MRP/", "Marginal"), true, { fmt(it.mrp!!) })
+                if (hasMrp && !codeMrp) cols += C(listOf("MRP/", "Marginal"), true, { fmt(it.mrp!!) + if (perPrs) "/prs" else "" })
                 cols += C(listOf("Quantity"), true, ::q, "$sumQty$qtySuffix")
                 cols += C(listOf("Rate"), true, { fmt(it.rate) })
                 cols += C(listOf("per"), false, { pick(listOf("Prs", "Pair", "PRS", "NOS")) })
@@ -452,6 +462,7 @@ object SynthBill {
                 ink.at(20, y + rowH, pick(listOf("Continued...", "Continued on Next Page....", "c/f", "Page ${pi + 1} of ${chunks.size}")))
                 pages += OcrPage(pageW, y + rowH * 4, ink.words.shuffled(rnd)); continue
             }
+            tallyDiscOut = tallyDisc
             y = footer(ink, st, cols, y, rowH, ch, lines, sumTaxable, sumTax, sumWith, interState, billDisc, fmt, rnd, features).let { (yy, g) -> grandOut = g; yy }
             pages += OcrPage(pageW, y + rowH * 3, ink.words.shuffled(rnd))
         }
@@ -460,6 +471,7 @@ object SynthBill {
     }
 
     private var grandOut: BigDecimal? = null
+    private var tallyDiscOut = false
 
     /** The rows under the items; returns the y after them and the bill's grand total. */
     private fun footer(
@@ -485,10 +497,19 @@ object SynthBill {
         when (st) {
             Style.TALLY -> {
                 y += rowH / 2
-                if (inter) lv("IGST", fmt(sumTax), cols[1].x + (cols[1].w * 0.6).toInt())
-                else { lv(rnd.let { if (it.nextBoolean()) "CGST" else "Output CGST @$hg%" }, fmt(half), cols[1].x + (cols[1].w * 0.5).toInt()); lv(if (rnd.nextBoolean()) "SGST" else "Output SGST @$hg%", fmt(sumTax - half), cols[1].x + (cols[1].w * 0.5).toInt()) }
-                val total = sumTaxable + sumTax; val gr = round(total)
-                if (gr.compareTo(total) != 0) lv("Round Off", fmt(gr - total), cols[1].x + (cols[1].w * 0.5).toInt())
+                var base = sumTaxable; var tax = sumTax; var h1 = half
+                if (tallyDiscOut) {
+                    ink.right(ar, y, fmt(sumTaxable)); y += rowH
+                    val p = BigDecimal(listOf(2, 3, 5, 10).random(rnd)); val d = r2(sumTaxable * p / BigDecimal(100))
+                    ink.at(labelX, y, "Less :"); ink.at(cols[1].x + (cols[1].w * 0.7).toInt(), y, "Dis")
+                    cols.firstOrNull { it.head.first() == "Rate" }?.let { c -> ink.right(c.x + c.w - ch.toInt(), y, "(-)${p.toPlainString()} %") }
+                    ink.right(ar, y, "(-)" + fmt(d)); y += rowH
+                    base = sumTaxable - d; h1 = r2(base * g / BigDecimal(200)); tax = if (inter) r2(base * g / BigDecimal(100)) else h1 * BigDecimal(2)
+                }
+                if (inter) lv("IGST", fmt(tax), cols[1].x + (cols[1].w * 0.6).toInt())
+                else { lv(rnd.let { if (it.nextBoolean()) "CGST" else "Output CGST @$hg%" }, fmt(h1), cols[1].x + (cols[1].w * 0.5).toInt()); lv(if (rnd.nextBoolean()) "SGST" else "Output SGST @$hg%", fmt(tax - h1), cols[1].x + (cols[1].w * 0.5).toInt()) }
+                val total = base + tax; val gr = round(total)
+                if (gr.compareTo(total) != 0) lv(listOf("Round Off", "Rounded Off", "Rounding Off").random(rnd), (if (gr < total) "(-)" else "") + fmt((gr - total).abs()), cols[1].x + (cols[1].w * 0.5).toInt())
                 ink.at(labelX + (cols[1].w * 0.6).toInt(), y, "Total")
                 cols.firstOrNull { it.head.first() == "Quantity" }?.let { c -> ink.right(c.x + c.w - ch.toInt(), y, c.total!!) }
                 ink.right(ar, y, "₹ " + fmt(gr)); y += rowH

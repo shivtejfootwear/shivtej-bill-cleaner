@@ -159,6 +159,9 @@ class OcrOnRealInvoiceTest {
     /** S H Patel & Sons (Bata, Tally): "MRP/ Marginal" column "1,099.00/prs", "Output CGST" rows, another sheet's edge beside the amounts. */
     @Test fun shPatel() = read("shpatel", listOf("shpatel_1221.jpg"))
 
+    /** S.H. Patel Agencies (Red Chief, Tally): "( STRIKER1 ) 7*10", "229.00/Pairs". */
+    @Test fun shPatelAgencies() = read("shpatel_agencies", listOf("shpatel_agencies_684.jpg"))
+
     @Test fun patel() = read("patel", listOf("patel_tradelines_g2_2627_1309.jpg"))
 
     /** PATEL TRADING CORPORATION (EBase): rate with GST + net rate, amounts with GST, MRP 0.00 on non-brand goods. */

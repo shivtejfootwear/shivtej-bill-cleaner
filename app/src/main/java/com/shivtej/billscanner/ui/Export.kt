@@ -135,6 +135,31 @@ object Files {
         }
     }
 
+    /**
+     * Everything needed to teach the reader a bill it did not understand: the bill's photos and what the scan read,
+     * word by word with places, plus how it understood it. Sent by the owner (WhatsApp, mail…) to get a pattern code.
+     */
+    fun shareForClaude(ctx: Context, inv: Invoice) {
+        val dir = File(ctx.cacheDir, "exports").apply { mkdirs() }
+        val base = InvoiceExport.fileBase(inv)
+        val ocr = ctx.container.pages.loadOcr(inv.id)
+        val h = inv.header
+        val text = buildString {
+            append("Shivtej Bill Scanner AI — bill for teaching\n")
+            append("supplier=${h.supplierName} gstin=${h.supplierGstin} invoice=${h.invoiceNo} date=${h.invoiceDate}\n")
+            append("columns=" + inv.columns.joinToString(" | ") { "${it.label}=${it.field}" } + "\n")
+            inv.items.forEach { i -> append("line ${i.current.sr} needs=${i.needs.joinToString(",")} raw=${i.raw.joinToString(" | ")}\n") }
+            ocr.forEachIndexed { k, pg -> append("\n=== PAGE ${k + 1} ===\n").append(com.shivtej.billscanner.core.store.OcrCodec.encode(pg)).append('\n') }
+        }
+        val files = mutableListOf(File(dir, "${base}_for_Claude.txt").apply { writeText(text) })
+        inv.pages.forEachIndexed { k, p -> runCatching { File(p).takeIf { it.exists() }?.copyTo(File(dir, "${base}_page_${k + 1}.jpg"), overwrite = true)?.let { files += it } } }
+        val uris = ArrayList(files.map { FileProvider.getUriForFile(ctx, "${ctx.packageName}.files", it) })
+        ctx.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+            type = "*/*"; putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris); putExtra(Intent.EXTRA_SUBJECT, "$base — bill for Claude")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }, "Claude").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    }
+
     fun share(ctx: Context, name: String, mime: String, data: ByteArray) {
         val dir = File(ctx.cacheDir, "exports").apply { mkdirs() }
         val f = File(dir, name).apply { writeBytes(data) }

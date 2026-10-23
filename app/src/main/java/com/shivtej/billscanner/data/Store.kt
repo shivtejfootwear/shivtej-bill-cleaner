@@ -121,6 +121,11 @@ class Prefs(ctx: Context) {
         get() = com.shivtej.billscanner.core.ocr.Learnt.decode(p.getString("learnt", ""))
         set(v) { p.edit().putString("learnt", v.encode()).apply() }
 
+    /** Bill patterns the owner pasted ("SBP1:…" codes, one per line). */
+    var patterns: List<com.shivtej.billscanner.core.ocr.BillPattern>
+        get() = (p.getString("patterns", "") ?: "").lines().mapNotNull { com.shivtej.billscanner.core.ocr.BillPattern.decode(it) }
+        set(v) { p.edit().putString("patterns", v.joinToString("\n") { it.encode() }).apply() }
+
     /** Column meanings the person taught, per supplier: "supplier\u001Fheading\u001FKIND" lines. */
     var taught: Map<String, Map<String, com.shivtej.billscanner.core.ocr.InvoiceParser.Kind>>
         get() = (p.getString("taught", "") ?: "").lines().mapNotNull { l ->

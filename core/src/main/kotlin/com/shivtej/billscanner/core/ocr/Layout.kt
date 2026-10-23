@@ -251,6 +251,8 @@ object Layout {
             if (parts.size > 1) return@flatMap clean(splitBox(w0, parts))
             t = parts[0].trim()
         }
+        // "1,099.00/prs", "499/-", "753.60/pr": the per-pair mark after an amount is not part of it.
+        Regex("""(?i)^(.*\d)\s*/\s*(prs?|pairs?|pcs?|nos?|-)$""").matchEntire(t)?.let { t = it.groupValues[1] }
         val w = OcrWord(t, w0.box)
         // Each split part is cleaned again: "pair1,165.719.82" → "pair" + "1,165.719.82" → "1,165.71" + "9.82".
         fun again(parts: List<String>) = if (parts.size > 1 && parts.all { it.isNotEmpty() }) clean(splitBox(w, parts)) else listOf(w)

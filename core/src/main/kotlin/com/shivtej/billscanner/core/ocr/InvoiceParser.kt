@@ -37,6 +37,8 @@ data class ParsedInvoice(
  */
 object InvoiceParser {
     private val NUM = Regex("""^[(\-]?(?:₹|rs\.?)?(\d{1,3}(?:,\d{2,3})+|\d+)(?:\.(\d{1,3}))?\)?[,.:;]?$""", RegexOption.IGNORE_CASE)
+    /** "HSW-012-NAVY-239": article, colour, MRP. */
+    private val CODE_MRP = Regex("""^((?=[^-]*\d|.*-[^-]*\d[^-]*-)[A-Za-z0-9.]+(?:-[A-Za-z0-9.]+)*?)-([A-Za-z][A-Za-z./]*)-(\d{2,4})$""")
     private val MRP = Regex("""(?i)M\s*\.?\s*R\s*\.?\s*P\s*\.?\s*[:.;]?\s*(?:Rs\.?|₹)?\s*(\d{1,6}(?:\.\d{1,2})?)""")
     private val DATE = Regex("""\b(\d{1,2}[-/. ](?:[A-Za-z0][A-Za-z]{2,8}|\d{1,2})[-/. ]\d{2,4})\b""")
     /** Words that are labels on a bill, never a name. */
@@ -52,14 +54,16 @@ object InvoiceParser {
     /** "T O T A L" (letters spaced out in a PDF) → "TOTAL". */
     fun squash(t: String) = t.replace(Regex("""\b(?:[A-Za-z] ){2,}[A-Za-z]\b""")) { it.value.replace(" ", "") }
 
-    private val STOP = Regex("""(?i)\b(continued|amount\s*(rs\.?)?\s*in\s*words|rupees|e\s*&\s*o\s*e|our\s+bankers|bank\s+(name|details)|terms\s*(&|and)?\s*conditions|declaration|authori[sz]ed\s+signatory|output\s*[cs]gst|sub\s*-?\s*total|grand\s*total|round\s*off)\b|(?i)\bitems?\s*:\s*\d+|^\s*(less|add)\s*:|(?i)^\s*(output\s+)?(c|s|i|ut)\s?gst\b""")
+    private val STOP = Regex("""(?i)\b(continued|amount\s*(rs\.?)?\s*in\s*words|rupees|e\s*&\s*o\s*e|our\s+bankers|bank\s+(name|details)|terms\s*(&|and)?\s*conditions|declaration|authori[sz]ed\s+signatory|output\s*[cs]gst|sub\s*-?\s*total|grand\s*total|round(ed|ing)?\s*off)\b|(?i)\bitems?\s*:\s*\d+|^\s*(less|add)\s*:|(?i)^\s*(dis|disc|discount)\b.*\(\s*-\s*\)|(?i)^\s*(output\s+)?(c|s|i|ut)\s?gst\b""")
     private val CHARGE = Regex("""(?i)^(freight|transport|packing|forwarding|cartage|hamali|courier|insurance|postage|loading)""")
 
     /** Number in a cell: "1,049", "9.82 %", "6 pair", "₹ 1,07,350.00", "(0.42)". Null when it is not one number. */
     fun number(text: String): BigDecimal? {
         val parts = text.trim().replace("(-)", "-").replace(Regex("""^-\s+"""), "-").split(' ').map { it.trim() }.filter { it.isNotEmpty() && it.lowercase().trim('.', ':') !in UNITS && it != "₹" && !it.equals("rs", true) && !it.equals("rs.", true) }
-        if (parts.size != 1) return null
-        var t = parts[0].replace(Regex("""\(\d{1,2}(\.\d{1,3})?%\)$"""), "").replace(Regex("""^(₹|(?i:rs\.?))"""), "").removeSuffix("%").removeSuffix("/-")
+        // "4,521.60 nt": a scrap of another sheet's text beside the amount.
+        val parts2 = if (parts.size == 2) parts.filterNot { p -> p.length <= 2 && p.all(Char::isLetter) } else parts
+        if (parts2.size != 1) return null
+        var t = parts2[0].replace(Regex("""\(\d{1,2}(\.\d{1,3})?%\)$"""), "").replace(Regex("""^(₹|(?i:rs\.?))"""), "").removeSuffix("%").removeSuffix("/-")
         // "2,504,44": a comma read for the decimal point.
         if (Regex("""^\d{1,3}(,\d{3})*,\d{2}$""").matches(t)) t = t.substring(0, t.lastIndexOf(',')) + "." + t.substring(t.lastIndexOf(',') + 1)
         // "6pair", "12prs", "5pcs" read as one word.
@@ -412,6 +416,8 @@ object InvoiceParser {
         if (known != null) for (c in cols) known[c.label]?.let { c.kind = it; c.locked = true }
         // What the person taught for this supplier's columns comes first.
         if (memory != null) for (c in cols) memory.kindFor(header, c.label)?.let { c.kind = it; c.locked = true }
+        // A pasted pattern gives the columns left to right: used when the same number of columns is found.
+        memory?.orderFor(header)?.takeIf { it.size == cols.size }?.let { order -> cols.forEachIndexed { i, c -> c.kind = order[i]; c.locked = true } }
 
         // ---- table lines
         val tableRows = mutableListOf<Row>()
@@ -1181,7 +1187,10 @@ object InvoiceParser {
         val hsnCis = cols.withIndex().filter { it.value.kind == Kind.HSN }.map { it.index }
         fun spill(row: Map<Int, List<OcrWord>>) = hsnCis.flatMap { ci -> cellText(row[ci]).split(' ').filter { w -> w.length >= 2 && w.none(Char::isDigit) && w.count(Char::isLetter) >= 2 } }
         val descCis = cols.withIndex().filter { it.value.kind == Kind.DESC }.map { it.index }
-        var descLines = descCis.flatMap { ci -> block.map { row -> (cellText(row[ci]) + (if (ci == descCis.last()) spill(row).joinToString(" ", prefix = " ") else "")).replace(OWN_TEXT, "").trim() } }.filter { it.isNotEmpty() }.toMutableList()
+        // No serial column: text in an unnamed column left of the description ("1 REMO" left of "( 81.6854 )") is its start.
+        val leftCis = if (cols.none { it.kind == Kind.SR } && descCis.isNotEmpty()) cols.indices.filter { it < descCis.first() && cols[it].kind == Kind.OTHER } else emptyList()
+        fun left(row: Map<Int, List<OcrWord>>) = leftCis.joinToString(" ") { cellText(row[it]) }.trim()
+        var descLines = descCis.flatMap { ci -> block.map { row -> ((if (ci == descCis.first()) left(row) + " " else "") + cellText(row[ci]) + (if (ci == descCis.last()) spill(row).joinToString(" ", prefix = " ") else "")).replace(OWN_TEXT, "").trim() } }.filter { it.isNotEmpty() }.toMutableList()
         if (sr == null && descLines.isNotEmpty()) {
             // "1 1180-Paralite…" when there is no Sr heading; ") 29 Indus…" when a mark beside the serial was read too.
             descLines[0] = descLines[0].trimStart(')', '(', '|', '.', ',', ']', '[', '/', ' ')
@@ -1190,6 +1199,7 @@ object InvoiceParser {
         }
         val hsn = hsnCis.joinToString("") { ci -> block.joinToString("") { row -> cellText(row[ci]).split(' ').filter { w -> w.any(Char::isDigit) }.joinToString("") } }.filter { it.isLetterOrDigit() }
 
+        descLines = descLines.map { it.replace(Regex("""\(\s+"""), "(").replace(Regex("""\s+\)"""), ")") }.toMutableList()
         val joined = descLines.joinToString("\n")
         val mrpCol = anyNum(Kind.MRP)
         val mrpMatch = if (mrpCol == null) MRP.find(joined) else null
@@ -1199,10 +1209,18 @@ object InvoiceParser {
         val firstLine = descLines.firstOrNull().orEmpty().let { if (mrpMatch != null) it.replace(mrpMatch.value, "").trim() else it }
         val tokens = firstLine.split(' ').filter { it.isNotEmpty() && it != ":" && !it.equals("MRP", true) }
         val article: String; val name: String; val brand: String; var colour: String; var sizeText: String
+        var mrpInCode: BigDecimal? = null
         val codeToken = tokens.firstOrNull().orEmpty()
         val restLines = joined.lines().drop(1).joinToString("\n").let { if (mrpMatch != null) it.replace(mrpMatch.value, "") else it }
             .lines().map { it.trim() }.filter { it.isNotEmpty() && it != ":" && !MRP.matches(it) && number(it) == null }
-        if (codeToken.contains('-') && codeToken.any(Char::isDigit) && codeToken.split('-').size >= 3) {
+        // "HSW-012-NAVY-239", "FL-05-N.NAVY-319": article - colour - MRP in one code (Tally bills of many wholesalers).
+        val codeMrp = CODE_MRP.matchEntire(codeToken.trimEnd('.', ',', '|'))
+        if (codeMrp != null) {
+            article = codeMrp.groupValues[1]; colour = codeMrp.groupValues[2]; name = ""
+            brand = article.split('-').firstOrNull { it.any(Char::isLetter) }?.filter(Char::isLetter).orEmpty()
+            mrpInCode = BigDecimal(codeMrp.groupValues[3])
+            sizeText = (tokens.drop(1) + restLines).joinToString(" ").trim()
+        } else if (codeToken.contains('-') && codeToken.any(Char::isDigit) && codeToken.split('-').size >= 3) {
             // "1180-Paralite-Gents-EVA-6X10": code - brand - details; colour and sizes on the next lines.
             val (a, n, b) = splitCode(codeToken)
             article = a; name = n; brand = b
@@ -1252,6 +1270,11 @@ object InvoiceParser {
             igstPct = firstNum(Kind.IGST_PCT), igstAmt = firstNum(Kind.IGST_AMT), gstPct = firstNum(Kind.GST_PCT), printedTotal = firstNum(Kind.TOTAL),
             rateGst = firstNum(Kind.RATE_GST),
         )
+        // The MRP at the end of the article code: taken when there is no MRP column and it is above the rate.
+        if (v.mrp == null && mrpInCode != null && cols.none { it.kind == Kind.MRP }) {
+            val r = v.rate ?: v.rateGst ?: v.taxable?.let { t -> v.qty?.takeIf { it.signum() > 0 }?.let { t.divide(it, 2, java.math.RoundingMode.HALF_UP) } }
+            if (r == null || (mrpInCode >= r && mrpInCode <= r * BigDecimal(5))) v = v.copy(mrp = mrpInCode)
+        }
         // "… MRP" in the description and "699 6x8" under Size: an MRP printed in the text that ran into the next column.
         if (v.mrp == null && cols.none { it.kind == Kind.MRP }) {
             val textCols = cols.indices.filter { cols[it].kind in setOf(Kind.DESC, Kind.SIZE, Kind.COLOUR, Kind.OTHER, Kind.HSN) }
@@ -1561,7 +1584,7 @@ object InvoiceParser {
                 Regex("""(?i)\bcgst\b""").containsMatchIn(t) && ca == null -> { cp = pctRe.find(t)?.groupValues?.get(1)?.toBigDecimalOrNull(); ca = lastBig }
                 Regex("""(?i)\b(sgst|utgst)\b""").containsMatchIn(t) && sa == null -> { sp = pctRe.find(t)?.groupValues?.get(1)?.toBigDecimalOrNull(); sa = lastBig }
                 Regex("""(?i)\bigst\b""").containsMatchIn(t) && ia == null -> { ip = pctRe.find(t)?.groupValues?.get(1)?.toBigDecimalOrNull(); ia = lastBig }
-                Regex("""(?i)round\s*(ed)?\s*off|r\s*/?\s*off|rounding""").containsMatchIn(t) -> {
+                Regex("""(?i)round\s*(ed|ing)?\s*off|r\s*/?\s*off|rounding""").containsMatchIn(t) -> {
                     val v = ns.last().second
                     round = if (Regex("""(?i)less|\(-\)|-\s*\d""").containsMatchIn(t) && v.signum() > 0) v.negate() else v
                 }
@@ -1585,7 +1608,8 @@ object InvoiceParser {
                 }
                 CHARGE.containsMatchIn(t.trim()) || Regex("""(?i)\b(freight|transport(ation)?|packing|forwarding|cartage|hamali|courier)\b""").containsMatchIn(t) ->
                     other = (other ?: BigDecimal.ZERO) + ns.last().second
-                Regex("""(?i)(less|cash|trade|special)\s*:?\s*disc""").containsMatchIn(t) || Regex("""(?i)^\s*less\b""").containsMatchIn(t) ->
+                Regex("""(?i)(less|cash|trade|special)\s*:?\s*disc""").containsMatchIn(t) || Regex("""(?i)^\s*less\b""").containsMatchIn(t) ||
+                    Regex("""(?i)^\s*(dis|disc|discount)\b.*\(\s*-\s*\)""").containsMatchIn(t) ->
                     disc = (disc ?: BigDecimal.ZERO) + ns.last().second.abs()      // every "LESS :" line (per carton, special, prompt payment…)
                 Regex("""(?i)^\s*add\b""").containsMatchIn(t) && !Regex("""(?i)gst|round""").containsMatchIn(t) ->
                     other = (other ?: BigDecimal.ZERO) + ns.last().second          // "ADD : transit insurance", freight…
@@ -1744,6 +1768,8 @@ object InvoiceParser {
 interface LayoutMemory {
     /** What this supplier's column with this printed heading means, or null to work it out. */
     fun kindFor(header: Header, label: String): InvoiceParser.Kind?
+    /** This supplier's item columns left to right (from a pasted bill pattern), or null. */
+    fun orderFor(header: Header): List<InvoiceParser.Kind>? = null
 }
 
 /** A simple [LayoutMemory]: supplier key (GSTIN, else name) → heading → meaning. */

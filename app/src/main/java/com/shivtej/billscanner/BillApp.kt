@@ -112,7 +112,8 @@ class Container(val ctx: Context, db: BillDb) {
                 // The scanner checks itself: lines that do not add up are cut out, enlarged and read again.
                 step = ScanStep.CHECK; progress = 0.8f
                 val learnt = prefs.learnt
-                val read = { ps: List<OcrPage> -> Learning.apply(learnt, InvoiceParser.parse(ps, memory)).first }
+                val patterns = prefs.patterns
+                val read = { ps: List<OcrPage> -> Learning.apply(learnt, com.shivtej.billscanner.core.ocr.BillPattern.parse(ps, patterns, memory)).first }
                 val checked = SelfCheck.run(ocr, sources, read) { n, total ->
                     checkNow = n; checkTotal = total; progress = 0.8f + 0.18f * n / total
                 }
@@ -143,7 +144,7 @@ suspend fun Container.teachColumn(inv: Invoice, label: String, kind: InvoicePars
     prefs.taught = all
     val ocr = withContext(Dispatchers.IO) { pages.loadOcr(inv.id) }
     if (ocr.isEmpty()) return null
-    val p = withContext(Dispatchers.Default) { Learning.apply(prefs.learnt, InvoiceParser.parse(ocr, TaughtLayouts(all))).first }
+    val p = withContext(Dispatchers.Default) { Learning.apply(prefs.learnt, com.shivtej.billscanner.core.ocr.BillPattern.parse(ocr, prefs.patterns, TaughtLayouts(all))).first }
     val now = System.currentTimeMillis()
     val again = inv.copy(
         headerOriginal = p.header, header = p.header, items = p.items, columns = p.columns, status = com.shivtej.billscanner.core.model.InvoiceStatus.DRAFT,
@@ -164,3 +165,23 @@ class BillApp : Application() {
 }
 
 val Context.container: Container get() = (applicationContext as BillApp).container
+
+/**
+ * Reads a saved bill again from its kept scan, with everything learnt since (pasted bill patterns, taught columns,
+ * fixes). The % set for it stay. Null when this bill's scan was not kept.
+ */
+suspend fun Container.reread(inv: Invoice): Invoice? {
+    val ocr = withContext(Dispatchers.IO) { pages.loadOcr(inv.id) }
+    if (ocr.isEmpty()) return null
+    val p = withContext(Dispatchers.Default) {
+        Learning.apply(prefs.learnt, com.shivtej.billscanner.core.ocr.BillPattern.parse(ocr, prefs.patterns, TaughtLayouts(prefs.taught))).first
+    }
+    val now = System.currentTimeMillis()
+    val again = inv.copy(
+        headerOriginal = p.header, header = p.header, items = p.items, columns = p.columns, status = com.shivtej.billscanner.core.model.InvoiceStatus.DRAFT,
+        changes = inv.changes + com.shivtej.billscanner.core.model.Change(now, null, "reread", "", "${p.items.size} lines"),
+    )
+    repo.save(again)
+    return again
+}
+

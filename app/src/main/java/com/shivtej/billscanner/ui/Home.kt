@@ -112,6 +112,9 @@ fun HomeContent(
                         Text(tr("कैमरा या गैलरी · कई पेज", "Camera or gallery · multi-page"), fontSize = 13.sp, color = Color.White.copy(alpha = 0.9f))
                     }
                 }
+                // Codes from Claude for suppliers whose bills were not understood.
+                Text(tr("🧩 बिल समझ नहीं आया? Claude का कोड पेस्ट करें ›", "🧩 Bill not understood? Paste Claude's code ›"), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = C.orangeDark,
+                    modifier = Modifier.fillMaxWidth().background(C.orangeSoft, RoundedCornerShape(12.dp)).clickable(onClick = onSettings).padding(12.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Stat("${all.count { it.status != InvoiceStatus.VERIFIED }}", tr("जाँच बाकी", "Pending check"), Modifier.weight(1f)) { onFilter(HomeFilter.PENDING) }
                     Stat("${thisMonth.size}", tr("इस महीने के बिल", "Bills this month"), Modifier.weight(1f)) { onFilter(HomeFilter.ALL) }

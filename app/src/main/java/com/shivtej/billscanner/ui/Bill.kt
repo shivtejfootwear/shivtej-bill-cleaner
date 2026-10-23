@@ -69,6 +69,7 @@ import com.shivtej.billscanner.core.model.Warnings
 import com.shivtej.billscanner.core.ocr.InvoiceParser
 import com.shivtej.billscanner.core.ocr.InvoiceParser.Kind as K
 import com.shivtej.billscanner.teachColumn
+import com.shivtej.billscanner.reread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -80,6 +81,7 @@ import java.math.BigDecimal
  */
 @Composable
 fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: () -> Unit, onPhoto: () -> Unit, onView: () -> Unit = {}, onFix: () -> Unit = {}) {
+    val ctxApp = LocalContext.current.applicationContext
     val c = LocalContext.current.container
     val ed = rememberEditor(id)
     val inv = ed.invoice ?: return
@@ -112,6 +114,17 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
         onAdd = { ed.change { Edits.addItem(it, System.currentTimeMillis()) } },
         onGst = { on -> ed.change { Edits.setSittingWithGst(it, on, System.currentTimeMillis()) } },
         canUndo = ed.canUndo, onUndo = { ed.undo() }, message = message, onFix = onFix,
+        onSendClaude = { scope.launch { withContext(Dispatchers.IO) { runCatching { Files.shareForClaude(ctxApp, inv) } } } },
+        onReread = {
+            scope.launch {
+                val r = c.reread(inv)
+                message = if (r == null) tr2(c.lang, "इस बिल की स्कैन जानकारी नहीं मिली — नया स्कैन करें।", "This bill's scan data is not available — scan again.")
+                else {
+                    val sure = r.items.count { it.kind == ItemKind.ARTICLE && com.shivtej.billscanner.core.ocr.Heal.sure(it) }
+                    tr2(c.lang, "🔄 दोबारा पढ़ा — $sure/${r.items.count { it.kind == ItemKind.ARTICLE }} लाइन पक्की", "🔄 Read again — $sure/${r.items.count { it.kind == ItemKind.ARTICLE }} lines add up")
+                }
+            }
+        },
     )
 
     editing?.let { itemId ->
@@ -224,6 +237,7 @@ fun BillContent(
     onRow: (String) -> Unit = {}, onColumn: (Int) -> Unit = {}, onEditHeader: () -> Unit = {}, onVerify: () -> Unit = {}, onHistory: () -> Unit = {},
     onDelete: () -> Unit = {}, onAdd: () -> Unit = {}, onGst: (Boolean) -> Unit = {}, canUndo: Boolean = false, onUndo: () -> Unit = {},
     message: String? = null, showWarnings: Boolean = false, onView: () -> Unit = {}, onFix: () -> Unit = {},
+    onSendClaude: () -> Unit = {}, onReread: () -> Unit = {},
 ) {
     val h = inv.header
     val t = Totals.of(inv)
@@ -298,6 +312,12 @@ fun BillContent(
                     Text(if (inv.status == InvoiceStatus.VERIFIED) tr("Verified ✓ (हटाएँ)", "Verified ✓ (undo)") else tr("जाँचकर Verified करें", "Mark verified"),
                         color = if (inv.status == InvoiceStatus.VERIFIED) C.ok else C.navy, fontWeight = FontWeight.SemiBold)
                 }
+            }
+            // A bill the reader did not understand: sent to Claude for a pattern code, then read again with it.
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = onSendClaude) { Text(tr("📤 समझ नहीं आया? Claude को भेजें", "📤 Not understood? Send to Claude"), color = C.orangeDark, fontSize = 13.sp) }
+                Box(Modifier.weight(1f))
+                TextButton(onClick = onReread) { Text(tr("🔄 दोबारा पढ़ें", "🔄 Read again"), color = C.navy, fontSize = 13.sp) }
             }
         }
     }

@@ -95,6 +95,18 @@ fun TargetsContent(
                     "Green = what the dealer really gave on MRP (baitha %). Yellow = the % you want. The new rate and bill follow it."),
                 fontSize = 13.sp, color = C.navy, modifier = Modifier.fillMaxWidth().background(C.navySoft, RoundedCornerShape(10.dp)).padding(10.dp),
             )
+            // Without MRP a % on MRP cannot make a new rate: say so instead of buttons that seem to do nothing.
+            val arts = inv.items.filter { it.kind == com.shivtej.billscanner.core.model.ItemKind.ARTICLE }
+            val noMrp = arts.count { !Target.targetable(inv, it) }
+            if (arts.isNotEmpty() && noMrp > 0) {
+                Text(
+                    if (noMrp == arts.size) tr("इस बिल की किसी भी लाइन में MRP नहीं मिला, इसलिए % से नया रेट नहीं बन सकता। पीछे जाकर \"ठीक करें\" में हर लाइन का MRP डालें।",
+                        "No line of this bill has an MRP, so a % cannot make a new rate. Go back and enter each line's MRP in \"Fix\".")
+                    else tr("$noMrp लाइनों में MRP नहीं मिला — उन पर % नहीं लगेगा, वे बिल की रकम पर ही रहेंगी।",
+                        "$noMrp lines have no MRP — the % does not apply to them; they stay at the bill amount."),
+                    fontSize = 14.sp, color = C.err, modifier = Modifier.fillMaxWidth().background(C.errSoft, RoundedCornerShape(10.dp)).padding(10.dp),
+                )
+            }
             Card {
                 Title(tr("पूरे बिल पर एक %", "One % for the whole bill"))
                 PctChips(choices, if (inv.groupTargets.isEmpty()) def else null, onPick = onAll, onCustom = { onCustom("") })

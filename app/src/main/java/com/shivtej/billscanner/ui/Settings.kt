@@ -43,7 +43,47 @@ fun SettingsScreen(onBack: () -> Unit) {
         landscape = land, onLandscape = { land = it; c.prefs.pdfLandscape = it }, onBack = onBack,
         learnt = learnt, onForget = { c.prefs.learnt = com.shivtej.billscanner.core.ocr.Learnt(); c.prefs.taught = emptyMap(); learnt = c.prefs.learnt },
         taughtColumns = c.prefs.taught.values.sumOf { it.size },
+        patterns = { PatternsCard() },
     )
+}
+
+/**
+ * Bill pattern codes: for a bill the scanner did not understand, the owner sends it to Claude ("📤 Claude को भेजें"
+ * on the bill), gets back a short "SBP1:…" code and pastes it here. Bills of that supplier are then read with it.
+ */
+@Composable
+fun PatternsCard() {
+    val c = LocalContext.current.container
+    var list by remember { mutableStateOf(c.prefs.patterns) }
+    var code by remember { mutableStateOf("") }
+    var msg by remember { mutableStateOf<String?>(null) }
+    val lang = c.lang
+    Card {
+        Title(tr("🧩 बिल समझने का कोड (नई पार्टी)", "🧩 Bill pattern codes (new suppliers)"))
+        Muted(tr("कोई बिल समझ न आए: बिल खोलकर \"📤 Claude को भेजें\" दबाएँ। Claude जो कोड (SBP1:…) देगा उसे यहाँ पेस्ट करके \"जोड़ें\" दबाएँ, फिर बिल में \"🔄 दोबारा पढ़ें\"। उस पार्टी के आगे के बिल अपने आप इसी तरह पढ़े जाएँगे।",
+            "A bill not understood: open it and tap \"📤 Send to Claude\". Paste the code (SBP1:…) you get here and tap Add, then \"🔄 Read again\" on the bill. That supplier's next bills are read the same way."))
+        OutlinedTextField(code, { code = it; msg = null }, label = { Text(tr("कोड यहाँ पेस्ट करें", "Paste the code here")) }, modifier = Modifier.fillMaxWidth(), maxLines = 4)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = {
+                val p = com.shivtej.billscanner.core.ocr.BillPattern.decode(code)
+                if (p == null) msg = tr2(lang, "यह कोड सही नहीं है — पूरा कोड (SBP1: से शुरू) पेस्ट करें।", "Not a valid code — paste the whole code starting with SBP1:")
+                else {
+                    list = list.filterNot { it.name == p.name } + p; c.prefs.patterns = list; code = ""
+                    msg = tr2(lang, "✓ \"${p.name}\" जुड़ गया। अब उस पार्टी का बिल खोलकर \"🔄 दोबारा पढ़ें\" दबाएँ।", "✓ \"${p.name}\" added. Open that supplier's bill and tap \"🔄 Read again\".")
+                }
+            }) { Text(tr("जोड़ें", "Add"), color = C.orangeDark) }
+            msg?.let { Text(it, fontSize = 13.sp, color = C.navy, modifier = Modifier.weight(1f)) }
+        }
+        list.forEach { p ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(p.name, fontSize = 15.sp, color = C.navy)
+                    p.note?.let { Muted(it) }
+                }
+                TextButton(onClick = { list = list - p; c.prefs.patterns = list }) { Text(tr("हटाएँ", "Remove"), color = C.err) }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -52,11 +92,13 @@ fun SettingsContent(
     lang: String, onLang: (String) -> Unit, choices: List<Int>, onAddChoice: (Int) -> Unit, onRemoveChoice: (Int) -> Unit,
     landscape: Boolean, onLandscape: (Boolean) -> Unit, onBack: () -> Unit,
     learnt: com.shivtej.billscanner.core.ocr.Learnt = com.shivtej.billscanner.core.ocr.Learnt(), onForget: () -> Unit = {}, taughtColumns: Int = 0,
+    patterns: @Composable () -> Unit = {},
 ) {
     var add by remember { mutableStateOf("") }
     Column(Modifier.fillMaxSize().background(C.bg)) {
         TopBar(tr("सेटिंग", "Settings"), onBack)
         Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            patterns()
             Card {
                 Title(tr("🧠 स्कैनर ने क्या सीखा", "🧠 What the scanner learnt"))
                 val fixes = learnt.fixes.values.sumOf { m -> m.values.sumOf { it.size } }
