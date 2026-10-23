@@ -50,7 +50,8 @@ object InvoiceParser {
     /** Text this app prints on its own files (a photo PDF shared back into the app): never part of a bill. */
     private val OWN_TEXT = Regex("""(?i)(original\s+invoice\s+photo|copy\s+for\s+refere|shivtej\s+bill\s+scanner|not\s+an\s+official\s+digital|not\s+the\s+supplier'?s\s+original).*$""")
     private val DOTTED = Regex("""^\d{1,3}(\.\d{3})+\.\d{2}$""")
-    private val UNITS = setOf("pair", "pairs", "prs", "pr", "pcs", "pc", "nos", "no", "set", "sets", "%", "pkt", "box", "dz", "doz")
+    private val UNITS = setOf("pair", "pairs", "prs", "pr", "pcs", "pc", "nos", "no", "set", "sets", "%", "pkt", "box", "dz", "doz",
+        "palrs", "palr", "paiis", "parrs", "pa1rs", "pars", "pairss", "paire", "palrs.", "pairs.")
     /** "T O T A L" (letters spaced out in a PDF) → "TOTAL". */
     fun squash(t: String) = t.replace(Regex("""\b(?:[A-Za-z] ){2,}[A-Za-z]\b""")) { it.value.replace(" ", "") }
 
@@ -71,7 +72,7 @@ object InvoiceParser {
         // "2,504,44": a comma read for the decimal point.
         if (Regex("""^\d{1,3}(,\d{3})*,\d{2}$""").matches(t)) t = t.substring(0, t.lastIndexOf(',')) + "." + t.substring(t.lastIndexOf(',') + 1)
         // "6pair", "12prs", "5pcs" read as one word.
-        Regex("""(?i)^([\d.,]+)(pairs?|prs?|pcs?|nos?|sets?)$""").matchEntire(t)?.let { t = it.groupValues[1] }
+        Regex("""(?i)^([\d.,]+)(pa[il1]?rs?|prs?|pcs?|nos?|sets?)$""").matchEntire(t)?.let { t = it.groupValues[1] }
         // Letters OCR confuses with digits, only when the rest looks numeric.
         if (t.count { it.isDigit() } >= max(1, t.length / 2)) t = t.replace('O', '0').replace('o', '0').replace('l', '1').replace('I', '1')
         val m = NUM.matchEntire(t) ?: return null
@@ -287,6 +288,8 @@ object InvoiceParser {
         if (n.startsWith("pair")) return Role.QTY
         if (n.startsWith("rate")) return Role.RATE
         if (n.startsWith("qty")) return Role.QTY
+        // "Quantty", "Quantiy", "Qunatity": quantity misspelt or misread.
+        if (n.startsWith("quan") || n.startsWith("qunat") || n.startsWith("quant")) return Role.QTY
         if (n.startsWith("disc")) return Role.DISC
         if (n.startsWith("descr")) return Role.DESC
         if (n.startsWith("amount")) return Role.AMOUNT
@@ -518,7 +521,7 @@ object InvoiceParser {
         // No quantity heading read: the column whose cells say "12 Pair" / "6 PRS" is the quantity.
         if (cols.none { it.kind == Kind.QTY }) {
             val items = cellRows.filter { isItemLike(it, cols) }
-            val unitRe = Regex("""(?i)^\d{1,4}(\.0+)?\s*(pairs?|prs?\.?|pcs\.?|nos\.?|pr)$""")
+            val unitRe = Regex("""(?i)^\d{1,4}(\.0+)?\s*(pa[il1]?rs?|prs?\.?|pcs\.?|nos\.?|pr)$""")
             cols.indices.filter { !cols[it].locked && cols[it].kind in setOf(Kind.OTHER, Kind.UNIT) }
                 .maxByOrNull { ci -> items.count { r -> unitRe.matches(cellText(r[ci])) } }
                 ?.takeIf { ci -> items.size >= 2 && items.count { r -> unitRe.matches(cellText(r[ci])) } * 10 >= items.size * 6 }

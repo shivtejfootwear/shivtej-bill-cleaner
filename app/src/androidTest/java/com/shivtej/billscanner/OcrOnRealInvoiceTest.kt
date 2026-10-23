@@ -180,6 +180,9 @@ class OcrOnRealInvoiceTest {
     /** Taha Foot Lines: rate 209,3, total with ₹ in the table foot. */
     @Test fun taha0754() = read("taha_0754", listOf("taha_0754.jpg"))
 
+    /** Patel Trading FLT-126: local brands with MRP 0.00 (rate only), "Quantty" heading. */
+    @Test fun patelTradingFlt126() = read("patel_trading_flt126", listOf("patel_trading_flt126.jpg"))
+
     @Test fun patel() = read("patel", listOf("patel_tradelines_g2_2627_1309.jpg"))
 
     /** PATEL TRADING CORPORATION (EBase): rate with GST + net rate, amounts with GST, MRP 0.00 on non-brand goods. */
