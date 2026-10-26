@@ -36,6 +36,8 @@ class Container(val ctx: Context, db: BillDb) {
     val repo = InvoiceRepo(db)
     val pages = PageStore(ctx)
     val prefs = Prefs(ctx)
+    /** Goods check: how many pieces of each line have arrived. */
+    val checks = com.shivtej.billscanner.data.CheckStore(ctx)
     var lang by mutableStateOf(prefs.language)
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 

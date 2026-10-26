@@ -17,6 +17,7 @@ import com.shivtej.billscanner.ui.TargetsContent
 import com.shivtej.billscanner.ui.BillTheme
 import com.shivtej.billscanner.ui.ExportContent
 import com.shivtej.billscanner.ui.HomeContent
+import com.shivtej.billscanner.ui.CheckContent
 import com.shivtej.billscanner.ui.HomeFilter
 import com.shivtej.billscanner.ui.ItemSheet
 import com.shivtej.billscanner.ui.ProcessingContent
@@ -54,6 +55,16 @@ class ScreenshotTest {
         val a = invoice()
         val b = Edits.setStatus(invoice(blank = emptySet()).copy(id = "b", createdAt = now - 86_400_000L * 3), InvoiceStatus.VERIFIED, now)
         shot("01_home") { HomeContent(listOf(dharashiv(), a, b), "", {}, HomeFilter.ALL, {}, {}, {}, {}, now) }
+    }
+
+    @Test fun s01d_home_check() {
+        val d = dharashiv(); val got = d.items.take(3).associate { it.id to 100 }
+        shot("01d_home_check") { HomeContent(listOf(d, invoice()), "", {}, HomeFilter.ALL, {}, {}, {}, {}, now, checks = mapOf(d.id to got)) }
+    }
+
+    @Test fun s30_goods_check() {
+        val d = dharashiv(); val got = d.items.take(4).associate { it.id to 100 } + (d.items[5].id to 1)
+        shot("30_goods_check") { CheckContent(d, got, { _, _ -> }, {}) }
     }
 
     @Test fun s01b_home_empty() = shot("01b_home_empty") { HomeContent(emptyList(), "", {}, HomeFilter.ALL, {}, {}, {}, {}, now) }

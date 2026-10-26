@@ -19,6 +19,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shivtej.billscanner.ui.AddScreen
+import com.shivtej.billscanner.ui.CheckScreen
+import com.shivtej.billscanner.ui.PickScreen
 import com.shivtej.billscanner.ui.BillTheme
 import com.shivtej.billscanner.ui.C
 import com.shivtej.billscanner.ui.ExportScreen
@@ -75,16 +77,21 @@ fun Root(sharedTick: Int = 0) {
     Box(Modifier.fillMaxSize().background(C.navy).windowInsetsPadding(WindowInsets.safeDrawing)) {
         Box(Modifier.fillMaxSize().background(C.bg)) {
             NavHost(nav, startDestination = "home") {
-                composable("home") { HomeScreen(onScan = { nav.navigate("add") }, onOpen = { nav.navigate("inv/$it") }, onSettings = { nav.navigate("settings") }) }
+                composable("home") { HomeScreen(onScan = { nav.navigate("add") }, onOpen = { nav.navigate("inv/$it") }, onSettings = { nav.navigate("settings") }, onCheck = { nav.navigate("inv/$it/check") }) }
+                composable("pick/{id}") { e ->
+                    val id = e.arguments!!.getString("id")!!
+                    PickScreen(id, onRegular = { nav.navigate("inv/$id") { popUpTo("home") } }, onCheck = { nav.navigate("inv/$id/check") { popUpTo("home") } })
+                }
+                composable("inv/{id}/check") { e -> CheckScreen(e.arguments!!.getString("id")!!, onBack = { nav.popBackStack() }) }
                 composable("add") { AddScreen(onBack = { nav.popBackStack() }, onStart = { nav.navigate("scan") }) }
                 composable("scan") {
-                    ProcessingScreen(onDone = { id -> nav.navigate("inv/$id") { popUpTo("home") } }, onBack = { nav.popBackStack() })
+                    ProcessingScreen(onDone = { id -> nav.navigate("pick/$id") { popUpTo("home") } }, onBack = { nav.popBackStack() })
                 }
                 composable("inv/{id}") { e ->
                     val id = e.arguments!!.getString("id")!!
                     BillScreen(id, onBack = { nav.popBackStack() }, onTargets = { nav.navigate("inv/$id/targets") },
                         onExport = { nav.navigate("inv/$id/export") }, onPhoto = { nav.navigate("inv/$id/photo") }, onView = { nav.navigate("inv/$id/view") },
-                        onFix = { nav.navigate("inv/$id/fix") })
+                        onFix = { nav.navigate("inv/$id/fix") }, onCheck = { nav.navigate("inv/$id/check") })
                 }
                 composable("inv/{id}/targets") { e ->
                     val id = e.arguments!!.getString("id")!!

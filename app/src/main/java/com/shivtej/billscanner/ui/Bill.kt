@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.History
@@ -80,7 +81,7 @@ import java.math.BigDecimal
  * target % is set — the new rate and amount. Tap a line to edit it; tap a column heading to say what it is.
  */
 @Composable
-fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: () -> Unit, onPhoto: () -> Unit, onView: () -> Unit = {}, onFix: () -> Unit = {}) {
+fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: () -> Unit, onPhoto: () -> Unit, onView: () -> Unit = {}, onFix: () -> Unit = {}, onCheck: () -> Unit = {}) {
     val ctxApp = LocalContext.current.applicationContext
     val c = LocalContext.current.container
     val ed = rememberEditor(id)
@@ -105,7 +106,7 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
     if (askFix) DoubtfulDialog(inv, onFix = { askedFix += inv.id; askFix = false; onFix() }, onLater = { askedFix += inv.id; askFix = false })
 
     BillContent(
-        inv, warnings, thumb, onBack = onBack, onTargets = onTargets, onExport = onExport, onPhoto = onPhoto, onView = onView,
+        inv, warnings, thumb, onBack = onBack, onTargets = onTargets, onExport = onExport, onPhoto = onPhoto, onView = onView, onCheck = onCheck,
         onRow = { editing = it }, onColumn = { teach = it }, onEditHeader = { editHeader = true },
         onVerify = {
             if (inv.status == InvoiceStatus.VERIFIED) ed.change { Edits.setStatus(it, InvoiceStatus.DRAFT, System.currentTimeMillis()) } else askVerify = true
@@ -180,7 +181,7 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
         onDismissRequest = { askDelete = false },
         title = { Text(tr("यह बिल हटाएँ?", "Delete this invoice?")) },
         text = { Text(tr("बिल का रिकॉर्ड और उसकी फ़ोटो इस फ़ोन से हट जाएँगे। पहले से बनी Excel/PDF फ़ाइलें रहेंगी।", "The record and its photos are removed from this phone. Exported files stay.")) },
-        confirmButton = { TextButton(onClick = { askDelete = false; scope.launch { c.repo.delete(inv.id); c.pages.deleteAll(inv.id); onBack() } }) { Text(tr("हटाएँ", "Delete"), color = C.err) } },
+        confirmButton = { TextButton(onClick = { askDelete = false; scope.launch { c.repo.delete(inv.id); c.pages.deleteAll(inv.id); c.checks.clear(inv.id); onBack() } }) { Text(tr("हटाएँ", "Delete"), color = C.err) } },
         dismissButton = { TextButton(onClick = { askDelete = false }) { Text(tr("नहीं", "No")) } },
     )
     if (history) HistoryDialog(inv) { history = false }
@@ -237,7 +238,7 @@ fun BillContent(
     onRow: (String) -> Unit = {}, onColumn: (Int) -> Unit = {}, onEditHeader: () -> Unit = {}, onVerify: () -> Unit = {}, onHistory: () -> Unit = {},
     onDelete: () -> Unit = {}, onAdd: () -> Unit = {}, onGst: (Boolean) -> Unit = {}, canUndo: Boolean = false, onUndo: () -> Unit = {},
     message: String? = null, showWarnings: Boolean = false, onView: () -> Unit = {}, onFix: () -> Unit = {},
-    onSendClaude: () -> Unit = {}, onReread: () -> Unit = {},
+    onSendClaude: () -> Unit = {}, onReread: () -> Unit = {}, onCheck: () -> Unit = {},
 ) {
     val h = inv.header
     val t = Totals.of(inv)
@@ -246,6 +247,7 @@ fun BillContent(
     Column(Modifier.fillMaxSize().background(C.bg)) {
         TopBar(h.supplierName ?: tr("सप्लायर नहीं पढ़ा गया", "Supplier not read"), onBack) {
             if (canUndo) TextButton(onClick = onUndo) { Text("Undo", color = C.navy) }
+            IconButton(onClick = onCheck) { Icon(Icons.Outlined.Checklist, contentDescription = tr("माल चेक", "Goods check"), tint = C.ok) }
             IconButton(onClick = onHistory) { Icon(Icons.Outlined.History, contentDescription = tr("इतिहास", "History"), tint = C.navy) }
             IconButton(onClick = onDelete) { Icon(Icons.Outlined.Delete, contentDescription = tr("हटाएँ", "Delete"), tint = C.muted) }
         }

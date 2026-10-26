@@ -4,6 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -49,21 +53,22 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.Calendar
 
-enum class HomeFilter { ALL, PENDING, VERIFIED, EXPORTED }
+enum class HomeFilter { ALL, PENDING, CHECK, VERIFIED, EXPORTED }
 
 @Composable
-fun HomeScreen(onScan: () -> Unit, onOpen: (String) -> Unit, onSettings: () -> Unit) {
+fun HomeScreen(onScan: () -> Unit, onOpen: (String) -> Unit, onSettings: () -> Unit, onCheck: (String) -> Unit = {}) {
     val c = LocalContext.current.container
     val list by c.repo.all().collectAsState(initial = emptyList())
     var q by rememberSaveable { mutableStateOf("") }
     var f by rememberSaveable { mutableStateOf(HomeFilter.ALL) }
-    HomeContent(list, q, { q = it }, f, { f = it }, onScan, onOpen, onSettings)
+    HomeContent(list, q, { q = it }, f, { f = it }, onScan, onOpen, onSettings, checks = list.associate { it.id to c.checks.of(it.id) }, onCheck = onCheck)
 }
 
 @Composable
 fun HomeContent(
     all: List<Invoice>, query: String, onQuery: (String) -> Unit, filter: HomeFilter, onFilter: (HomeFilter) -> Unit,
     onScan: () -> Unit, onOpen: (String) -> Unit, onSettings: () -> Unit, now: Long = System.currentTimeMillis(),
+    checks: Map<String, Map<String, Int>> = emptyMap(), onCheck: (String) -> Unit = {},
 ) {
     val month = Calendar.getInstance().apply { timeInMillis = now; set(Calendar.DAY_OF_MONTH, 1); set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0) }.timeInMillis
     val thisMonth = all.filter { it.createdAt >= month }
@@ -73,14 +78,18 @@ fun HomeContent(
     val sit = thisMonth.mapNotNull { inv -> Calc.sittingTotal(inv)?.let { it to Totals.of(inv).taxable } }
     val w = sit.fold(BigDecimal.ZERO) { a, p -> a + p.second }
     val avg = if (w.signum() > 0) Calc.r2(sit.fold(BigDecimal.ZERO) { a, p -> a + p.first * p.second }.divide(w, 6, RoundingMode.HALF_UP)) else null
+    val progress = all.associate { it.id to checkCount(it, checks[it.id].orEmpty()) }
+    fun checkDone(id: String) = progress[id]?.let { it.second > 0 && it.first >= it.second } == true
+    val openChecks = all.count { (progress[it.id]?.first ?: 0) > 0 && !checkDone(it.id) }
     val shown = all.filter { inv ->
         when (filter) {
             HomeFilter.ALL -> true
             HomeFilter.PENDING -> inv.status != InvoiceStatus.VERIFIED
+            HomeFilter.CHECK -> !checkDone(inv.id)
             HomeFilter.VERIFIED -> inv.status == InvoiceStatus.VERIFIED
             HomeFilter.EXPORTED -> inv.exportedAt != null
         }
-    }.filter { inv ->
+    }.let { l -> if (filter == HomeFilter.CHECK) l.sortedByDescending { (progress[it.id]?.first ?: 0) > 0 } else l }.filter { inv ->
         val t = query.trim()
         t.isEmpty() || listOfNotNull(inv.header.invoiceNo, inv.header.supplierName, inv.header.invoiceDate).any { it.contains(t, true) } ||
             inv.items.any { it.current.article.contains(t, true) || it.current.name.contains(t, true) }
@@ -100,17 +109,13 @@ fun HomeContent(
         }
         item {
             Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Row(
-                    Modifier.fillMaxWidth().background(C.orange, RoundedCornerShape(18.dp)).clickable(onClick = onScan).padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Box(Modifier.size(48.dp).background(Color.White.copy(alpha = 0.22f), RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.height(IntrinsicSize.Min)) {
+                    Column(Modifier.weight(1f).fillMaxHeight().background(C.orange, RoundedCornerShape(18.dp)).clickable(onClick = onScan).padding(14.dp)) {
                         Icon(Icons.Outlined.DocumentScanner, contentDescription = null, tint = Color.White, modifier = Modifier.size(28.dp))
+                        Text(tr("नया बिल स्कैन", "Scan new invoice"), fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.padding(top = 4.dp))
+                        Text(tr("कैमरा या गैलरी · कई पेज", "Camera or gallery · multi-page"), fontSize = 12.sp, color = Color.White.copy(alpha = 0.9f))
                     }
-                    Column(Modifier.padding(start = 12.dp)) {
-                        Text(tr("नया बिल स्कैन करें", "Scan new invoice"), fontSize = 19.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                        Text(tr("कैमरा या गैलरी · कई पेज", "Camera or gallery · multi-page"), fontSize = 13.sp, color = Color.White.copy(alpha = 0.9f))
-                    }
+                    CheckHomeButton(Modifier.weight(1f).fillMaxHeight(), openChecks) { onFilter(HomeFilter.CHECK) }
                 }
                 // Codes from Claude for suppliers whose bills were not understood.
                 Text(tr("🧩 बिल समझ नहीं आया? Claude का कोड पेस्ट करें ›", "🧩 Bill not understood? Paste Claude's code ›"), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = C.orangeDark,
@@ -133,17 +138,21 @@ fun HomeContent(
                         BasicTextField(query, onQuery, singleLine = true, textStyle = TextStyle(fontSize = 15.sp, color = C.ink), modifier = Modifier.fillMaxWidth())
                     }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Chip(tr("सभी", "All"), filter == HomeFilter.ALL) { onFilter(HomeFilter.ALL) }
                     Chip(tr("जाँच बाकी", "Pending"), filter == HomeFilter.PENDING) { onFilter(HomeFilter.PENDING) }
+                    Chip(tr("माल चेक बाकी", "Goods check open"), filter == HomeFilter.CHECK) { onFilter(HomeFilter.CHECK) }
                     Chip(tr("जाँचे", "Verified"), filter == HomeFilter.VERIFIED) { onFilter(HomeFilter.VERIFIED) }
                     Chip(tr("फ़ाइलें", "Exported"), filter == HomeFilter.EXPORTED) { onFilter(HomeFilter.EXPORTED) }
                 }
-                Title(if (filter == HomeFilter.ALL) tr("हाल के बिल", "Recent invoices") else tr("बिल", "Invoices"))
+                Title(when (filter) { HomeFilter.ALL -> tr("हाल के बिल", "Recent invoices"); HomeFilter.CHECK -> tr("माल चेक — बिल चुनें", "Goods check — pick a bill"); else -> tr("बिल", "Invoices") })
                 if (shown.isEmpty()) Muted(if (all.isEmpty()) tr("अभी कोई बिल नहीं। ऊपर \"नया बिल स्कैन करें\" दबाएँ।", "No invoices yet. Tap \"Scan new invoice\".") else tr("कोई बिल नहीं मिला", "No invoice found"))
             }
         }
-        items(shown, key = { it.id }) { inv -> InvoiceRow(inv) { onOpen(inv.id) } }
+        items(shown, key = { it.id }) { inv ->
+            val p = progress[inv.id] ?: (0 to 0)
+            InvoiceRow(inv, p.first, p.second, onCheck = { onCheck(inv.id) }) { if (filter == HomeFilter.CHECK) onCheck(inv.id) else onOpen(inv.id) }
+        }
     }
 }
 
@@ -156,7 +165,7 @@ private fun Stat(value: String, label: String, modifier: Modifier, onClick: () -
 }
 
 @Composable
-private fun InvoiceRow(inv: Invoice, onClick: () -> Unit) {
+private fun InvoiceRow(inv: Invoice, got: Int = 0, total: Int = 0, onCheck: () -> Unit = {}, onClick: () -> Unit) {
     val t = Totals.of(inv)
     Column(
         Modifier.padding(horizontal = 14.dp, vertical = 5.dp).fillMaxWidth().background(C.card, RoundedCornerShape(14.dp))
@@ -170,5 +179,6 @@ private fun InvoiceRow(inv: Invoice, onClick: () -> Unit) {
         Spacer(Modifier.height(2.dp))
         Muted("${inv.header.invoiceNo ?: "—"} · ${inv.header.invoiceDate ?: "—"} · ${t.articleLines} ${tr("आर्टिकल", "articles")} · ${qtyText(t.qty)} ${tr("जोड़ी", "pairs")}")
         Muted(rs(t.printedGrand ?: t.grand) + (if (inv.exportedAt != null) " · Excel/PDF ✓" else "") + " · " + fmtDate(inv.createdAt))
+        if (got > 0) CheckStrip(got, total, onCheck)
     }
 }
