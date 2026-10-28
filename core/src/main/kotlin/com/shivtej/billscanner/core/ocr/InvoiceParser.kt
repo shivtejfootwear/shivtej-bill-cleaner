@@ -207,6 +207,8 @@ object InvoiceParser {
             if (arts.count { it.current.mrp != null } * 2 > arts.size)
                 for (k in items.indices) if (items[k].kind == ItemKind.ARTICLE && items[k].current.mrp == null) items[k] = items[k].copy(needs = items[k].needs + F.MRP)
         }
+        val cut = Heal.cutAmounts(items)
+        if (cut.fixed > 0) { items.clear(); items.addAll(cut.items); notes += "फ़ोटो के किनारे पर कटी ${cut.fixed} रकम जोड़ी × रेट से पूरी कीं (छपे अंक मिलते हैं)" }
         val healed = Heal.byColumns(items, columns)
         if (healed.fixed > 0) notes += "बिल के बाकी आर्टिकल देखकर ${healed.fixed} लाइनें खुद ठीक कीं (जैसे सब पर एक ही डिस्काउंट %/GST %, और हिसाब पूरा बैठा)"
         return ParsedInvoice(header, healed.items, notes, columns)

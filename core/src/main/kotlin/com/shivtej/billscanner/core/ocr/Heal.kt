@@ -39,6 +39,29 @@ object Heal {
     private fun mode(xs: List<BigDecimal>): Pair<BigDecimal, Int>? =
         xs.groupBy { it.stripTrailingZeros() }.maxByOrNull { it.value.size }?.let { it.key to it.value.size }
 
+    /**
+     * The amount at the cut edge of a photo: "2,293.3E" or "2,293.3" where the bill prints 2,293.36.
+     * Kept only when pairs × rate gives exactly those printed digits plus at most one lost last digit,
+     * and the line has no discount — so the printed part proves it.
+     */
+    fun cutAmounts(items: List<LineItem>): Result {
+        var fixed = 0
+        val out = items.map { item ->
+            val v = item.current
+            if (item.kind != ItemKind.ARTICLE || v.taxable != null || v.qty == null || v.rate == null || v.discPct != null || v.discAmt != null) return@map item
+            val want = (v.qty * v.rate).setScale(2, RoundingMode.HALF_UP)
+            val wd = want.toPlainString().filter(Char::isDigit)
+            val hit = item.raw.joinToString(" ").split(' ', '|').map { it.trim() }.filter { it.contains('.') || it.contains(',') }.any { t ->
+                val d = t.takeWhile { it.isDigit() || it == ',' || it == '.' }.filter(Char::isDigit)
+                d.length >= 4 && d.length >= wd.length - 1 && d.length < wd.length + 1 && wd.startsWith(d) && d != wd
+            }
+            if (!hit) return@map item
+            fixed++
+            item.copy(current = v.copy(taxable = want), original = item.original.copy(taxable = want), needs = item.needs - F.TAXABLE)
+        }
+        return Result(out, fixed)
+    }
+
     fun byColumns(items: List<LineItem>, columns: List<Column>): Result {
         val arts = items.filter { it.kind == ItemKind.ARTICLE }
         if (arts.size < 5) return Result(items, 0)
