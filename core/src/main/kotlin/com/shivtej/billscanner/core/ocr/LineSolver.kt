@@ -80,8 +80,8 @@ object LineSolver {
                 if (!gPrinted && !(aP && tP)) continue
                 if (tP && (aP || d.scale() > 0)) cands += Fit(q, r, g, d, if (aP) find(a) else a, find(t)!!, null, null, 3 + (if (aP) 1 else 0))
             }
-            // No discount on the line: the amount is the total.
-            if (count(g) >= (if (q.compareTo(BigDecimal.ONE) == 0) 3 else 2) || cands.isEmpty()) cands += Fit(q, r, g, null, null, g, null, null, 2)
+            // No discount on the line: the amount is the total, printed a second time (never assumed).
+            if (count(g) >= (if (q.compareTo(BigDecimal.ONE) == 0) 3 else 2)) cands += Fit(q, r, g, null, null, g, null, null, 2)
             for (c in cands) {
                 // GST on the line: % and amount.
                 var f = c
@@ -106,6 +106,9 @@ object LineSolver {
             val f = fit(numbers(text, m?.value)) ?: return@map item
             if (f.score < 3 && f.discPct == null && item.current.taxable != null && !near(item.current.taxable, f.taxable)) return@map item
             val v0 = item.current
+            // Pairs and rate the reader was sure of are changed only by a strong proof (discount and amount, or GST, printed too).
+            if (f.score < 4 && v0.qty != null && F.QTY !in item.needs && v0.qty.compareTo(f.qty) != 0) return@map item
+            if (f.score < 4 && v0.rate != null && F.RATE !in item.needs && !near(v0.rate, f.rate)) return@map item
             var v = v0.copy(qty = f.qty, rate = f.rate, gross = if (v0.gross != null || f.discPct != null) f.gross else v0.gross,
                 discPct = f.discPct, discAmt = f.discAmt, taxable = f.taxable, mrp = v0.mrp ?: mrp)
             if (f.gstPct != null) v = v.copy(cgstPct = v0.cgstPct?.takeIf { near(it, f.gstPct) } ?: v0.cgstPct, cgstAmt = v0.cgstAmt)
@@ -117,7 +120,9 @@ object LineSolver {
             }
             if (!Heal.proven(v)) return@map item
             fixed++
-            val needs = item.needs - Heal.MONEY + (if (v.mrp == null && F.MRP in item.needs) setOf(F.MRP) else emptySet())
+            // A doubtful MRP stays doubtful unless the "MRP : …" printed on the line gives the same value.
+            val mrpProven = mrp != null && v.mrp != null && near(v.mrp, mrp)
+            val needs = item.needs - (Heal.MONEY - F.MRP) - (if (mrpProven) setOf(F.MRP) else emptySet())
             item.copy(current = v, original = v, needs = needs)
         }
         return Result(out, fixed)
