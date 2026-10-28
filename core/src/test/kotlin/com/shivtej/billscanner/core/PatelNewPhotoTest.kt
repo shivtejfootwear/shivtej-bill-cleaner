@@ -43,6 +43,21 @@ class PatelNewPhotoTest {
         check(BillPattern.parse(pages, emptyList(), wrong))
     }
 
+    /** Even read with wrong columns (no safety net), the bill's own arithmetic solves every line. */
+    @Test fun lineSolverFixesLinesWhateverTheColumns() {
+        val variants = listOf(
+            mapOf("rate" to Kind.MRP, "total" to Kind.TAXABLE),
+            mapOf("qtyinpairs" to Kind.RATE, "taxablevalue" to Kind.TOTAL),
+            mapOf("discount%" to Kind.OTHER, "%" to Kind.OTHER, "discountamount" to Kind.OTHER))
+        for (m in variants) {
+            val mem = object : LayoutMemory { override fun kindFor(header: Header, label: String) = m[BillPattern.norm(label)] }
+            val arts = InvoiceParser.parse(pages, mem).items.filter { it.kind == ItemKind.ARTICLE }
+            assertEquals("$m", 10, arts.count { Heal.sure(it) && it.current.mrp != null })
+            val l7 = arts.first { it.current.sr == 7 }.current
+            assertEquals("$m", 0, l7.taxable!!.compareTo(BigDecimal("4359.18"))); assertEquals("$m", 0, l7.mrp!!.compareTo(BigDecimal("605.00")))
+        }
+    }
+
     @Test fun aWrongPastedCodeCannotSpoilIt() {
         val bad = BillPattern("Patel Tradelines", names = listOf("PATELTRADELINES"),
             headings = mapOf("total" to Kind.TAXABLE, "rate" to Kind.MRP), order = listOf(Kind.SR, Kind.DESC, Kind.QTY, Kind.MRP))

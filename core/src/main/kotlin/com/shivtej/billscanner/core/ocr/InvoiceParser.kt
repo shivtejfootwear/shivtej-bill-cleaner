@@ -209,6 +209,8 @@ object InvoiceParser {
         }
         val cut = Heal.cutAmounts(items)
         if (cut.fixed > 0) { items.clear(); items.addAll(cut.items); notes += "फ़ोटो के किनारे पर कटी ${cut.fixed} रकम जोड़ी × रेट से पूरी कीं (छपे अंक मिलते हैं)" }
+        val solved = LineSolver.rescue(items)
+        if (solved.fixed > 0) { items.clear(); items.addAll(solved.items); notes += "बिल के अपने हिसाब से ${solved.fixed} लाइनें खुद मिलाईं (MRP → जोड़ी × रेट → डिस्काउंट → रकम)" }
         val healed = Heal.byColumns(items, columns)
         if (healed.fixed > 0) notes += "बिल के बाकी आर्टिकल देखकर ${healed.fixed} लाइनें खुद ठीक कीं (जैसे सब पर एक ही डिस्काउंट %/GST %, और हिसाब पूरा बैठा)"
         return ParsedInvoice(header, healed.items, notes, columns)
