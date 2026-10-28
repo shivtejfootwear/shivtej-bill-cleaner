@@ -75,7 +75,9 @@ private fun line(it: LineItem, i: Int, got: Int): CheckLine {
     val v = it.current
     val q = v.qty?.toInt()?.coerceAtLeast(1) ?: 1
     val name = listOf(v.article, v.name).filter { s -> s.isNotBlank() }.distinct().joinToString(" ").ifBlank { "—" }
-    return CheckLine(it.id, "${v.sr ?: (i + 1)}", name, v.mrp?.stripTrailingZeros()?.toPlainString() ?: "", v.sizeText, q, got.coerceIn(0, q))
+    // Size only ("6X10", "6/2,7/3"), without the colour written before it.
+    val size = v.sizeText.split(" | ").map { s -> s.trim().replace(Regex("""^[A-Za-z][A-Za-z ./-]*?\s+(?=\d)"""), "") }.filter { s -> s.any(Char::isDigit) }.joinToString(",")
+    return CheckLine(it.id, "${v.sr ?: (i + 1)}", name, v.mrp?.stripTrailingZeros()?.toPlainString() ?: "", size, q, got.coerceIn(0, q))
 }
 
 /** Pairs received and pairs on the bill. */
@@ -119,15 +121,15 @@ private fun PickCard(icon: androidx.compose.ui.graphics.vector.ImageVector, tint
 // ---------------------------------------------------------------- the goods check screen
 
 @Composable
-fun CheckScreen(id: String, onBack: () -> Unit) {
+fun CheckScreen(id: String, onBack: () -> Unit, onDone: () -> Unit = onBack) {
     val c = LocalContext.current.container
     val inv by remember(id) { c.repo.watch(id) }.collectAsState(initial = null)
     val bill = inv ?: return
-    CheckContent(bill, c.checks.of(id), onSet = { line, n -> c.checks.set(id, line, n) }, onBack = onBack)
+    CheckContent(bill, c.checks.of(id), onSet = { line, n -> c.checks.set(id, line, n) }, onBack = onBack, onDone = onDone)
 }
 
 @Composable
-fun CheckContent(inv: Invoice, got: Map<String, Int>, onSet: (String, Int) -> Unit, onBack: () -> Unit) {
+fun CheckContent(inv: Invoice, got: Map<String, Int>, onSet: (String, Int) -> Unit, onBack: () -> Unit, onDone: () -> Unit = onBack) {
     val lines = checkLines(inv, got)
     var qp by rememberSaveable { mutableStateOf("") }
     var qf by rememberSaveable { mutableStateOf("") }
@@ -136,6 +138,14 @@ fun CheckContent(inv: Invoice, got: Map<String, Int>, onSet: (String, Int) -> Un
     val found = lines.filter { it.got > 0 }
     val total = lines.sumOf { it.qty }
     val done = lines.sumOf { it.got }
+    var askDone by rememberSaveable { mutableStateOf(false) }
+    if (askDone) androidx.compose.material3.AlertDialog(
+        onDismissRequest = { askDone = false },
+        title = { Text(tr("माल चेक पूरा ✓", "Goods check complete ✓")) },
+        text = { Text(tr("इस बिल का सारा माल ($done जोड़ी) मिल गया। बिल पर \"माल पूरा मिला\" लिखा रहेगा।", "All goods of this bill ($done pairs) arrived. The bill will show \"All goods received\".")) },
+        confirmButton = { androidx.compose.material3.TextButton(onClick = { askDone = false; onDone() }) { Text(tr("होम पर जाएँ", "Go home"), color = Green) } },
+        dismissButton = { androidx.compose.material3.TextButton(onClick = { askDone = false }) { Text(tr("यहीं रहें", "Stay"), color = C.navy) } },
+    )
 
     Column(Modifier.fillMaxSize().background(C.bg)) {
         // ---- header with progress
@@ -146,8 +156,8 @@ fun CheckContent(inv: Invoice, got: Map<String, Int>, onSet: (String, Int) -> Un
                     Text("${inv.header.supplierName ?: "—"} · ${inv.header.invoiceNo ?: "—"}", fontSize = 12.sp, color = Color.White.copy(alpha = 0.8f), maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(tr("माल चेक", "Goods check"), fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
-                if (total > 0 && done >= total) Text(tr("पूरा मिला ✓", "All received ✓"), fontSize = 12.sp, color = Color.White,
-                    modifier = Modifier.background(Green, RoundedCornerShape(10.dp)).padding(horizontal = 8.dp, vertical = 3.dp))
+                if (total > 0 && done >= total) Text(tr("पूरा मिला ✓", "All received ✓"), fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White,
+                    modifier = Modifier.background(Green, RoundedCornerShape(10.dp)).clickable { askDone = true }.padding(horizontal = 12.dp, vertical = 8.dp))
             }
             Box(Modifier.padding(start = 12.dp, top = 4.dp).fillMaxWidth().height(5.dp).background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(3.dp))) {
                 Box(Modifier.fillMaxWidth(if (total > 0) done.toFloat() / total else 0f).fillMaxHeight().background(C.orange, RoundedCornerShape(3.dp)))
@@ -203,7 +213,7 @@ private fun Section(
     }
 }
 
-private val W_CK = 18.dp; private val W_NO = 22.dp; private val W_MRP = 48.dp; private val W_SIZE = 44.dp; private val W_PCS = 36.dp; private val W_ED = 26.dp
+private val W_CK = 18.dp; private val W_NO = 22.dp; private val W_MRP = 50.dp; private val W_SIZE = 46.dp; private val W_PCS = 46.dp; private val W_ED = 24.dp
 
 @Composable
 private fun Cell(text: String, w: Dp, color: Color = C.ink, bold: Boolean = false, end: Boolean = true) =

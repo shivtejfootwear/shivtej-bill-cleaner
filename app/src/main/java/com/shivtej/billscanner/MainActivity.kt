@@ -82,7 +82,7 @@ fun Root(sharedTick: Int = 0) {
                     val id = e.arguments!!.getString("id")!!
                     PickScreen(id, onRegular = { nav.navigate("inv/$id") { popUpTo("home") } }, onCheck = { nav.navigate("inv/$id/check") { popUpTo("home") } })
                 }
-                composable("inv/{id}/check") { e -> CheckScreen(e.arguments!!.getString("id")!!, onBack = { nav.popBackStack() }) }
+                composable("inv/{id}/check") { e -> CheckScreen(e.arguments!!.getString("id")!!, onBack = { nav.popBackStack() }, onDone = { nav.navigate("home") { popUpTo("home") { inclusive = true } } }) }
                 composable("add") { AddScreen(onBack = { nav.popBackStack() }, onStart = { nav.navigate("scan") }) }
                 composable("scan") {
                     ProcessingScreen(onDone = { id -> nav.navigate("pick/$id") { popUpTo("home") } }, onBack = { nav.popBackStack() })

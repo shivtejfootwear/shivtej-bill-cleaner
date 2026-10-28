@@ -79,13 +79,29 @@ data class BillPattern(
 
         private fun parseOrThrow(pages: List<OcrPage>, patterns: List<BillPattern>, base: LayoutMemory?): ParsedInvoice {
             val first = InvoiceParser.parse(pages, base)
-            val p = patterns.firstOrNull { it.matches(first.header) } ?: return first
-            val memory = object : LayoutMemory {
-                override fun kindFor(header: Header, label: String) = base?.kindFor(header, label) ?: p.headings[norm(label)]
-                override fun orderFor(header: Header) = p.order.ifEmpty { null }
-            }
-            val again = InvoiceParser.parse(pages, memory)
-            return apply(again, p).let { it.copy(notes = it.notes + "${p.name} का पैटर्न लगाया (आपका जोड़ा हुआ कोड)") }
+            // A column taught wrongly by hand must never spoil a whole bill: the plain reading is tried too.
+            val plain = if (base != null) InvoiceParser.parse(pages) else first
+            val p = patterns.firstOrNull { it.matches(first.header) || it.matches(plain.header) }
+            val withPattern = p?.let { pat ->
+                val memory = object : LayoutMemory {
+                    override fun kindFor(header: Header, label: String) = base?.kindFor(header, label) ?: pat.headings[norm(label)]
+                    override fun orderFor(header: Header) = pat.order.ifEmpty { null }
+                }
+                val onlyPattern = object : LayoutMemory {
+                    override fun kindFor(header: Header, label: String) = pat.headings[norm(label)]
+                    override fun orderFor(header: Header) = pat.order.ifEmpty { null }
+                }
+                listOfNotNull(apply(InvoiceParser.parse(pages, memory), pat), if (base != null) apply(InvoiceParser.parse(pages, onlyPattern), pat) else null)
+                    .map { it.copy(notes = it.notes + "${pat.name} का पैटर्न लगाया") }
+            }.orEmpty()
+            // The reading whose lines add up best wins (on a tie: pattern, then what was taught, then plain).
+            return (withPattern + listOf(first, plain)).maxBy { score(it) }
+        }
+
+        /** Lines proven by their own numbers count most; doubtful lines count against. */
+        fun score(p: ParsedInvoice): Int {
+            val arts = p.items.filter { it.kind == ItemKind.ARTICLE }
+            return arts.count { Heal.sure(it) } * 100 + arts.count { it.current.mrp != null } * 10 - arts.count { it.needs.isNotEmpty() }
         }
 
         /** The MRP written inside the description, where the bill has no MRP column. */
