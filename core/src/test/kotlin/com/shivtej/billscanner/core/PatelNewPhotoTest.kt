@@ -58,6 +58,21 @@ class PatelNewPhotoTest {
         }
     }
 
+    /**
+     * The phone's document scanner crops at the table's right border: the last digit of every SGST amount is lost.
+     * MRP, pairs, rate, discount and amount still add up, so no line may be called "not understood".
+     */
+    @Test fun gstDigitsCutAtTheEdgeDoNotMakeLinesDoubtful() {
+        val big = listOf(page("patel_1309_big_1.tsv"), page("patel_1309_big_2.tsv"))
+        val maxR = big[0].words.maxOf { it.box.r }
+        val cut = listOf(big[0].copy(words = big[0].words.map { w -> if (w.box.l > maxR - 90 && Regex("""^\d+\.\d\d$""").matches(w.text)) w.copy(text = w.text.dropLast(1)) else w }), big[1])
+        val arts = BillPattern.parse(cut, emptyList()).items.filter { it.kind == ItemKind.ARTICLE }
+        assertEquals(10, arts.count { Heal.sure(it) })
+        // A GST amount that is really different still shows a wrong amount.
+        val l = arts.first { it.current.sr == 7 }.current.copy(discPct = null, discAmt = null, gross = null, taxable = BigDecimal("4494.00"))
+        assertTrue(!Heal.proven(l))
+    }
+
     @Test fun aWrongPastedCodeCannotSpoilIt() {
         val bad = BillPattern("Patel Tradelines", names = listOf("PATELTRADELINES"),
             headings = mapOf("total" to Kind.TAXABLE, "rate" to Kind.MRP), order = listOf(Kind.SR, Kind.DESC, Kind.QTY, Kind.MRP))

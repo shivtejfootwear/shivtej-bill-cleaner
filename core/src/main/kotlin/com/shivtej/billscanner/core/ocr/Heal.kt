@@ -22,7 +22,8 @@ object Heal {
 
     /** The line's numbers are proven by its own arithmetic. */
     fun proven(v: ItemValues): Boolean {
-        if (v.qty == null || v.taxable == null || Calc.checkLine(v).isNotEmpty()) return false
+        // GST amounts on a line (often cut at the photo edge) are checked against the bill's GST total, not here.
+        if (v.qty == null || v.taxable == null || Calc.checkLine(v).any { it.field !in GST_FIELDS || !garbled(it.printed, it.expected) }) return false
         // Rate with GST printed: pairs × that rate = the printed amount.
         if (v.rateGst != null && v.printedTotal != null) return (v.qty * v.rateGst - v.printedTotal).abs() <= BigDecimal("0.06")
         return v.rate != null && (v.discPct != null || v.discAmt != null || v.gross != null || (v.qty * v.rate - v.taxable).abs() <= BigDecimal("0.06"))
@@ -32,8 +33,25 @@ object Heal {
     val MONEY = setOf(F.QTY, F.MRP, F.RATE, F.GROSS, F.DISC_PCT, F.DISC_AMT, F.TAXABLE, F.GST_PCT, F.CGST_PCT, F.SGST_PCT, F.IGST_PCT,
         F.CGST_AMT, F.SGST_AMT, F.IGST_AMT, F.TOTAL, F.SR, F.RATE_GST)
 
-    /** The line is read for sure: its numbers add up and no money field is in doubt. */
-    fun sure(i: LineItem): Boolean = proven(i.current) && i.needs.none { it in MONEY }
+    /**
+     * A GST amount spoilt by the photo, not a different amount: digits cut at the edge ("74.2" for 74.26),
+     * or one digit misread. A really different GST amount still shows the line's amount is wrong.
+     */
+    fun garbled(printed: BigDecimal?, expected: BigDecimal?): Boolean {
+        if (printed == null || expected == null) return true
+        val p = printed.setScale(2, RoundingMode.HALF_UP).toPlainString().filter(Char::isDigit).trimStart('0')
+        val e = expected.setScale(2, RoundingMode.HALF_UP).toPlainString().filter(Char::isDigit).trimStart('0')
+        val pRaw = printed.stripTrailingZeros().toPlainString().filter(Char::isDigit).trimStart('0')
+        if (pRaw.length >= 2 && e.startsWith(pRaw) && pRaw.length >= e.length - 2) return true
+        if (p.length == e.length && p.zip(e).count { (a, b) -> a != b } == 1) return true
+        return false
+    }
+
+    /** Per-line GST % and amounts: a doubt there never makes the line itself doubtful. */
+    val GST_FIELDS = setOf(F.CGST_PCT, F.CGST_AMT, F.SGST_PCT, F.SGST_AMT, F.IGST_PCT, F.IGST_AMT)
+
+    /** The line is read for sure: its numbers add up and no money field (MRP, pairs, rate, discount, amount) is in doubt. */
+    fun sure(i: LineItem): Boolean = proven(i.current) && i.needs.none { it in MONEY && it !in GST_FIELDS }
 
     /** Most common value and how many lines have it. */
     private fun mode(xs: List<BigDecimal>): Pair<BigDecimal, Int>? =
