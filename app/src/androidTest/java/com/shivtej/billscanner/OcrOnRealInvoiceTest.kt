@@ -153,8 +153,12 @@ class OcrOnRealInvoiceTest {
         report("${name}_selfcheck", dir2, checked.pages)
     }
 
-    /** Yash Enterprises (Tally), creased paper: article-colour-MRP in one code ("HSW-012-NAVY-239"), "Less : Dis (-)5 %". */
     @Test fun venkateshwara() = read("venkateshwara_l1235", listOf("venkateshwara_l1235.jpg"))
+
+    /** Patel Tradelines G2/2627/1309 again, a new phone photo of both pages (all lines were doubtful on the phone). */
+    @Test fun patelNew() = read("patel_1309_new", listOf("patel_1309_new_1.jpg", "patel_1309_new_2.jpg"))
+
+    /** Yash Enterprises (Tally), creased paper: article-colour-MRP in one code ("HSW-012-NAVY-239"), "Less : Dis (-)5 %". */
 
     @Test fun yash() = read("yash", listOf("yash_ye0393.jpg"))
 
