@@ -73,6 +73,20 @@ class PatelNewPhotoTest {
         assertTrue(!Heal.proven(l))
     }
 
+    /**
+     * What the owner's phone itself read (sent with "Send to Claude"): the CGST "%" heading was not read, so every line
+     * had CGST/SGST % in doubt and all 10 were called "not understood"; "MRP:64029 255.00" glued the HSN to the label.
+     */
+    @Test fun ownersPhoneReadingIsUnderstood() {
+        val p = BillPattern.parse(listOf(page("patel_1309_phone_1.tsv"), page("patel_1309_phone_2.tsv")), emptyList())
+        val arts = p.items.filter { it.kind == ItemKind.ARTICLE }
+        assertEquals(10, arts.size)
+        for (it in arts) assertTrue("${it.current.sr}: ${it.needs} ${it.current}", Heal.sure(it))
+        val mrps = listOf("235.00", "169.50", "245.00", "174.00", "194.00", "255.00", "605.00", "639.00", "555.00", "579.00")
+        for ((i, it) in arts.withIndex()) assertEquals("${it.current.sr}", 0, it.current.mrp!!.compareTo(BigDecimal(mrps[i])))
+        assertEquals("G2/2627/1309", p.header.invoiceNo)
+    }
+
     @Test fun aWrongPastedCodeCannotSpoilIt() {
         val bad = BillPattern("Patel Tradelines", names = listOf("PATELTRADELINES"),
             headings = mapOf("total" to Kind.TAXABLE, "rate" to Kind.MRP), order = listOf(Kind.SR, Kind.DESC, Kind.QTY, Kind.MRP))

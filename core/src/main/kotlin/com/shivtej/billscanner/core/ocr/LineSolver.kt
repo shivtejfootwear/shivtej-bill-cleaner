@@ -19,10 +19,13 @@ object LineSolver {
 
     private val TOL = BigDecimal("0.06")
     private val HUNDRED = BigDecimal(100)
-    private val MRP = Regex("""(?i)\bM\s*\.?\s*R\s*\.?\s*P\s*\.?\s*[:;.=\-]*\s*(?:Rs\.?|₹)?\s*[:;]?\s*(\d[\d,]*(?:\.\d{1,2})?)""")
+    private val MRP = Regex("""(?i)\bM\s*\.?\s*R\s*\.?\s*P\s*\.?\s*[:;.=\-]*\s*(?:64\d{3,6}\s*[:;.]?\s*)?(?:Rs\.?|₹)?\s*[:;]?\s*(\d[\d,]*(?:\.\d{1,2})?)""")
     private val SIZE = Regex("""(?i)^\d{1,2}\s*[xX/]\s*\d{1,2}(/\d+)?$""")
 
     private val GST = listOf("2.5", "5", "6", "9", "12", "14", "18", "28", "1.5", "0.75").map(::BigDecimal)
+
+    /** 64029, 6402: the footwear HSN code, never an MRP. */
+    fun hsnLike(x: BigDecimal) = x.stripTrailingZeros().scale() <= 0 && x.toPlainString().let { it.startsWith("64") && it.length in 4..8 }
 
     private fun near(a: BigDecimal, b: BigDecimal) = (a - b).abs() <= TOL
 
@@ -106,8 +109,8 @@ object LineSolver {
             var v = v0.copy(qty = f.qty, rate = f.rate, gross = if (v0.gross != null || f.discPct != null) f.gross else v0.gross,
                 discPct = f.discPct, discAmt = f.discAmt, taxable = f.taxable, mrp = v0.mrp ?: mrp)
             if (f.gstPct != null) v = v.copy(cgstPct = v0.cgstPct?.takeIf { near(it, f.gstPct) } ?: v0.cgstPct, cgstAmt = v0.cgstAmt)
-            // A misread MRP that is printed with its "MRP" label.
-            if (mrp != null && v0.mrp != null && (v0.mrp - mrp).abs() > TOL && F.MRP in item.needs) v = v.copy(mrp = mrp)
+            // A misread MRP (or the HSN code taken for it) that is printed with its "MRP" label.
+            if (mrp != null && v0.mrp != null && (v0.mrp - mrp).abs() > TOL && (F.MRP in item.needs || hsnLike(v0.mrp))) v = v.copy(mrp = mrp)
             if (com.shivtej.billscanner.core.model.Calc.checkLine(v).isNotEmpty()) {
                 // GST columns that do not fit the solved amount are dropped rather than keeping the line doubtful.
                 v = v.copy(cgstAmt = null, sgstAmt = null, igstAmt = null, cgstPct = null, sgstPct = null, igstPct = null)

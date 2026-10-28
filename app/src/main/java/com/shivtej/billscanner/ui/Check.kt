@@ -76,7 +76,7 @@ private fun line(it: LineItem, i: Int, got: Int): CheckLine {
     val q = v.qty?.toInt()?.coerceAtLeast(1) ?: 1
     val name = listOf(v.article, v.name).filter { s -> s.isNotBlank() }.distinct().joinToString(" ").ifBlank { "—" }
     // Size only ("6X10", "6/2,7/3"), without the colour written before it.
-    val size = v.sizeText.split(" | ").map { s -> s.trim().replace(Regex("""^[A-Za-z][A-Za-z ./-]*?\s+(?=\d)"""), "") }.filter { s -> s.any(Char::isDigit) }.joinToString(",")
+    val size = v.sizeText.split(" | ").map { s -> s.trim().replace(Regex("""^[A-Za-z][A-Za-z ./-]*?\s+(?=\d)"""), "") }.filter { s -> s.any(Char::isDigit) && !s.contains("MRP", true) && !s.startsWith(":") }.joinToString(",")
     return CheckLine(it.id, "${v.sr ?: (i + 1)}", name, v.mrp?.stripTrailingZeros()?.toPlainString() ?: "", size, q, got.coerceIn(0, q))
 }
 

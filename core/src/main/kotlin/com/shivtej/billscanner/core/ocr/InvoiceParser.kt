@@ -39,7 +39,8 @@ object InvoiceParser {
     private val NUM = Regex("""^[(\-]?(?:₹|rs\.?)?(\d{1,3}(?:,\d{2,3})+|\d+)(?:\.(\d{1,3}))?\)?[,.:;]?$""", RegexOption.IGNORE_CASE)
     /** "HSW-012-NAVY-239": article, colour, MRP. */
     private val CODE_MRP = Regex("""^((?=[^-]*\d|.*-[^-]*\d[^-]*-)[A-Za-z0-9.]+(?:-[A-Za-z0-9.]+)*?)-([A-Za-z][A-Za-z./]*)-(\d{2,4})$""")
-    private val MRP = Regex("""(?i)M\s*\.?\s*R\s*\.?\s*P\s*\.?\s*[:.;]?\s*(?:Rs\.?|₹)?\s*(\d{1,6}(?:\.\d{1,2})?)""")
+    // "MRP:64029 255.00": the HSN code (footwear, chapter 64) glued after the label is skipped, the price after it taken.
+    private val MRP = Regex("""(?i)M\s*\.?\s*R\s*\.?\s*P\s*\.?\s*[:.;]?\s*(?:64\d{3,6}\s*[:.;]?\s*)?(?:Rs\.?|₹)?\s*(\d{1,6}(?:\.\d{1,2})?)""")
     private val DATE = Regex("""\b(\d{1,2}[-/. ](?:[A-Za-z0][A-Za-z]{2,8}|\d{1,2})[-/. ]\d{2,4})\b""")
     /** Words that are labels on a bill, never a name. */
     private val LABELS = Regex("""(?i)^\s*(address|invoice|date|state|place|gstin|party|dc\s*no|eway|pay\s*mode|due|mobile|phone|contact)\b""")
