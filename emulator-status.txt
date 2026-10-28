@@ -1,0 +1,2 @@
+crw-rw-rw- 1 root kvm 10, 232 Oct 28 09:42 /dev/kvm
+boot exit=0

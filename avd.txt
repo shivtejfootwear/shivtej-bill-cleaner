@@ -1,0 +1,14 @@
+Loading local repository...                                                     [=========                              ] 25% Loading local repository...       [=========                              ] 25% Fetch remote repository...        [=======================================] 100% Fetch remote repository...       
+Auto-selecting single ABI x86_64
+Available Android Virtual Devices:
+    Name: t
+  Device: pixel (Google)
+    Path: /home/runner/.android/avd/t.avd
+  Target: Google APIs (Google Inc.)
+          Based on: Android 11.0 ("R") Tag/ABI: google_apis/x86_64
+  Sdcard: 512 MB
+total 16
+drwxr-xr-x 3 runner runner 4096 Oct 28 09:45 .
+drwxr-xr-x 3 runner runner 4096 Oct 28 09:44 ..
+drwxr-xr-x 2 runner runner 4096 Oct 28 09:45 t.avd
+-rw-r--r-- 1 runner runner   78 Oct 28 09:45 t.ini

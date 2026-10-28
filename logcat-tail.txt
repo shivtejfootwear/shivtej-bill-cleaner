@@ -1,0 +1,1390 @@
+--------- beginning of main
+10-28 09:46:28.464   494  5344 I system_server: The ClassLoaderContext is a special shared library.
+10-28 09:46:28.466   422   509 V installd: DexInv: --- BEGIN '/apex/com.android.os.statsd/javalib/service-statsd.jar' ---
+10-28 09:46:28.566  5359  5359 W dex2oat32: Unexpected CPU variant for X86 using defaults: x86_64
+10-28 09:46:28.567  5359  5359 I dex2oat32: /apex/com.android.art/bin/dex2oat32 --input-vdex-fd=-1 --output-vdex-fd=9 --updatable-bcp-packages-file=/system/etc/updatable-bcp-packages.txt --resolve-startup-const-strings=true --max-image-block-size=524288 --compiler-filter=verify --classpath-dir=/apex/com.android.os.statsd/javalib --class-loader-context=PCL[];PCL[/system/framework/com.android.location.provider.jar:/system/framework/services.jar:/system/framework/ethernet-service.jar:/apex/com.android.permission/javalib/service-permission.jar:/apex/com.android.wifi/javalib/service-wifi.jar:/apex/com.android.ipsec/javalib/android.net.ipsec.ike.jar] --generate-mini-debug-info --compact-dex-level=none --compilation-reason=boot
+10-28 09:46:28.567  5359  5359 I dex2oat32: setting boot class path to /apex/com.android.art/javalib/core-oj.jar:/apex/com.android.art/javalib/core-libart.jar:/apex/com.android.art/javalib/core-icu4j.jar:/apex/com.android.art/javalib/okhttp.jar:/apex/com.android.art/javalib/bouncycastle.jar:/apex/com.android.art/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/framework-atb-backward-compatibility.jar
+--------- beginning of system
+10-28 09:46:28.306   494  1675 I chatty  : uid=1000(system) Binder:494_E expire 4 lines
+10-28 09:46:28.317   494  1675 W UriGrantsManagerService: No permission grants found for com.google.android.apps.photos
+10-28 09:46:28.755   494   494 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10114; state: DISABLED
+10-28 09:46:28.755   494   535 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10114; state: ENABLED
+10-28 09:46:28.759   286   286 D Zygote  : Forked child process 5361
+10-28 09:46:28.760   494   535 I ActivityManager: Start proc 5361:com.google.android.setupwizard/u0a114 for service {com.google.android.setupwizard/com.google.android.setupwizard.logging.ClearcutLogsUploaderService}
+10-28 09:46:28.766  5361  5361 W oid.setupwizar: Unexpected CPU variant for X86 using defaults: x86_64
+10-28 09:46:28.767   395   405 I adbd    : jdwp connection from 5361
+10-28 09:46:28.772  5361  5361 I oid.setupwizar: The ClassLoaderContext is a special shared library.
+10-28 09:46:28.773  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:28.773  5361  5361 I oid.setupwizar: The ClassLoaderContext is a special shared library.
+10-28 09:46:28.773  5361  5361 D nativeloader: classloader namespace configured for unbundled product apk. library_path=/product/priv-app/SetupWizardPrebuilt/lib/x86_64:/product/priv-app/SetupWizardPrebuilt/SetupWizardPrebuilt.apk!/lib/x86_64:/product/lib64:/system/product/lib64
+10-28 09:46:28.775  5361  5361 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-28 09:46:28.775  5361  5361 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-28 09:46:28.779  5361  5361 I SetupWizard: [bea] Start loading FRP status
+10-28 09:46:28.817  5361  5361 I SetupWizard: [bea] frpStatus=supported=false challengeRequired=false duration=38ms
+10-28 09:46:28.856  5361  5388 I SetupWizard: [ClearcutLogsUploaderService] User did not optin for usage reporting.
+10-28 09:46:28.856  5361  5388 I SetupWizard: [ary] Deleting metrics of sessionType = 0
+10-28 09:46:28.890   494  2458 I ActivityManager: Killing 1287:com.google.android.apps.wellbeing/u0a113 (adj 975): empty #17
+10-28 09:46:28.896   286   286 I Zygote  : Process 1287 exited due to signal 9 (Killed)
+10-28 09:46:28.932   494   536 I libprocessgroup: Successfully killed process cgroup uid 10113 pid 1287 in 42ms
+10-28 09:46:29.061  5359  5359 I dex2oat32: dex2oat took 494.764ms (21.966ms cpu) (threads: 2) arena alloc=0B (0B) java alloc=33KB (34600B) native alloc=1005KB (1030064B) free=1492KB (1528384B)
+10-28 09:46:29.067   422   509 V installd: DexInv: --- END '/apex/com.android.os.statsd/javalib/service-statsd.jar' (success) ---
+10-28 09:46:29.068   494  5344 I system_server: The ClassLoaderContext is a special shared library.
+10-28 09:46:29.178   494  5344 I chatty  : uid=1000(system) Binder:494_3 identical 74 lines
+10-28 09:46:29.178   494  5344 I system_server: The ClassLoaderContext is a special shared library.
+10-28 09:46:29.179   494  5344 I PackageDexOptimizer: Running dexopt (dexoptNeeded=1) on: /data/app/~~Ky6COIAxFp8fQv6QVeYxLg==/com.shivtej.billscanner-4AvthO20Zavx5LrZVVDvyQ==/base.apk pkg=com.shivtej.billscanner isa=x86_64 dexoptFlags=boot_complete,debuggable,public,enable_hidden_api_checks targetFilter=verify oatDir=/data/app/~~Ky6COIAxFp8fQv6QVeYxLg==/com.shivtej.billscanner-4AvthO20Zavx5LrZVVDvyQ==/oat classLoaderContext=PCL[]{}
+10-28 09:46:29.179   422   509 V installd: DexInv: --- BEGIN '/data/app/~~Ky6COIAxFp8fQv6QVeYxLg==/com.shivtej.billscanner-4AvthO20Zavx5LrZVVDvyQ==/base.apk' ---
+10-28 09:46:29.201  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:29.287  5394  5394 W dex2oat32: Unexpected CPU variant for X86 using defaults: x86_64
+10-28 09:46:29.287  5394  5394 I dex2oat32: /apex/com.android.art/bin/dex2oat32 --input-vdex-fd=-1 --output-vdex-fd=9 --updatable-bcp-packages-file=/system/etc/updatable-bcp-packages.txt --resolve-startup-const-strings=true --max-image-block-size=524288 --compiler-filter=verify --debuggable --classpath-dir=/data/app/~~Ky6COIAxFp8fQv6QVeYxLg==/com.shivtej.billscanner-4AvthO20Zavx5LrZVVDvyQ== --class-loader-context=PCL[]{} --generate-mini-debug-info --compact-dex-level=none --compilation-reason=boot
+10-28 09:46:29.288  5394  5394 I dex2oat32: setting boot class path to /apex/com.android.art/javalib/core-oj.jar:/apex/com.android.art/javalib/core-libart.jar:/apex/com.android.art/javalib/core-icu4j.jar:/apex/com.android.art/javalib/okhttp.jar:/apex/com.android.art/javalib/bouncycastle.jar:/apex/com.android.art/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/framework-atb-backward-compatibility.jar
+10-28 09:46:29.690   494  1675 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+10-28 09:46:29.690   494  1675 D PackageManager: Clear ephemeral installer activity
+10-28 09:46:29.691   494  1675 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+10-28 09:46:29.691   494  1675 D PackageManager: Clear ephemeral installer activity
+10-28 09:46:29.691   494  1675 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+10-28 09:46:29.691   494  1675 D PackageManager: Clear ephemeral installer activity
+10-28 09:46:29.691   494  1675 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+10-28 09:46:29.691   494  1675 D PackageManager: Clear ephemeral installer activity
+10-28 09:46:29.716   494   632 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+10-28 09:46:29.716   494   632 D PackageManager: Clear ephemeral installer activity
+10-28 09:46:30.730   494   550 I AppsFilter: interaction: PackageSetting{4633b01 com.shivtej.billscanner/10167} -> PackageSetting{b47863d com.google.android.gm/10136} BLOCKED
+10-28 09:46:30.731   494   550 I AppsFilter: interaction: PackageSetting{36c81fd com.shivtej.billscanner.test/10168} -> PackageSetting{b47863d com.google.android.gm/10136} BLOCKED
+10-28 09:46:30.734   494   585 I InputReader: Reconfiguring input devices, changes=KEYBOARD_LAYOUTS | 
+10-28 09:46:30.734   686   686 V AvrcpMediaPlayerList: mPackageChangedBroadcastReceiver: action: android.intent.action.PACKAGE_CHANGED
+10-28 09:46:30.734   686   686 D AvrcpMediaPlayerList: Name of package changed: com.google.android.gm
+10-28 09:46:30.737   494   525 I RoleManagerService: Granting default roles...
+10-28 09:46:30.737   494   533 E system_server: No package ID 7f found for ID 0x7f080205.
+10-28 09:46:30.737   494   533 E system_server: No package ID 7f found for ID 0x7f130252.
+10-28 09:46:30.745  1024  1024 D CarrierSvcBindHelper: No carrier app for: 0
+10-28 09:46:30.774   494   494 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AJU
+10-28 09:46:30.776   712  3601 I PermissionControllerServiceImpl: Updating user sensitive for uid 10136
+10-28 09:46:30.801  1149  5402 I Fitness : OnPackageChangedOperation got intent: Intent { act=android.intent.action.PACKAGE_CHANGED dat=package:com.google.android.gm flg=0x45000010 cmp=com.google.android.gms/.chimera.PersistentIntentOperationService (has extras) } [CONTEXT service_id=17 ]
+10-28 09:46:30.823  1149  5412 I Fitness : FitCleanupIntentOperation received Intent android.intent.action.PACKAGE_CHANGED [CONTEXT service_id=17 ]
+10-28 09:46:30.851   494   504 I system_server: Background young concurrent copying GC freed 248873(10MB) AllocSpace objects, 95(4096KB) LOS objects, 25% free, 31MB/42MB, paused 142us total 118.297ms
+10-28 09:46:31.909  1365  2806 I Icing   : Indexing com.google.android.gms-apps from com.google.android.gms [CONTEXT service_id=21 ]
+10-28 09:46:31.947  1365  2806 I Icing   : Indexing done com.google.android.gms-apps [CONTEXT service_id=21 ]
+10-28 09:46:31.947  1365  2806 I Icing   : Indexing com.google.android.gms-internal.3p:MobileApplication from com.google.android.gms [CONTEXT service_id=21 ]
+10-28 09:46:32.046  1365  2806 I Icing   : Indexing done com.google.android.gms-internal.3p:MobileApplication [CONTEXT service_id=21 ]
+10-28 09:46:33.624  1365  5404 I Vision  : Requesting optional module download of ocr.
+10-28 09:46:33.624  1365  5404 I Vision  : Checking for download completion for 96015 -- ocr
+10-28 09:46:33.625   494   953 I ActivityManager: Killing 4808:com.google.android.apps.docs/u0a137 (adj 985): empty #17
+10-28 09:46:33.629   494   953 I ActivityManager: Killing 4984:com.google.android.apps.pixelmigrate/u0a112 (adj 985): empty #18
+10-28 09:46:33.630   494   953 I ActivityManager: Killing 1503:android.process.acore/u0a79 (adj 995): empty #19
+10-28 09:46:33.635   286   286 I Zygote  : Process 4984 exited due to signal 9 (Killed)
+10-28 09:46:33.635   494   800 D CountryDetector: No listener is left
+10-28 09:46:33.635   286   286 I Zygote  : Process 1503 exited due to signal 9 (Killed)
+10-28 09:46:33.637   286   286 I Zygote  : Process 4808 exited due to signal 9 (Killed)
+10-28 09:46:33.676   494   536 I libprocessgroup: Successfully killed process cgroup uid 10137 pid 4808 in 47ms
+10-28 09:46:33.677   494   536 I libprocessgroup: Successfully killed process cgroup uid 10112 pid 4984 in 0ms
+10-28 09:46:33.677   494   536 I libprocessgroup: Successfully killed process cgroup uid 10079 pid 1503 in 0ms
+10-28 09:46:35.251  1365  5404 I GmscoreIpa: Starting mediastore instant index
+10-28 09:46:35.297  4695  4975 W YouTube : Could not register for notifications with InnerTube: 
+10-28 09:46:35.297  4695  4975 W YouTube : abwi: java.util.concurrent.ExecutionException: aacl: Precondition check failed.
+10-28 09:46:35.297  4695  4975 W YouTube : 	at abwa.b(PG:18)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at aicr.f(PG:65)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at aicr.g(PG:133)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at aicr.b(PG:99)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at ahyh.run(Unknown Source:1)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at aosv.run(Unknown Source:1)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at zdm.run(PG:13)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:46:35.297  4695  4975 W YouTube : Caused by: java.util.concurrent.ExecutionException: aacl: Precondition check failed.
+10-28 09:46:35.297  4695  4975 W YouTube : 	at apmr.a(PG:135)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at apmr.get(PG:89)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at abwa.b(PG:17)
+10-28 09:46:35.297  4695  4975 W YouTube : 	... 11 more
+10-28 09:46:35.297  4695  4975 W YouTube : Caused by: aacl: Precondition check failed.
+10-28 09:46:35.297  4695  4975 W YouTube : 	at abuo.c(PG:106)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at znq.a(PG:62)
+10-28 09:46:35.297  4695  4975 W YouTube : 	at zmp.run(Unknown Source:18)
+10-28 09:46:35.297  4695  4975 W YouTube : 	... 4 more
+10-28 09:46:35.297  4695  4975 W YouTube : Caused by: btc
+10-28 09:46:35.297  4695  4975 W YouTube : 	at zmp.run(Unknown Source:6)
+10-28 09:46:35.297  4695  4975 W YouTube : 	... 4 more
+10-28 09:46:35.353   494  1803 D CompatibilityChangeReporter: Compat change id reported: 149924527; UID 10122; state: ENABLED
+10-28 09:46:35.359   494  1803 D CompatibilityChangeReporter: Compat change id reported: 132649864; UID 10122; state: DISABLED
+10-28 09:46:38.331   494   587 E ReportEncoder: No watchlist hash
+10-28 09:46:38.334  3038  3812 D PipelineManager: OCR process succeeded via visionkit pipeline.
+10-28 09:46:38.340   494   587 I WatchlistLoggingHandler: Milliseconds spent on tryAggregateRecords(): 72077
+10-28 09:46:38.341   494   527 I DropBoxManagerService: add tag=system_server_strictmode isTagEnabled=true flags=0x2
+10-28 09:46:38.387  3038  3714 D PipelineManager: Start process bitmap
+10-28 09:46:38.421  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:38.345   494   527 I chatty  : uid=1000(system) android.io identical 8 lines
+10-28 09:46:38.345   494   527 I DropBoxManagerService: add tag=system_server_strictmode isTagEnabled=true flags=0x2
+10-28 09:46:39.392   494   494 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10140; state: DISABLED
+10-28 09:46:39.392   494   535 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10140; state: DISABLED
+10-28 09:46:39.045  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:39.397   286   286 D Zygote  : Forked child process 5424
+10-28 09:46:39.397   494   535 I ActivityManager: Start proc 5424:com.google.android.apps.youtube.music/u0a140 for service {com.google.android.apps.youtube.music/androidx.work.impl.background.systemjob.SystemJobService}
+10-28 09:46:39.407  5424  5424 W s.youtube.musi: Unexpected CPU variant for X86 using defaults: x86_64
+10-28 09:46:39.409   395   405 I adbd    : jdwp connection from 5424
+10-28 09:46:39.420  5424  5424 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+10-28 09:46:39.420  5424  5424 I s.youtube.musi: The ClassLoaderContext is a special shared library.
+10-28 09:46:39.421  5424  5424 I s.youtube.musi: The ClassLoaderContext is a special shared library.
+10-28 09:46:39.421  5424  5424 D nativeloader: classloader namespace configured for unbundled product apk. library_path=/product/app/YouTubeMusicPrebuilt/lib/x86_64:/product/app/YouTubeMusicPrebuilt/YouTubeMusicPrebuilt.apk!/lib/x86_64:/product/lib64:/system/product/lib64
+10-28 09:46:39.433  5424  5424 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: false
+10-28 09:46:39.433  5424  5424 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: false
+10-28 09:46:39.477  5424  5424 I TetheringManager: registerTetheringEventCallback:com.google.android.apps.youtube.music
+10-28 09:46:39.480  5424  5450 W DynamiteModule: Local module descriptor class for providerinstaller not found.
+10-28 09:46:39.481  1149  2937 W ProviderHelper: Unknown dynamite feature providerinstaller
+10-28 09:46:39.505  5424  5450 W ProviderInstaller: Failed to load providerinstaller module: No acceptable module found. Local version is 0 and remote version is 0.
+10-28 09:46:39.525  5424  5485 E AwarenessClientProvider: Account associated with identity was null
+10-28 09:46:39.525  5424  5480 E GEL_DELAYED_EVENT_DEBUG: Failed delayed event dispatch, no dispatchers.
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: Exception while syncing fences
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: java.util.concurrent.ExecutionException: java.lang.IllegalStateException: Account associated with identity was null
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at zsp.a(PG:135)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at zsp.get(PG:82)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at zwj.a(PG:1)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at zuv.a(PG:4)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at fyf.run(Unknown Source:1)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:301)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at pqt.run(PG:13)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: Caused by: java.lang.IllegalStateException: Account associated with identity was null
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at fxj.a(Unknown Source:3)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at zsr.a(PG:3)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at zst.run(PG:23)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	at zvn.run(PG:2)
+10-28 09:46:39.530  5424  5485 E AwarenessRouterSyncMgr: 	... 7 more
+10-28 09:46:39.567   494   953 D ConnectivityService: requestNetwork for uid/pid:10140/5424 NetworkRequest [ TRACK_DEFAULT id=37, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED Uid: 10140 AdministratorUids: [] RequestorUid: 10140 RequestorPackageName: com.google.android.apps.youtube.music] ]
+10-28 09:46:39.567   494   643 D ConnectivityService: NetReassign [37 : null → 101]
+10-28 09:46:39.568   494   639 D UntrustedWifiNetworkFactory: got request NetworkRequest [ TRACK_DEFAULT id=37, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED Uid: 10140 AdministratorUids: [] RequestorUid: 10140 RequestorPackageName: com.google.android.apps.youtube.music] ] with score 60 and providerId 3
+10-28 09:46:39.568   494   639 D WifiNetworkFactory: got request NetworkRequest [ TRACK_DEFAULT id=37, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED Uid: 10140 AdministratorUids: [] RequestorUid: 10140 RequestorPackageName: com.google.android.apps.youtube.music] ] with score 60 and providerId 3
+10-28 09:46:39.568  1024  1024 D PhoneSwitcherNetworkRequstListener: got request NetworkRequest [ TRACK_DEFAULT id=37, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED Uid: 10140 AdministratorUids: [] RequestorUid: 10140 RequestorPackageName: com.google.android.apps.youtube.music] ] with score 60 and providerId 3
+10-28 09:46:39.569   706   706 V KeyguardUpdateMonitor: onSubscriptionInfoChanged()
+10-28 09:46:39.570   494   643 D ConnectivityService: NetReassign [no changes]
+10-28 09:46:39.571  1024  1024 D Telephony: isEmergencyPreferredAccount: subId=1, activeData=1
+10-28 09:46:39.571  1024  1024 D Telephony: isEmergencyPreferredAccount: Device does not require preference.
+10-28 09:46:39.571   706   706 V KeyguardUpdateMonitor: SubInfo:{id=1 iccId=89014103211118510720 simSlotIndex=0 carrierId=1 displayName=T-Mobile carrierName=T-Mobile nameSource=3 iconTint=-16746133 number=+15555215554 dataRoaming=0 iconBitmap=android.graphics.Bitmap@5bb5e95 mcc=310 mnc=260 countryIso=us isEmbedded=false nativeAccessRules=null cardString=89014103211118510720 cardId=-1 isOpportunistic=false groupUUID=null isGroupDisabled=false profileClass=-1 ehplmns=null hplmns=null subscriptionType=0 groupOwner=null carrierConfigAccessRules=null areUiccApplicationsEnabled=true}
+10-28 09:46:39.595  5424  5486 W s.youtube.musi: Accessing hidden field Ljava/util/Collections$SynchronizedCollection;->mutex:Ljava/lang/Object; (greylist-max-o, reflection, denied)
+10-28 09:46:39.596  5424  5486 W s.youtube.musi: Accessing hidden method Ljava/util/Collections$SynchronizedSet;-><init>(Ljava/util/Set;Ljava/lang/Object;)V (greylist-max-o, reflection, denied)
+10-28 09:46:39.596  5424  5486 W s.youtube.musi: Accessing hidden method Ljava/util/Collections$SynchronizedCollection;-><init>(Ljava/util/Collection;Ljava/lang/Object;)V (greylist-max-o, reflection, denied)
+10-28 09:46:39.602  5424  5478 W GoogleTagManager: Failed to extract the container from the resource file. Resource is a UTF-8 encoded string but doesn't contain a JSON container
+10-28 09:46:39.625  5424  5450 I s.youtube.musi: The ClassLoaderContext is a special shared library.
+10-28 09:46:39.645  5424  5424 V MediaRouter: Selecting route: RouteInfo{ name=Phone, description=null, status=null, category=RouteCategory{ name=System types=ROUTE_TYPE_LIVE_AUDIO ROUTE_TYPE_LIVE_VIDEO  groupable=false }, supportedTypes=ROUTE_TYPE_LIVE_AUDIO ROUTE_TYPE_LIVE_VIDEO , presentationDisplay=null }
+10-28 09:46:39.670  5424  5424 V MediaRouter: Selecting route: RouteInfo{ name=Phone, description=null, status=null, category=RouteCategory{ name=System types=ROUTE_TYPE_LIVE_AUDIO ROUTE_TYPE_LIVE_VIDEO  groupable=false }, supportedTypes=ROUTE_TYPE_LIVE_AUDIO ROUTE_TYPE_LIVE_VIDEO , presentationDisplay=null }
+10-28 09:46:39.674  5424  5450 I s.youtube.musi: The ClassLoaderContext is a special shared library.
+10-28 09:46:39.674  5424  5450 D nativeloader: classloader namespace configured for unbundled product apk. library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64:/product/lib64:/system/product/lib64
+10-28 09:46:39.689  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:39.705  5424  5466 I DynamiteModule: Considering local module com.google.android.gms.ads.dynamite:0 and remote module com.google.android.gms.ads.dynamite:21400
+10-28 09:46:39.705  5424  5466 I DynamiteModule: Selected remote version of com.google.android.gms.ads.dynamite, version >= 21400
+10-28 09:46:39.745  5424  5450 V NativeCrypto: Registering com/google/android/gms/org/conscrypt/NativeCrypto's 286 native methods...
+10-28 09:46:39.780   494  1801 I ActivityManager: Killing 5013:com.google.android.apps.restore/u0a120 (adj 975): empty #17
+10-28 09:46:39.784   286   286 I Zygote  : Process 5013 exited due to signal 9 (Killed)
+10-28 09:46:39.833   494   536 I libprocessgroup: Successfully killed process cgroup uid 10120 pid 5013 in 49ms
+10-28 09:46:39.835  5424  5466 I DynamiteLoaderV2: [71] AdsFdrDynamite.integ
+10-28 09:46:39.835  5424  5466 W s.youtube.musi: Unsupported class loader
+10-28 09:46:39.868  5424  5450 I ProviderInstaller: Installed default security provider GmsCore_OpenSSL
+10-28 09:46:40.201  5424  5462 I FA      : App measurement disabled by setAnalyticsCollectionEnabled(false)
+10-28 09:46:40.202  5424  5462 I FA      : App measurement initialized, version: 28015
+10-28 09:46:40.202  5424  5462 I FA      : To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+10-28 09:46:40.202  5424  5462 I FA      : To enable faster debug mode event logging run:
+10-28 09:46:40.202  5424  5462 I FA      :   adb shell setprop debug.firebase.analytics.app com.google.android.apps.youtube.music
+10-28 09:46:40.242  5424  5466 W s.youtube.musi: Unsupported class loader
+10-28 09:46:40.242   494   953 E system_server: Invalid class loader spec: =UnsupportedClassLoaderContext=
+10-28 09:46:40.242   494   953 E PackageDexUsage: Unsupported context?
+10-28 09:46:40.309  5424  5466 D DynamitePackage: Instantiated singleton DynamitePackage.
+10-28 09:46:40.309  5424  5466 D DynamitePackage: Instantiating com.google.android.gms.ads.adshield.ChimeraAdShieldCreatorImpl
+10-28 09:46:40.343   494   534 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+10-28 09:46:40.343   494   534 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+10-28 09:46:40.446  1365  1850 W SQLiteLog: (28) double-quoted string literal: "1793008000446"
+10-28 09:46:40.446  1365  1850 W SQLiteLog: (28) double-quoted string literal: "1"
+10-28 09:46:40.497  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:40.757  5424  5478 E GoogleTagManager: Invalid macro: _gtm.loadEventEnabled
+10-28 09:46:40.934  5424  5547 E GoogleTagManager: Invalid macro: _gtm.loadEventEnabled
+10-28 09:46:41.157  5394  5394 W dex2oat32: Could not reserve sentinel fault page
+10-28 09:46:41.181  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:41.296  5424  5485 E GoogleTagManager: Unsupported Value Escaping: 3
+10-28 09:46:41.313  5424  5485 I chatty  : uid=10140(com.google.android.apps.youtube.music) yt-background8- identical 1 line
+10-28 09:46:41.314  5424  5485 E GoogleTagManager: Unsupported Value Escaping: 3
+10-28 09:46:41.397  1487  2789 I Dialer  : OmtpVvmCarrierCfgHlpr - OmtpEvent:CONFIG_STATUS_SMS_TIME_OUT
+10-28 09:46:41.397  1487  1487 I Dialer  : RetryPolicy - discarding deferred status: configuration_state=4
+10-28 09:46:41.398  1487  1487 I Dialer  : VvmTaskExecutor - no more tasks, stopping service if no task are added in 5000 millis
+10-28 09:46:41.398  1487  1487 I Dialer  : VvmTaskReceiver - task received
+10-28 09:46:41.398  1487  1487 I Dialer  : VvmTaskReceiver - TaskExecutor already running
+10-28 09:46:41.398  1487  1487 I Dialer  : Task.createTask - create task:com.android.voicemail.impl.ActivationTask
+10-28 09:46:41.398  1487  1487 I Dialer  : RetryPolicy - retry #1 for com.android.voicemail.impl.ActivationTask@3032744 queued, executing in 5000
+10-28 09:46:41.398  1487  1487 I Dialer  : VvmTaskExecutor - com.android.voicemail.impl.ActivationTask@3032744 added
+10-28 09:46:41.398  1487  1487 I Dialer  : VvmTaskExecutor - minimal wait time:5000
+10-28 09:46:41.398  1487  1487 I Dialer  : VvmTaskExecutor - sleep for 5000 millis
+10-28 09:46:41.566  5394  5394 I dex2oat32: Large app, accepted running with swap.
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: Could not register for notifications with InnerTube: 
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: rff: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at rex.b(PG:18)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at uqp.f(PG:65)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at uqp.g(PG:134)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at uqp.b(PG:99)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at uqn.run(Unknown Source:1)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at ywx.run(Unknown Source:1)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at pqt.run(PG:13)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: Caused by: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at zsp.a(PG:135)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at zsp.get(PG:91)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at rex.b(PG:17)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	... 11 more
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: Caused by: qjl: Precondition check failed.
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at rdu.b(PG:106)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at pyo.a(PG:61)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at pxo.run(Unknown Source:17)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	... 4 more
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: Caused by: bjj
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	at pxo.run(Unknown Source:13)
+10-28 09:46:42.781  5424  5562 W YouTubeMusic: 	... 4 more
+10-28 09:46:43.186  5394  5394 W dex2oat32: Verification of androidx.compose.ui.Modifier androidx.compose.foundation.text.BasicTextKt.textModifier-cFh6CEA(androidx.compose.ui.Modifier, androidx.compose.ui.text.AnnotatedString, androidx.compose.ui.text.TextStyle, kotlin.jvm.functions.Function1, int, boolean, int, int, androidx.compose.ui.text.font.FontFamily$Resolver, java.util.List, kotlin.jvm.functions.Function1, androidx.compose.foundation.text.modifiers.SelectionController, androidx.compose.ui.graphics.ColorProducer, kotlin.jvm.functions.Function1) took 110.112ms (1135.20 bytecodes/s) (2368B approximate peak alloc)
+10-28 09:46:43.638  1365  5404 I Vision  : Requesting optional module download of ocr.
+10-28 09:46:43.638  1365  5404 I Vision  : Checking for download completion for 106029 -- ocr
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: Could not register for notifications with InnerTube: 
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: rff: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at rex.b(PG:18)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at uqp.f(PG:65)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at uqp.g(PG:134)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at uqp.b(PG:99)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at uqn.run(Unknown Source:1)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at ywx.run(Unknown Source:1)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at pqt.run(PG:13)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: Caused by: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at zsp.a(PG:135)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at zsp.get(PG:91)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at rex.b(PG:17)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	... 11 more
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: Caused by: qjl: Precondition check failed.
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at rdu.b(PG:106)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at pyo.a(PG:61)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at pxo.run(Unknown Source:17)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	... 4 more
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: Caused by: bjj
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	at pxo.run(Unknown Source:13)
+10-28 09:46:43.922  5424  5562 W YouTubeMusic: 	... 4 more
+10-28 09:46:44.473  5424  5442 I s.youtube.musi: Waiting for a blocking GC ProfileSaver
+10-28 09:46:44.525  5424  5442 I s.youtube.musi: WaitForGcToComplete blocked ProfileSaver on ClassLinker for 52.505ms
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: Exception thrown while unbinding
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: java.lang.IllegalArgumentException: Service not registered: lbw@4cd29da
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at android.app.LoadedApk.forgetServiceDispatcher(LoadedApk.java:1757)
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at android.app.ContextImpl.unbindService(ContextImpl.java:1874)
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at android.content.ContextWrapper.unbindService(ContextWrapper.java:792)
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at kcy.b(PG:30)
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at kcy.a(PG:26)
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at lbx.q(PG:48)
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at lbi.a(PG:5)
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at ksz.run(PG:5)
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:46:45.366  5424  5462 W ConnectionTracker: 	at kyl.run(PG:26)
+10-28 09:46:45.486  3038  3714 D PipelineManager: OCR process succeeded via visionkit pipeline.
+10-28 09:46:45.520  3038  3637 I OCRTEST : [patel_1309_big] page 1: words=405 size=2400x3200 ms=55914
+10-28 09:46:45.524  3038  3812 D PipelineManager: Start process bitmap
+10-28 09:46:45.573  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:45.766   494  1803 I ActivityManager: Killing 4416:com.google.android.projection.gearhead:shared/u0a117 (adj 925): empty #17
+10-28 09:46:45.797   286   286 I Zygote  : Process 4416 exited due to signal 9 (Killed)
+--------- beginning of kernel
+10-28 09:46:46.018     0     0 I binder  : 494:1803 transaction failed 29189/-22, size 304-0 line 3053
+10-28 09:46:45.800   494  1803 W ActivityManager: Failure disconnecting service com.google.android.projection.gearhead/com.google.android.gearhead.service.SharedService to connection android.os.BinderProxy@a59f1ea (in com.google.android.projection.gearhead:shared)
+10-28 09:46:45.800   494  1803 W ActivityManager: android.os.DeadObjectException
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at android.os.BinderProxy.transactNative(Native Method)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at android.os.BinderProxy.transact(BinderProxy.java:540)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at android.app.IServiceConnection$Stub$Proxy.connected(IServiceConnection.java:129)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at com.android.server.am.ActiveServices.bringDownServiceLocked(ActiveServices.java:3289)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at com.android.server.am.ActiveServices.bringDownServiceIfNeededLocked(ActiveServices.java:3270)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at com.android.server.am.ActiveServices.removeConnectionLocked(ActiveServices.java:3566)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at com.android.server.am.ActiveServices.killServicesLocked(ActiveServices.java:3947)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at com.android.server.am.ActivityManagerService.cleanUpApplicationRecordLocked(ActivityManagerService.java:14771)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at com.android.server.am.ActivityManagerService.handleAppDiedLocked(ActivityManagerService.java:3772)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at com.android.server.am.ActivityManagerService.appDiedLocked(ActivityManagerService.java:3926)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at com.android.server.am.ActivityManagerService$AppDeathRecipient.binderDied(ActivityManagerService.java:1601)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at android.os.IBinder$DeathRecipient.binderDied(IBinder.java:305)
+10-28 09:46:45.800   494  1803 W ActivityManager: 	at android.os.BinderProxy.sendDeathNotice(BinderProxy.java:654)
+10-28 09:46:45.800  4492  4492 I GH.CAR  : onDestroy
+10-28 09:46:45.800  4492  4492 I GH.CAR  : tearDown()
+10-28 09:46:45.800  4492  4492 I GH.DelegateMngCarSvc: tearDown()
+10-28 09:46:45.801  4492  5079 I GH.DelegateICarSupplier: Calling release callback on delegate com.google.android.gms.car.DelegatingCarServiceBinder@737d909
+10-28 09:46:45.801  4492  5079 I GH.DelegateICarSupplier: Releasing delegate ICar.
+10-28 09:46:45.801  4492  4492 E ActivityThread: Service com.google.android.apps.auto.carservice.service.impl.GearheadCarStartupService has leaked ServiceConnection bdx@89ed799 that was originally bound here
+10-28 09:46:45.801  4492  4492 E ActivityThread: android.app.ServiceConnectionLeaked: Service com.google.android.apps.auto.carservice.service.impl.GearheadCarStartupService has leaked ServiceConnection bdx@89ed799 that was originally bound here
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at android.app.LoadedApk$ServiceDispatcher.<init>(LoadedApk.java:1811)
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at android.app.LoadedApk.getServiceDispatcherCommon(LoadedApk.java:1683)
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at android.app.LoadedApk.getServiceDispatcher(LoadedApk.java:1662)
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at android.app.ContextImpl.bindServiceCommon(ContextImpl.java:1819)
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at android.app.ContextImpl.bindService(ContextImpl.java:1749)
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at android.content.ContextWrapper.bindService(ContextWrapper.java:756)
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at bdu.run(Unknown Source:1)
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at android.os.Handler.handleCallback(Handler.java:938)
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at android.os.Looper.loop(Looper.java:223)
+10-28 09:46:45.801  4492  4492 E ActivityThread: 	at android.os.HandlerThread.run(HandlerThread.java:67)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: ICar release task failed.
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: java.lang.IllegalArgumentException: Service not registered: bdx@89ed799
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at android.app.LoadedApk.forgetServiceDispatcher(LoadedApk.java:1757)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at android.app.ContextImpl.unbindService(ContextImpl.java:1874)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at android.content.ContextWrapper.unbindService(ContextWrapper.java:792)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at bdv.a(Unknown Source:1)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at kwk.a(SourceFile:3)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at kwl.run(SourceFile:23)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at kwz.execute(SourceFile:3)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at kwh.b(SourceFile:77)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at kwh.a(SourceFile:29)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at kxd.a(SourceFile:3)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at kwl.a(SourceFile:7)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at bdt.a(Unknown Source:3)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at beg.a(SourceFile:29)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at bea.a(Unknown Source:4)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at khf.a(SourceFile:3)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at bed.a(SourceFile:8)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at kxh.run(SourceFile:8)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:46:45.802  4492  5079 W GH.DelegateICarSupplier: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:46:45.802  4492  5079 I GH.DelegateICarSupplier: Logging successful delegate lifespan (36892 ms). Acquisition (66 ms). [Generation: 1]
+10-28 09:46:45.812   494   536 I libprocessgroup: Successfully killed process cgroup uid 10117 pid 4416 in 46ms
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: Could not register for notifications with InnerTube: 
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: rff: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at rex.b(PG:18)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at uqp.f(PG:65)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at uqp.g(PG:134)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at uqp.b(PG:99)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at uqn.run(Unknown Source:1)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at ywx.run(Unknown Source:1)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at pqt.run(PG:13)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: Caused by: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at zsp.a(PG:135)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at zsp.get(PG:91)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at rex.b(PG:17)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	... 11 more
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: Caused by: qjl: Precondition check failed.
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at rdu.b(PG:106)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at pyo.a(PG:61)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at pxo.run(Unknown Source:17)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	... 4 more
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: Caused by: bjj
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	at pxo.run(Unknown Source:13)
+10-28 09:46:46.014  5424  5562 W YouTubeMusic: 	... 4 more
+10-28 09:46:46.225  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:46.437  1487  2789 I Dialer  : VvmTaskExecutor - executing task com.android.voicemail.impl.ActivationTask@3032744
+10-28 09:46:46.437  1487  2789 I Dialer  : PreOMigrationHandler - ComponentInfo{com.android.phone/com.android.services.telephony.TelephonyConnectionService}, ***, UserHandle{0} already migrated
+10-28 09:46:46.440   494   999 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10079; state: DISABLED
+10-28 09:46:46.440   494   535 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10079; state: ENABLED
+10-28 09:46:46.444   286   286 D Zygote  : Forked child process 5571
+10-28 09:46:46.445   494   535 I ActivityManager: Start proc 5571:android.process.acore/u0a79 for content provider {com.android.providers.contacts/com.android.providers.contacts.VoicemailContentProvider}
+10-28 09:46:46.455  5571  5571 W d.process.acor: Unexpected CPU variant for X86 using defaults: x86_64
+10-28 09:46:46.464   395   405 I adbd    : jdwp connection from 5571
+10-28 09:46:46.479  5571  5571 I d.process.acor: The ClassLoaderContext is a special shared library.
+10-28 09:46:46.489  5571  5571 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-28 09:46:46.489  5571  5571 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-28 09:46:46.490  5571  5571 I d.process.acor: The ClassLoaderContext is a special shared library.
+10-28 09:46:46.492  5571  5571 I d.process.acor: The ClassLoaderContext is a special shared library.
+10-28 09:46:46.492  5571  5571 I ContactsPerf: VoicemailContentProvider.onCreate start
+10-28 09:46:46.500  5571  5571 I ContactsPerf: VoicemailContentProvider.onCreate finish
+10-28 09:46:46.510   494  1801 D CountryDetector: The first listener is added
+10-28 09:46:46.510  5571  5571 I ContactsDatabaseHelper: updateUseStrictPhoneNumberComparison: US
+10-28 09:46:46.511  5571  5571 D ActivityThread: Loading provider contacts;com.android.contacts: com.android.providers.contacts.ContactsProvider2
+10-28 09:46:46.544  5571  5594 D ContactsDatabaseHelper: WAL enabled for contacts2.db: true
+10-28 09:46:46.552  5571  5588 I VoicemailNotifier: receivers for android.intent.action.PROVIDER_CHANGED :[]
+10-28 09:46:46.553  1487  2789 I Dialer  : VvmActivationTask - VVM content provider configured - vvm_type_cvvm
+10-28 09:46:46.553  1487  2789 I Dialer  : OmtpVvmCarrierCfgHlpr - OmtpEvent:CONFIG_ACTIVATING
+10-28 09:46:46.554  5571  5588 I VoicemailNotifier: receivers for android.intent.action.PROVIDER_CHANGED :[]
+10-28 09:46:46.557  1024  1372 D SmsNumberUtils: enter filterDestAddr. destAddr="[BajqU4K5_YhSYbs-7QUn0dOwcmI]"
+10-28 09:46:46.557  1024  1372 D SmsNumberUtils: destAddr is not formatted.
+10-28 09:46:46.557  1024  1372 D SmsNumberUtils: leave filterDestAddr, new destAddr="[BajqU4K5_YhSYbs-7QUn0dOwcmI]"
+10-28 09:46:46.572  5571  5594 I ContactLocale: AddressBook Labels [[en_US]]: […, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, Α, Β, Γ, Δ, Ε, Ζ, Η, Θ, Ι, Κ, Λ, Μ, Ν, Ξ, Ο, Π, Ρ, Σ, Τ, Υ, Φ, Χ, Ψ, Ω, …, А, Б, В, Г, Д, Ђ, Е, Є, Ж, З, И, І, Й, Ј, К, Л, Љ, М, Н, Њ, О, П, Р, С, Т, Ћ, У, Ф, Х, Ц, Ч, Џ, Ш, Щ, Ю, Я, …, א, ב, ג, ד, ה, ו, ז, ח, ט, י, כ, ל, מ, נ, ס, ע, פ, צ, ק, ר, ש, ת, …, ا, ب, ت, ث, ج, ح, خ, د, ذ, ر, ز, س, ش, ص, ض, ط, ظ, ع, غ, ف, ق, ك, ل, م, ن, ه, و, ي, …, ก, ข, ฃ, ค, ฅ, ฆ, ง, จ, ฉ, ช, ซ, ฌ, ญ, ฎ, ฏ, ฐ, ฑ, ฒ, ณ, ด, ต, ถ, ท, ธ, น, บ, ป, ผ, ฝ, พ, ฟ, ภ, ม, ย, ร, ฤ, ล, ฦ, ว, ศ, ษ, ส, ห, ฬ, อ, ฮ, …, ㄱ, ㄴ, ㄷ, ㄹ, ㅁ, ㅂ, ㅅ, ㅇ, ㅈ, ㅊ, ㅋ, ㅌ, ㅍ, ㅎ, …, あ, か, さ, た, な, は, ま, や, ら, わ, #, …]
+10-28 09:46:46.576  5571  5595 D ContactsDatabaseHelper: WAL enabled for profile.db: false
+10-28 09:46:46.592   494   999 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10141; state: DISABLED
+10-28 09:46:46.592   494   535 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10141; state: DISABLED
+10-28 09:46:46.596   286   286 D Zygote  : Forked child process 5596
+10-28 09:46:46.597   494   535 I ActivityManager: Start proc 5596:com.google.android.syncadapters.contacts/u0a141 for content provider {com.google.android.syncadapters.contacts/com.google.android.syncadapters.contacts.ProxyGalProvider}
+10-28 09:46:46.606  5596  5596 W apters.contact: Unexpected CPU variant for X86 using defaults: x86_64
+10-28 09:46:46.610   395   405 I adbd    : jdwp connection from 5596
+10-28 09:46:46.631  5596  5596 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+10-28 09:46:46.631  5596  5596 I apters.contact: The ClassLoaderContext is a special shared library.
+10-28 09:46:46.632  5596  5596 I apters.contact: The ClassLoaderContext is a special shared library.
+10-28 09:46:46.632  5596  5596 D nativeloader: classloader namespace configured for unbundled product apk. library_path=/product/app/GoogleContactsSyncAdapter/lib/x86_64:/product/lib64:/system/product/lib64
+10-28 09:46:46.636  5596  5596 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-28 09:46:46.636  5596  5596 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-28 09:46:46.640  5596  5596 I GoogleHttpClient: GMS http client unavailable, use old client
+10-28 09:46:46.646  5596  5613 I ProxyGalProvider: QueryGalProvider in Legacy provider.
+10-28 09:46:46.647  5596  5612 I ProxyGalProvider: QueryGalProvider in Legacy provider.
+10-28 09:46:46.656  5571  5595 I ContactDirectoryManager: deleted 0 stale rows which don't have any relevant directory
+10-28 09:46:46.656  5571  5595 I ContactDirectoryManager: Discovered 0 contact directories in 65ms
+10-28 09:46:46.657  5571  5594 I ContactDirectoryManager: deleted 0 stale rows which don't have any relevant directory
+10-28 09:46:46.657  5571  5594 I ContactDirectoryManager: Discovered 0 contact directories in 66ms
+10-28 09:46:46.657   686   686 D BluetoothPbapService:  onChange on contact uri 
+10-28 09:46:46.658   686   686 D BluetoothPbapService:  onChange on contact uri 
+10-28 09:46:46.663   686  5618 D BluetoothPbapUtils: primaryVersionCounter = 0, secondaryVersionCounter=0
+10-28 09:46:46.669  5394  5559 W dex2oat32: Verification of androidx.compose.ui.graphics.vector.ImageVector androidx.compose.material.icons.twotone.HiveKt.getHive(androidx.compose.material.icons.Icons$TwoTone) took 132.413ms (12997.12 bytecodes/s) (12872B approximate peak alloc)
+10-28 09:46:46.789  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:47.313  3038  3819 I chatty  : uid=10167(com.shivtej.billscanner) identical 1 line
+10-28 09:46:47.776  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:47.935  1365  5404 I GmscoreIpa: Starting mediastore instant index
+10-28 09:46:48.393  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:48.510  1149  4879 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+10-28 09:46:48.510  1149  4879 W Conscrypt: 	at com.google.android.gms.org.conscrypt.Platform.setSocketWriteTimeout(:com.google.android.gms@201817023@20.18.17 (040800-311416286):2)
+10-28 09:46:48.510  1149  4879 W Conscrypt: 	at com.google.android.gms.org.conscrypt.ConscryptFileDescriptorSocket.setSoWriteTimeout(:com.google.android.gms@201817023@20.18.17 (040800-311416286):0)
+10-28 09:46:48.984  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 71499(10MB) AllocSpace objects, 0(0B) LOS objects, 99% free, 8376B/1544KB, paused 14us total 128.326ms
+10-28 09:46:49.037  1149  4879 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+10-28 09:46:49.037  1149  4879 W Conscrypt: 	at com.google.android.gms.org.conscrypt.Platform.setSocketWriteTimeout(:com.google.android.gms@201817023@20.18.17 (040800-311416286):2)
+10-28 09:46:49.037  1149  4879 W Conscrypt: 	at com.google.android.gms.org.conscrypt.ConscryptFileDescriptorSocket.setSoWriteTimeout(:com.google.android.gms@201817023@20.18.17 (040800-311416286):0)
+10-28 09:46:49.087  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 431(78KB) AllocSpace objects, 0(0B) LOS objects, 99% free, 10128B/1545KB, paused 7us total 1.003ms
+10-28 09:46:49.194  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 366(78KB) AllocSpace objects, 0(0B) LOS objects, 99% free, 11KB/1547KB, paused 7us total 985us
+10-28 09:46:49.254  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 271(46KB) AllocSpace objects, 0(0B) LOS objects, 99% free, 13KB/1549KB, paused 6us total 975us
+10-28 09:46:49.590  5394  5645 W dex2oat32: Verification of com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List) took 130.101ms (45026.28 bytecodes/s) (165240B approximate peak alloc)
+10-28 09:46:49.751  5394  5645 W dex2oat32: Verification of com.shivtej.billscanner.core.model.LineItem com.shivtej.billscanner.core.ocr.InvoiceParser.readItemOnce(java.util.List, java.util.List, int) took 160.316ms (55502.68 bytecodes/s) (250896B approximate peak alloc)
+10-28 09:46:50.002  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 995(158KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 15KB/1551KB, paused 7us total 1.031ms
+10-28 09:46:50.057  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 701(126KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 17KB/1553KB, paused 7us total 1.021ms
+10-28 09:46:50.158  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 1188(208KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 19KB/1555KB, paused 75us total 1.124ms
+10-28 09:46:50.254  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 690(94KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 20KB/1556KB, paused 8us total 1.019ms
+10-28 09:46:50.266  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 324(61KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 23KB/1559KB, paused 6us total 945us
+10-28 09:46:50.838  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 4177(515KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 25KB/1561KB, paused 7us total 1.256ms
+10-28 09:46:50.946  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 738(142KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 26KB/1562KB, paused 7us total 1.038ms
+10-28 09:46:51.397  1149  4879 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+10-28 09:46:51.397  1149  4879 W Conscrypt: 	at com.google.android.gms.org.conscrypt.Platform.setSocketWriteTimeout(:com.google.android.gms@201817023@20.18.17 (040800-311416286):2)
+10-28 09:46:51.397  1149  4879 W Conscrypt: 	at com.google.android.gms.org.conscrypt.ConscryptFileDescriptorSocket.setSoWriteTimeout(:com.google.android.gms@201817023@20.18.17 (040800-311416286):0)
+10-28 09:46:51.416  5394  5394 W dex2oat32: Class androidx.compose.runtime.snapshots.SnapshotStateList failed lock verification and will run slower.
+10-28 09:46:51.416  5394  5394 W dex2oat32: Common causes for lock verification issues are non-optimized dex code
+10-28 09:46:51.416  5394  5394 W dex2oat32: and incorrect proguard optimizations.
+10-28 09:46:51.490  5394  5394 W dex2oat32: Class androidx.compose.runtime.snapshots.SnapshotStateMap failed lock verification and will run slower.
+10-28 09:46:51.953  1149  4879 W Conscrypt: Could not set socket write timeout: java.net.SocketException: Socket closed
+10-28 09:46:51.953  1149  4879 W Conscrypt: 	at com.google.android.gms.org.conscrypt.Platform.setSocketWriteTimeout(:com.google.android.gms@201817023@20.18.17 (040800-311416286):2)
+10-28 09:46:51.953  1149  4879 W Conscrypt: 	at com.google.android.gms.org.conscrypt.ConscryptFileDescriptorSocket.setSoWriteTimeout(:com.google.android.gms@201817023@20.18.17 (040800-311416286):0)
+10-28 09:46:52.308  5394  5394 W dex2oat32: Accessing hidden method Landroid/view/ScrollCaptureSession;->getSurface()Landroid/view/Surface; (blacklist, linking, denied)
+10-28 09:46:52.308  5394  5394 I chatty  : uid=50167(com.shivtej.billscanner) /apex/com.android.art/bin/dex2oat32 identical 1 line
+10-28 09:46:52.308  5394  5394 W dex2oat32: Accessing hidden method Landroid/view/ScrollCaptureSession;->getSurface()Landroid/view/Surface; (blacklist, linking, denied)
+10-28 09:46:52.309  5394  5394 W dex2oat32: Accessing hidden method Landroid/view/ScrollCaptureTarget;-><init>(Landroid/view/View;Landroid/graphics/Rect;Landroid/graphics/Point;Landroid/view/ScrollCaptureCallback;)V (blacklist, linking, denied)
+10-28 09:46:52.309  5394  5394 W dex2oat32: Accessing hidden method Landroid/view/ScrollCaptureTarget;->setScrollBounds(Landroid/graphics/Rect;)V (blacklist, linking, denied)
+10-28 09:46:52.324  5394  5652 W dex2oat32: Accessing hidden method Landroid/graphics/Canvas;->drawPatch(Landroid/graphics/NinePatch;Landroid/graphics/Rect;Landroid/graphics/Paint;)V (greylist-max-o, linking, denied)
+10-28 09:46:52.324  5394  5652 W dex2oat32: Accessing hidden method Landroid/graphics/Canvas;->drawPatch(Landroid/graphics/NinePatch;Landroid/graphics/RectF;Landroid/graphics/Paint;)V (greylist-max-o, linking, denied)
+10-28 09:46:52.365  5394  5394 W dex2oat32: Accessing hidden method Landroid/graphics/Bitmap;->getHardwareBuffer()Landroid/hardware/HardwareBuffer; (blacklist, linking, denied)
+10-28 09:46:52.379  3038  3812 D PipelineManager: OCR process succeeded via visionkit pipeline.
+10-28 09:46:52.397  3038  3701 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+10-28 09:46:52.399  3038  3701 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+10-28 09:46:52.404  3038  3701 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+10-28 09:46:52.413  3038  3701 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+10-28 09:46:52.427  3038  3714 D PipelineManager: Start process bitmap
+10-28 09:46:52.456  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:53.021  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: Could not register for notifications with InnerTube: 
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: rff: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at rex.b(PG:18)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at uqp.f(PG:65)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at uqp.g(PG:134)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at uqp.b(PG:99)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at uqn.run(Unknown Source:1)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at ywx.run(Unknown Source:1)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at pqt.run(PG:13)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: Caused by: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at zsp.a(PG:135)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at zsp.get(PG:91)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at rex.b(PG:17)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	... 11 more
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: Caused by: qjl: Precondition check failed.
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at rdu.b(PG:106)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at pyo.a(PG:61)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at pxo.run(Unknown Source:17)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	... 4 more
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: Caused by: bjj
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	at pxo.run(Unknown Source:13)
+10-28 09:46:53.573  5424  5562 W YouTubeMusic: 	... 4 more
+10-28 09:46:53.623  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:53.818  4695  4975 W YouTube : Could not register for notifications with InnerTube: 
+10-28 09:46:53.818  4695  4975 W YouTube : abwi: java.util.concurrent.ExecutionException: aacl: Precondition check failed.
+10-28 09:46:53.818  4695  4975 W YouTube : 	at abwa.b(PG:18)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at aicr.f(PG:65)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at aicr.g(PG:133)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at aicr.b(PG:99)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at ahyh.run(Unknown Source:1)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at aosv.run(Unknown Source:1)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at zdm.run(PG:13)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:46:53.818  4695  4975 W YouTube : Caused by: java.util.concurrent.ExecutionException: aacl: Precondition check failed.
+10-28 09:46:53.818  4695  4975 W YouTube : 	at apmr.a(PG:135)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at apmr.get(PG:89)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at abwa.b(PG:17)
+10-28 09:46:53.818  4695  4975 W YouTube : 	... 11 more
+10-28 09:46:53.818  4695  4975 W YouTube : Caused by: aacl: Precondition check failed.
+10-28 09:46:53.818  4695  4975 W YouTube : 	at abuo.c(PG:106)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at znq.a(PG:62)
+10-28 09:46:53.818  4695  4975 W YouTube : 	at zmp.run(Unknown Source:18)
+10-28 09:46:53.818  4695  4975 W YouTube : 	... 4 more
+10-28 09:46:53.818  4695  4975 W YouTube : Caused by: btc
+10-28 09:46:53.818  4695  4975 W YouTube : 	at zmp.run(Unknown Source:6)
+10-28 09:46:53.818  4695  4975 W YouTube : 	... 4 more
+10-28 09:46:54.321  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:54.685  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 47661(7224KB) AllocSpace objects, 0(0B) LOS objects, 96% free, 62KB/1598KB, paused 22us total 180.553ms
+10-28 09:46:54.973  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:55.621  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:57.606  3038  3714 D PipelineManager: OCR process succeeded via visionkit pipeline.
+10-28 09:46:57.637  3038  3812 D PipelineManager: Start process bitmap
+10-28 09:46:57.639  3038  3701 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+10-28 09:46:57.640  3038  3701 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+10-28 09:46:57.677  3038  3818 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:57.801  5394  5668 W dex2oat32: Verification of org.bouncycastle.openssl.PEMKeyPair org.bouncycastle.openssl.PEMEncryptedKeyPair.decryptKeyPair(org.bouncycastle.openssl.PEMDecryptorProvider) took 104.158ms (796.86 bytecodes/s) (1936B approximate peak alloc)
+10-28 09:46:58.417  3038  3818 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:58.812   283  2239 W resolv  : SSL_connect ssl error =5, mark 0xf0065: Connection refused
+10-28 09:46:58.812   283  2239 W resolv  : Validation failed
+10-28 09:46:58.935  5394  5394 W dex2oat32: Verification of void org.bouncycastle.pqc.crypto.falcon.FPREngine.<clinit>() took 974.500ms (29706.51 bytecodes/s) (350592B approximate peak alloc)
+10-28 09:46:59.149  5394  5394 I dex2oat32: Explicit concurrent copying GC freed 37380(5503KB) AllocSpace objects, 0(0B) LOS objects, 94% free, 84KB/1620KB, paused 8us total 7.445ms
+10-28 09:46:59.165  3038  3818 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:46:59.280  5394  5394 I dex2oat32: dex2oat took 29.993s (2.818s cpu) (threads: 2) arena alloc=0B (0B) java alloc=84KB (86968B) native alloc=7770KB (7956912B) free=1996KB (2044240B) swap=16MB (16777216B)
+10-28 09:46:59.390   422   509 V installd: DexInv: --- END '/data/app/~~Ky6COIAxFp8fQv6QVeYxLg==/com.shivtej.billscanner-4AvthO20Zavx5LrZVVDvyQ==/base.apk' (success) ---
+10-28 09:46:59.391   494  5344 I system_server: The ClassLoaderContext is a special shared library.
+10-28 09:46:59.410   494  5344 I chatty  : uid=1000(system) Binder:494_3 identical 16 lines
+10-28 09:46:59.410   494  5344 I system_server: The ClassLoaderContext is a special shared library.
+10-28 09:46:59.411   494  5344 I BackgroundDexOptService: Pinning optimized code {com.shivtej.billscanner.test, android, com.shivtej.billscanner}
+10-28 09:46:59.411   494  5344 D IorapForwardingService: onPackagesUpdated: com.shivtej.billscanner.test
+10-28 09:46:59.411   494  5344 D IorapForwardingService: onPackagesUpdated: android
+10-28 09:46:59.411   494  5344 D IorapForwardingService: onPackagesUpdated: com.shivtej.billscanner
+10-28 09:46:59.893  3038  3818 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:47:00.001   706   706 D KeyguardClockSwitch: Updating clock: 947
+10-28 09:47:00.545  3038  3818 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:47:00.654  1898  1898 I BgTaskExecutorImpl: Starting EXCLUSIVE background task INTERNAL_PERIODIC_TASK_SYNC.
+10-28 09:47:00.656  1898  1898 I BgTaskExecutorImpl: Starting NONEXCLUSIVE background task DOODLE_SCHEDULE_SYNC_TASK.
+10-28 09:47:00.663  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task ACTIVITY_LEVEL_TASK.
+10-28 09:47:00.663  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task AWARE_TIP_WORKER_PROCESS_TIPS.
+10-28 09:47:00.674   494  1675 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10152; state: DISABLED
+10-28 09:47:00.674   494   535 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10152; state: DISABLED
+10-28 09:47:00.679   286   286 D Zygote  : Forked child process 5696
+10-28 09:47:00.680   494   535 I ActivityManager: Start proc 5696:com.google.android.apps.wallpaper/u0a152 for broadcast {com.google.android.apps.wallpaper/com.android.wallpaper.module.DailyLoggingAlarmReceiver}
+10-28 09:47:00.690  5696  5696 W .apps.wallpape: Unexpected CPU variant for X86 using defaults: x86_64
+10-28 09:47:00.692   395   405 I adbd    : jdwp connection from 5696
+10-28 09:47:00.693   494  1788 D WifiNl80211Manager: Scan result ready event
+10-28 09:47:00.693   494  1788 D WifiNative: Scan result ready event
+10-28 09:47:00.695  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task BACKGROUNDRETRY_CACHE_SWEEP.
+10-28 09:47:00.705  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task CHROME_EXPERIMENT_SYNC.
+10-28 09:47:00.708  1365  5694 I Vision  : Requesting optional module download of ocr.
+10-28 09:47:00.708  1365  5694 I Vision  : Checking for download completion for 123099 -- ocr
+10-28 09:47:00.713  5696  5696 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+10-28 09:47:00.714  5696  5696 I .apps.wallpape: The ClassLoaderContext is a special shared library.
+10-28 09:47:00.717  5696  5696 I .apps.wallpape: The ClassLoaderContext is a special shared library.
+10-28 09:47:00.719  5696  5696 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-28 09:47:00.719  5696  5696 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+10-28 09:47:00.752  1898  2202 E MDD     : DownloadProgressMonitor: Can't find file group for uri: android://com.google.android.googlequicksearchbox/files/growthtracking/shared/GrowthTrackingData.pb.tmp
+10-28 09:47:00.769  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task CONTACT_AFFINITY_MODEL_CONTACTS_CHANGE_REFRESH.
+10-28 09:47:00.772  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task CLEAR_DATA_DETECTOR.
+10-28 09:47:00.774  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task CONTACT_AFFINITY_MODEL_PERIODIC_REFRESH.
+10-28 09:47:00.787  5696  5733 W DiskBasedLogger: Disk-based log buffer doesn't exist, so there's nothing to clean up.
+10-28 09:47:00.819  1898  5719 I FirstRunClassifier: First run of com.google.android.googlequicksearchbox on this device detected
+10-28 09:47:00.820   494  1788 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+10-28 09:47:00.820   494  1788 D PackageManager: Clear ephemeral installer activity
+10-28 09:47:00.824  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task DOODLE_SCHEDULE_SYNC_TASK.
+10-28 09:47:00.829  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task FETCH_ADVERTISING_INFO.
+10-28 09:47:00.839  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task FETCH_SCHEDULED_BUBBLES.
+10-28 09:47:00.853  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task LOG_ATTEMPTED_SEARCHES_TO_KANSAS.
+10-28 09:47:00.869  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task MDD_CELLULAR_CHARGING_TASK.
+10-28 09:47:00.873  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task MDD_CHARGING_TASK.
+10-28 09:47:00.982  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task MDD_MAINTENANCE_TASK.
+10-28 09:47:01.025  1898  5720 I LogsBasedTopContactLook: We received a null logged in account name.
+10-28 09:47:01.033  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task MDD_WIFI_CHARGING_TASK.
+10-28 09:47:01.166  1898  2362 E MDD     : MDDManager Failed to init shared file metadata.
+10-28 09:47:01.193  1898  2322 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:01.193  1898  2322 I chatty  : uid=10123(com.google.android.googlequicksearchbox) Blocking Thread identical 5 lines
+10-28 09:47:01.193  1898  2322 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:01.193  1898  5722 W earchbox:searc: Long monitor contention with owner Blocking Thread #5 (2322) at java.util.Map com.google.android.libraries.phenotype.client.d.a()(SourceFile:15) waiters=0 in java.util.Map com.google.android.libraries.phenotype.client.d.a() for 237ms
+10-28 09:47:01.193  1898  5722 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:01.193  1898  5722 I chatty  : uid=10123(com.google.android.googlequicksearchbox) Blocking Thread identical 5 lines
+10-28 09:47:01.193  1898  5722 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:01.194  1898  2315 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:01.194  1898  2315 I chatty  : uid=10123(com.google.android.googlequicksearchbox) Blocking Thread identical 5 lines
+10-28 09:47:01.194  1898  2315 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@c6f8bd} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:93)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.195  1898  5722 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@8b3ce03} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:91)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.195  1898  2315 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.195  1898  5722 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:01.195  1898  2315 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@36f63b9} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:93)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.205  1898  5722 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@b9b475f} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:92)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.205  1898  2322 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@7998275} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:92)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.205  1898  2322 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@256fa7b} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:93)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.213  1898  5722 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@40cd0f1} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:92)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.225  1898  2322 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@d50c357} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:93)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.230  1898  5722 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@a8c8b2d} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:91)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@fb43df3} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:91)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.230  1898  2315 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@bd3ad29} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:92)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.233  1898  2322 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@d17786b} with executor MoreExecutors.directExecutor()
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:91)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.301  1898  2315 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.313  1898  2149 I PolicyConfigSyncManager: Refresh account policy.
+10-28 09:47:01.318  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task MDH_FORCED_SYNC.
+10-28 09:47:01.453  1898  2133 I PolicyConfigSyncManager: Refresh account policy.
+10-28 09:47:01.457  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task MDH_WIPEOUT.
+10-28 09:47:01.541  1898  2315 I MDH     : [Storage] Creating database v2
+10-28 09:47:01.541  1898  2315 I MDH     : Creating MDH subscription table.
+10-28 09:47:01.541  1898  2315 I MDH     : Creating MDH wipeout table.
+10-28 09:47:01.573  1898  2315 V MDH     : Opening MDH wipeout table.
+10-28 09:47:01.576  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task REFRESH_AUTH_TOKENS.
+10-28 09:47:01.580  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task REFRESH_NOW_CONFIGURATION.
+10-28 09:47:01.592  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task REFRESH_SEARCH_HISTORY.
+10-28 09:47:01.593  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task RESTORE_SPEAKER_MODEL.
+10-28 09:47:01.595  1898  5725 W LocationOracle: getBestLocation(): no location is available
+10-28 09:47:01.596  1898  5736 I RestoreSpeakerModelTask: Canceling restore - user account is null
+10-28 09:47:01.600  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task UPDATE_GSERVICES_CONFIG.
+10-28 09:47:01.606  1898  5721 I GservicesUpdateTask: Updating Gservices keys
+10-28 09:47:01.615  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task UPDATE_LANGUAGE_PACKS.
+10-28 09:47:01.635  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task UPDATE_LAUNCHER_SHORTCUT.
+10-28 09:47:01.639  1898  5725 W LocationOracle: getBestLocation(): no location is available
+10-28 09:47:01.660  1898  2362 I DynamiteModule: Considering local module com.google.android.gms.cronet_dynamite:0 and remote module com.google.android.gms.cronet_dynamite:1311
+10-28 09:47:01.660  1898  2362 I DynamiteModule: Selected remote version of com.google.android.gms.cronet_dynamite, version >= 1311
+10-28 09:47:01.660  1898  2362 V DynamiteModule: Dynamite loader version >= 2, using loadModule2NoCrashUtils
+10-28 09:47:01.660  1898  2362 I DynamiteLoaderV2: [70] Cronetdynamite
+10-28 09:47:01.660  1898  2362 W earchbox:searc: Unsupported class loader
+10-28 09:47:01.688  1898  2362 W earchbox:searc: Unsupported class loader
+10-28 09:47:01.689   494   522 E system_server: Invalid class loader spec: =UnsupportedClassLoaderContext=
+10-28 09:47:01.689   494   522 E PackageDexUsage: Unsupported context?
+10-28 09:47:01.700  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task UPLOAD_AUDIO_LOGS.
+10-28 09:47:01.703  1898  5736 I S3UtteranceSender: send account: %s, audioType: %d[null, OK_HEY_GOOGLE]
+10-28 09:47:01.704  1898  5736 I S3UtteranceSender: No utterances found. Returning!
+10-28 09:47:01.711  1898  1898 I BgTaskExecutorImpl: Starting PERIODIC background task UPLOAD_HOTWORD_SETTINGS.
+10-28 09:47:01.733  1915  5747 D DownloadManager: [5] Starting
+10-28 09:47:01.739  1898  5736 D t       : Starting download: https://www.gstatic.com/android-search/hotword/x_google/7db96c566dbd33b2218d5799ec330d22/hotword.data
+10-28 09:47:01.739  1898  5736 V t       : Is http uri, downloading (uri: https://www.gstatic.com/android-search/hotword/x_google/7db96c566dbd33b2218d5799ec330d22/hotword.data)
+10-28 09:47:01.781  1898  2201 E MDD     : DownloadProgressMonitor: Can't find file group for uri: android://com.google.android.googlequicksearchbox/files/refreshzeroprefixtask/shared/ZeroPrefixTaskStats.pb.tmp
+10-28 09:47:01.784  1915  5747 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: false
+10-28 09:47:01.789  1898  5736 E MDD     : DownloadProgressMonitor: Can't find file group for uri: android://com.google.android.googlequicksearchbox/files/datadownload/shared/public/datadownloadfile_1793180821365
+10-28 09:47:01.859   494   550 I AppsFilter: interaction: PackageSetting{4633b01 com.shivtej.billscanner/10167} -> PackageSetting{aafe3e7 com.google.android.googlequicksearchbox/10123} BLOCKED
+10-28 09:47:01.859   494   550 I AppsFilter: interaction: PackageSetting{36c81fd com.shivtej.billscanner.test/10168} -> PackageSetting{aafe3e7 com.google.android.googlequicksearchbox/10123} BLOCKED
+10-28 09:47:01.789  1898  5736 E MDD     : DownloadProgressMonitor: Can't find file group for uri: android://com.google.android.googlequicksearchbox/files/datadownload/shared/public/datadownloadfile_1793180821365
+10-28 09:47:01.866   494   585 I InputReader: Reconfiguring input devices, changes=KEYBOARD_LAYOUTS | 
+10-28 09:47:01.866   686   686 V AvrcpMediaPlayerList: mPackageChangedBroadcastReceiver: action: android.intent.action.PACKAGE_CHANGED
+10-28 09:47:01.866   686   686 D AvrcpMediaPlayerList: Name of package changed: com.google.android.googlequicksearchbox
+10-28 09:47:01.871  1024  1024 D CarrierSvcBindHelper: No carrier app for: 0
+10-28 09:47:01.872   494   525 I RoleManagerService: Granting default roles...
+10-28 09:47:01.868  1915  5747 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: false
+10-28 09:47:01.913   494   494 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AKE
+10-28 09:47:01.918  1898  2111 W CPDataMediator: Failed to get primary cards from work profile
+10-28 09:47:01.918  1898  2111 W CPDataMediator: com.google.android.enterprise.profileaware.b.c: No profile available
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.g(SourceFile:63)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.e(SourceFile:53)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.c(SourceFile:12)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.a(SourceFile:26)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.aa.a(SourceFile:6)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.f.a(SourceFile:26)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.m.c(SourceFile:17)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.ae.b(SourceFile:4)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.smartspace.ab.a(SourceFile:984)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.smartspace.ab.a(SourceFile:289)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.aq.dp.a.b.a(SourceFile:2)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.a(SourceFile:64)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.a(SourceFile:39)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.g.run(Unknown Source:1)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.a(SourceFile:26)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.h.a(SourceFile:20)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.e.run(Unknown Source:12)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.a(SourceFile:26)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.b(SourceFile:32)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.a(SourceFile:23)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.aq.dp.a.k.a(SourceFile:2)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.x.b.b.a(SourceFile:19)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.q.a(SourceFile:126)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.q.c(SourceFile:95)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.b.run(Unknown Source:1)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.libraries.gsa.l.a.k.run(Unknown Source:2)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.bx.a(SourceFile:2)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.ca.run(SourceFile:1)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.aa.run(Unknown Source:2)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.aj.a(SourceFile:3)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.ag.run(Unknown Source:2)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.e.run(Unknown Source:2)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:301)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.918  1898  2111 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.g.run(SourceFile:8)
+10-28 09:47:01.936   712  3601 I PermissionControllerServiceImpl: Updating user sensitive for uid 10123
+10-28 09:47:01.945  1149  5756 I Fitness : OnPackageChangedOperation got intent: Intent { act=android.intent.action.PACKAGE_CHANGED dat=package:com.google.android.googlequicksearchbox flg=0x45000010 cmp=com.google.android.gms/.chimera.PersistentIntentOperationService (has extras) } [CONTEXT service_id=17 ]
+10-28 09:47:01.961  1898  2111 I NetworkRecognitionRnr: Using pair HTTP connection
+10-28 09:47:01.961  1898  2369 I PairHttpConnection: [Upload] Connected
+10-28 09:47:01.962   921  2385 W QsbUiManager: Doodle is not valid.
+10-28 09:47:01.962   921  2385 W QsbUiManager: Doodle bitmap is not valid.
+10-28 09:47:01.975  1898  2133 W LocationOracle: No location history returned by ContextManager
+10-28 09:47:01.979  1898  2201 W CronetNetworkRqstWrppr: Upload request without a content type.
+10-28 09:47:01.980  1898  2193 D StrictMode: StrictMode policy violation: android.os.strictmode.DiskReadViolation
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.os.StrictMode$AndroidBlockGuardPolicy.onReadFromDisk(StrictMode.java:1596)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.database.sqlite.SQLiteConnection.applyBlockGuardPolicy(SQLiteConnection.java:1197)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.database.sqlite.SQLiteConnection.executeForCursorWindow(SQLiteConnection.java:998)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.database.sqlite.SQLiteSession.executeForCursorWindow(SQLiteSession.java:838)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.database.sqlite.SQLiteQuery.fillWindow(SQLiteQuery.java:62)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.database.sqlite.SQLiteCursor.fillWindow(SQLiteCursor.java:153)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.database.sqlite.SQLiteCursor.getCount(SQLiteCursor.java:140)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.database.CursorToBulkCursorAdaptor.getBulkCursorDescriptor(CursorToBulkCursorAdaptor.java:161)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.content.ContentProviderNative.onTransact(ContentProviderNative.java:116)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.os.Binder.execTransactInternal(Binder.java:1154)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.os.Binder.execTransact(Binder.java:1123)
+10-28 09:47:01.980  1898  2193 D StrictMode: # via Binder call with stack:
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.os.StrictMode.readAndHandleBinderCallViolations(StrictMode.java:2358)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.os.Parcel.readExceptionCode(Parcel.java:2318)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:139)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.content.ContentProviderProxy.query(ContentProviderNative.java:472)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.content.ContentResolver.query(ContentResolver.java:1183)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.content.ContentResolver.query(ContentResolver.java:1115)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at android.content.ContentResolver.query(ContentResolver.java:1071)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.android.h.b.a(SourceFile:1)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.az.a(SourceFile:6)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.az.d(SourceFile:2)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.bj.a(SourceFile:6)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.cb.a(SourceFile:215)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.cb.a(SourceFile:199)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.cb.c(SourceFile:192)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.android.apps.gsa.staticplugins.i.e.a(SourceFile:23)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.android.apps.gsa.staticplugins.i.b.b.a(Unknown Source:1)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.android.libraries.gsa.l.a.m.call(Unknown Source:2)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:01.980  1898  2193 D StrictMode: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:01.982  1898  2193 W LocationOracle: getBestLocation(): no location is available
+10-28 09:47:02.001  1149  5758 I Fitness : FitCleanupIntentOperation received Intent android.intent.action.PACKAGE_CHANGED [CONTEXT service_id=17 ]
+10-28 09:47:02.014  1149  2516 W GCoreFlp: No location to return for getLastLocation()
+10-28 09:47:02.020  1898  2201 W LocationOracle: No location returned by GMS core getLastLocation()
+10-28 09:47:02.140   494   504 I system_server: Background young concurrent copying GC freed 216221(9809KB) AllocSpace objects, 14(1216KB) LOS objects, 23% free, 32MB/42MB, paused 16us total 125.818ms
+10-28 09:47:02.142  1365  2464 I Icing   : IndexChimeraService.getServiceInterface callingPackage=com.google.android.gms componentName=AppsCorpus serviceId=36 [CONTEXT service_id=21 ]
+10-28 09:47:02.189  1365  2806 W Icing   : No valid account for uploading user actions [CONTEXT service_id=21 ]
+10-28 09:47:02.198  1365  2806 I Icing   : Usage reports ok 0, Failed Usage reports 0, indexed 0, rejected 0 [CONTEXT service_id=21 ]
+10-28 09:47:02.218  1365  2461 I Icing   : IndexChimeraService.getServiceInterface callingPackage=com.google.android.gms componentName=null serviceId=30 [CONTEXT service_id=21 ]
+10-28 09:47:02.221  1898  3224 I PairHttpConnection: [Download] starting read
+10-28 09:47:02.228  1898  2201 W CPDataMediator: Failed to get primary cards from work profile
+10-28 09:47:02.228  1898  2201 W CPDataMediator: com.google.android.enterprise.profileaware.b.c: No profile available
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.g(SourceFile:63)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.e(SourceFile:53)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.c(SourceFile:12)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.a(SourceFile:26)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.aa.a(SourceFile:6)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.f.a(SourceFile:26)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.m.a(SourceFile:26)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.ae.c(SourceFile:6)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.p.a(SourceFile:5)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.k.n.a(Unknown Source:1)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.android.libraries.gsa.l.a.p.a(Unknown Source:2)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.common.v.a.f.a(SourceFile:3)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.common.v.a.h.run(SourceFile:21)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.common.v.a.co.run(SourceFile:1)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:02.228  1898  2201 W CPDataMediator: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:02.229  1365  1982 W Icing   : No valid account for uploading user actions [CONTEXT service_id=21 ]
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: Could not register for notifications with InnerTube: 
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: rff: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at rex.b(PG:18)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at uqp.f(PG:65)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at uqp.g(PG:134)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at uqp.b(PG:99)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at uqn.run(Unknown Source:1)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at ywx.run(Unknown Source:1)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at pqt.run(PG:13)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: Caused by: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at zsp.a(PG:135)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at zsp.get(PG:91)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at rex.b(PG:17)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	... 11 more
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: Caused by: qjl: Precondition check failed.
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at rdu.b(PG:106)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at pyo.a(PG:61)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at pxo.run(Unknown Source:17)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	... 4 more
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: Caused by: bjj
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	at pxo.run(Unknown Source:13)
+10-28 09:47:02.247  5424  5562 W YouTubeMusic: 	... 4 more
+10-28 09:47:02.247  1365  1982 I Icing   : Usage reports ok 0, Failed Usage reports 0, indexed 0, rejected 0 [CONTEXT service_id=21 ]
+10-28 09:47:02.262   921  2473 D ProtoStore: deleting smartspace_current
+10-28 09:47:02.262   921  2473 D ProtoStore: no cached data
+10-28 09:47:02.262   921  2473 D ProtoStore: no cached data
+10-28 09:47:02.266  1898  2201 W WeatherDataAdapter: Incomplete data for smartspace request
+10-28 09:47:02.266  1898  2201 W OpaSSRequestSender: Weather data could not be extracted from Zerostate response
+10-28 09:47:02.354  1898  1936 I earchbox:searc: Background concurrent copying GC freed 266873(10MB) AllocSpace objects, 58(3768KB) LOS objects, 49% free, 11MB/22MB, paused 26us total 270.287ms
+10-28 09:47:02.360  1898  2362 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:02.373  1898  2362 I chatty  : uid=10123(com.google.android.googlequicksearchbox) Blocking Thread identical 5 lines
+10-28 09:47:02.373  1898  2362 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@b775f79} with executor MoreExecutors.directExecutor()
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:02.373  1898  2362 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@3d3091f} with executor MoreExecutors.directExecutor()
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@c857a35} with executor MoreExecutors.directExecutor()
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@1a9183b} with executor MoreExecutors.directExecutor()
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:02.373  1898  2362 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:02.385  1898  2362 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:02.386  1898  2362 I chatty  : uid=10123(com.google.android.googlequicksearchbox) Blocking Thread identical 5 lines
+10-28 09:47:02.386  1898  2362 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@62084b1} with executor MoreExecutors.directExecutor()
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:02.386  1898  2362 D PhFileGroupPop: Failed to add file group 
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@106fd17} with executor MoreExecutors.directExecutor()
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@a87baed} with executor MoreExecutors.directExecutor()
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@ff453b3} with executor MoreExecutors.directExecutor()
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+10-28 09:47:02.386  1898  2362 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+10-28 09:47:02.420  1898  2201 I PolicyConfigSyncManager: Refresh account policy.
+10-28 09:47:02.438  1898  2133 I PolicyConfigSyncManager: Refresh account policy.
+10-28 09:47:02.677  3038  3812 D PipelineManager: OCR process succeeded via visionkit pipeline.
+10-28 09:47:02.702  3038  3714 D PipelineManager: Start process bitmap
+10-28 09:47:02.737  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:47:03.175  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:47:03.201  1365  1982 I Icing   : Indexing com.google.android.gms-apps from com.google.android.gms [CONTEXT service_id=21 ]
+10-28 09:47:03.345  1365  1982 I Icing   : Indexing done com.google.android.gms-apps [CONTEXT service_id=21 ]
+10-28 09:47:03.365  1365  1982 I Icing   : Indexing com.google.android.gms-internal.3p:MobileApplication from com.google.android.gms [CONTEXT service_id=21 ]
+10-28 09:47:03.458  1365  1982 I Icing   : Indexing done com.google.android.gms-internal.3p:MobileApplication [CONTEXT service_id=21 ]
+10-28 09:47:03.620  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:47:03.829  3038  3819 I chatty  : uid=10167(com.shivtej.billscanner) identical 1 line
+10-28 09:47:04.023  3038  3819 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+10-28 09:47:07.190  3038  3714 D PipelineManager: OCR process succeeded via visionkit pipeline.
+10-28 09:47:07.193  1915  5747 D DownloadManager: [5] Finished with status SUCCESS
+10-28 09:47:07.199  1898  5736 W BlobLobber: Not processing download id 5, not a BlobLobber blob
+10-28 09:47:07.200  1898  5736 W BlobLobber: Notification for download id 5 which we didn't know or failed
+10-28 09:47:07.203  1898  2202 I ModelDnldProcssHelpr: #handleDownloadComplete, downloadId=5
+10-28 09:47:07.203  1898  2202 E ModelDnldProcssHelpr: pending download info for pending_hotword_model_download_info is null
+10-28 09:47:07.203  1898  2202 E ModelDnldProcssHelpr: pending download info for pending_xgoogle_hotword_model_download_info is null
+10-28 09:47:07.204  1898  1898 I BgTaskExecutorImpl: Starting NONEXCLUSIVE background task ZIP_DOWNLOAD_PROCESSOR.
+10-28 09:47:07.213  1898  2201 I ZipDownloadProcessorTsk: cacheDestination: /data/user/0/com.google.android.googlequicksearchbox/app_g3_models/en-US.zip
+10-28 09:47:07.213  3038  3637 I OCRTEST : [patel_1309_big] page 2: words=124 size=2400x3200 ms=21689
+10-28 09:47:07.524  3038  3056 I tej.billscanne: Compiler allocated 4402KB to compile com.shivtej.billscanner.core.ocr.InvoiceParser$PageResult com.shivtej.billscanner.core.ocr.InvoiceParser.parsePage(com.shivtej.billscanner.core.ocr.OcrPage, int, com.shivtej.billscanner.core.ocr.LayoutMemory, int, java.util.Map)
+10-28 09:47:07.551  3038  3056 I tej.billscanne: JIT allocated 58KB for compiled code of com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+10-28 09:47:07.551  3038  3056 I tej.billscanne: Compiler allocated 7237KB to compile com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+10-28 09:47:07.591  3038  3056 I tej.billscanne: JIT allocated 95KB for compiled code of com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+10-28 09:47:07.591  3038  3056 I tej.billscanne: Compiler allocated 8262KB to compile com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+10-28 09:47:07.629  3038  3056 I tej.billscanne: JIT allocated 81KB for compiled code of com.shivtej.billscanner.core.ocr.InvoiceParser$TableResult com.shivtej.billscanner.core.ocr.InvoiceParser.readTableAt(java.util.List, java.util.List, double, com.shivtej.billscanner.core.ocr.LayoutMemory, com.shivtej.billscanner.core.model.Header, int, boolean, double, java.util.Map)
+10-28 09:47:07.629  3038  3056 I tej.billscanne: Compiler allocated 10MB to compile com.shivtej.billscanner.core.ocr.InvoiceParser$TableResult com.shivtej.billscanner.core.ocr.InvoiceParser.readTableAt(java.util.List, java.util.List, double, com.shivtej.billscanner.core.ocr.LayoutMemory, com.shivtej.billscanner.core.model.Header, int, boolean, double, java.util.Map)
+10-28 09:47:08.055  3038  3056 I tej.billscanne: JIT allocated 89KB for compiled code of com.shivtej.billscanner.core.model.LineItem com.shivtej.billscanner.core.ocr.InvoiceParser.readItemOnce(java.util.List, java.util.List, int)
+10-28 09:47:08.055  3038  3056 I tej.billscanne: Compiler allocated 11MB to compile com.shivtej.billscanner.core.model.LineItem com.shivtej.billscanner.core.ocr.InvoiceParser.readItemOnce(java.util.List, java.util.List, int)
+10-28 09:47:08.121  3038  3056 I tej.billscanne: JIT allocated 158KB for compiled code of com.shivtej.billscanner.core.model.LineItem com.shivtej.billscanner.core.ocr.InvoiceParser.readItemOnce(java.util.List, java.util.List, int)
+10-28 09:47:08.121  3038  3056 I tej.billscanne: Compiler allocated 12MB to compile com.shivtej.billscanner.core.model.LineItem com.shivtej.billscanner.core.ocr.InvoiceParser.readItemOnce(java.util.List, java.util.List, int)
+10-28 09:47:08.160  3038  3056 I tej.billscanne: JIT allocated 89KB for compiled code of com.shivtej.billscanner.core.model.LineItem com.shivtej.billscanner.core.ocr.InvoiceParser.readItemOnce(java.util.List, java.util.List, int)
+10-28 09:47:08.160  3038  3056 I tej.billscanne: Compiler allocated 11MB to compile com.shivtej.billscanner.core.model.LineItem com.shivtej.billscanner.core.ocr.InvoiceParser.readItemOnce(java.util.List, java.util.List, int)
+10-28 09:47:08.208  3038  3056 I tej.billscanne: JIT allocated 127KB for compiled code of com.shivtej.billscanner.core.ocr.InvoiceParser$TableResult com.shivtej.billscanner.core.ocr.InvoiceParser.readTableAt(java.util.List, java.util.List, double, com.shivtej.billscanner.core.ocr.LayoutMemory, com.shivtej.billscanner.core.model.Header, int, boolean, double, java.util.Map)
+10-28 09:47:08.208  3038  3056 I tej.billscanne: JIT allocated 51KB for stack maps of com.shivtej.billscanner.core.ocr.InvoiceParser$TableResult com.shivtej.billscanner.core.ocr.InvoiceParser.readTableAt(java.util.List, java.util.List, double, com.shivtej.billscanner.core.ocr.LayoutMemory, com.shivtej.billscanner.core.model.Header, int, boolean, double, java.util.Map)
+10-28 09:47:08.208  3038  3056 I tej.billscanne: Compiler allocated 11MB to compile com.shivtej.billscanner.core.ocr.InvoiceParser$TableResult com.shivtej.billscanner.core.ocr.InvoiceParser.readTableAt(java.util.List, java.util.List, double, com.shivtej.billscanner.core.ocr.LayoutMemory, com.shivtej.billscanner.core.model.Header, int, boolean, double, java.util.Map)
+10-28 09:47:08.293  1898  2202 I Greco3DataManager: #handleLocale  en-US
+10-28 09:47:08.293  1898  2202 I Greco3DataManager: available language pack of en-US is version 310
+10-28 09:47:08.296  1915  4976 V DownloadManager: Deleting /storage/emulated/0/Android/data/com.google.android.googlequicksearchbox/files/download_cache/en-US-v310-f32.zip via provider delete
+10-28 09:47:08.300  1640  1656 I MediaProvider: Scanned external_primary due to REASON_DEMAND, found 0 items in 1ms, 0 inserts 0 updates 0 deletes
+10-28 09:47:09.727  3038  3056 I tej.billscanne: JIT allocated 81KB for compiled code of com.shivtej.billscanner.core.ocr.InvoiceParser$TableResult com.shivtej.billscanner.core.ocr.InvoiceParser.readTableAt(java.util.List, java.util.List, double, com.shivtej.billscanner.core.ocr.LayoutMemory, com.shivtej.billscanner.core.model.Header, int, boolean, double, java.util.Map)
+10-28 09:47:09.727  3038  3056 I tej.billscanne: Compiler allocated 10MB to compile com.shivtej.billscanner.core.ocr.InvoiceParser$TableResult com.shivtej.billscanner.core.ocr.InvoiceParser.readTableAt(java.util.List, java.util.List, double, com.shivtej.billscanner.core.ocr.LayoutMemory, com.shivtej.billscanner.core.model.Header, int, boolean, double, java.util.Map)
+10-28 09:47:09.745  3038  3056 I tej.billscanne: Compiler allocated 5099KB to compile com.shivtej.billscanner.core.ocr.InvoiceParser$Footer com.shivtej.billscanner.core.ocr.InvoiceParser.readFooter(java.util.List, java.util.List, com.shivtej.billscanner.core.ocr.InvoiceParser$Bounds, double)
+10-28 09:47:09.850  3038  3056 I tej.billscanne: Compiler allocated 4687KB to compile com.shivtej.billscanner.core.ocr.InvoiceParser$PageResult com.shivtej.billscanner.core.ocr.InvoiceParser.parsePage(com.shivtej.billscanner.core.ocr.OcrPage, int, com.shivtej.billscanner.core.ocr.LayoutMemory, int, java.util.Map)
+10-28 09:47:09.977  3038  3637 I OCRTEST : [patel_1309_big] HEADER supplier=PATEL TRADELINES | gstin=27AHTPP0412H1Z9 | no=G2/2627/1309 | date=20-Oct-2026 | buyer=SHIVTEJ FOOTWEAR AKLUJ | buyerGstin=null | grand=26012.00 | cgst=null sgst=null | qty=null sub=null
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] COLUMNS Sr No.=SR | Description Of Goods=ARTICLE | HSN Code=HSN | Qty in Pairs=QTY | Rate /Pair()=RATE | Total=GROSS | Disc %=DISC_PCT | Discount Amount=DISC_AMT | Taxable Value=TAXABLE | CGST %=CGST_PCT | CGST Amount=CGST_AMT | SGST %=SGST_PCT | SGST Amount=SGST_AMT
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 1 | 1180 | col=BLK | size=BLK 6X8/1 | qty=18 | mrp=235.00 | rate=170.12 | disc%=3.00 | amount=2970.30 | gst=null | baitha=26.27 | needs=[] | raw=[1, 1180-Paralite-Gents-EVA-6X10 MRP: 235.00 BLK 6X8/1, 64029 990, 18, 170.12, 3062.16, 3.00, 91.86, 2970.30, 2.50, 74.26, 2.50, 74.26]
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 2 | 1210 | col=Black | size=Black 10/24 | qty=24 | mrp=169.50 | rate=122.71 | disc%=3.00 | amount=2856.69 | gst=null | baitha=26.27 | needs=[] | raw=[2, 1210-Paralite-Gents-EVA-6X10 MRP: 169.50 Black 10/24, 64022 090, 24, 122.71, 2945.04, 3.00, 88.35, 2856.69, 2.50, 71.42, 2.50, 71.42]
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 3 | 1251 | col=BlackRed | size=BlackRed 8/5,9/4,10/3 | qty=12 | mrp=245.00 | rate=165.00 | disc%=3.00 | amount=1920.60 | gst=null | baitha=31.41 | needs=[] | raw=[3, 1251-Paralite-Gents-EVA-6X10 MRP: 245.00 BlackRed 8/5,9/4,10/3, 64029 990, 12, 165.00, 1980.0o, 3.00, 59.40, 1920.60, 2.50, 48.02, 2.50, 48.02]
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 4 | 1553 | col=Black / Grey | size=Black 6/2,7/3,8/3,9/2,10/2 | Grey 7/3,8/3,9/3,10/3 | qty=24 | mrp=174.00 | rate=117.19 | disc%=3.00 | amount=2728.18 | gst=null | baitha=31.40 | needs=[] | raw=[4, 1553-Paralite-Gents-EVA-6X10 MRP: 174.00 Black 6/2,7/3,8/3,9/2, 10/2 Grey 7/3,8/3,9/3,10/3, 64022 090, 24, 117.19, 2812.56, 3.00, 84.38, 2728.18, 2.50, 68.22, 2.50, 68.22]
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 5 | 1562 | col=BLK | size=BLK 6X10/1 | qty=18 | mrp=194.00 | rate=130.66 | disc%=3.00 | amount=2281.32 | gst=null | baitha=31.40 | needs=[] | raw=[5, 1562-Paralite-Gents-EVA-6X10 MRP: 194.00 BLK 6X10/1, 64022 090, 18, 130.66, 2351.88, 3.00, 70.56, 2281.32, 2.50, 57.03, 2.50, 57.03]
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 6 | 6962 | col=RedBlack | size=MRP: | RedBlack 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=255.00 | rate=171.73 | disc%=3.00 | amount=1998.94 | gst=null | baitha=31.41 | needs=[] | raw=[6, 6962-Vertex-Gents-PU-6X10 MRP: 255.00 RedBlack 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 171.73, 2060.76, 3.00, 61.82, 1998.94, 2.50, 49.97, 2.50, 49.97]
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 7 | E6225 | col=Black | size=:605.00 | Black 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=605.00 | rate=374.50 | disc%=3.00 | amount=4359.18 | gst=null | baitha=36.95 | needs=[] | raw=[7, E6225-EEken-Gents-PU-6X10 MRP :605.00 Black 6/2,7/3,8/3,9 /2,10/2, 64029 990, 12, 374.50, 4494.0o, 3.00, 134.82, 4359.18, 2.5O, 108.98, 2.50, 108.98]
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 8 | E6225 | col=Tan | size=:639.00 | Tan 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=639.00 | rate=389.33 | disc%=3.00 | amount=4531.80 | gst=null | baitha=37.94 | needs=[] | raw=[8, E6225-EEken-Gents-PU-6X10 MRP :639.00 Tan 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 389.33, 4671.96, 3.00, 140.16, 4531.80, 2.50, 113.28, 2.50, 113.28]
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 9 | E6227 | col=Brown | size=:555.00 | Brown 7/1 | qty=1 | mrp=555.00 | rate=343.55 | disc%=3.00 | amount=333.24 | gst=null | baitha=36.95 | needs=[] | raw=[9., E6227-eeken-Gents-PU-6X10 MRP :555.00 Brown 7/1, 64029 990, 1, 343.55, 343.55, 3.00, 10.31, 333.24, 2.50, 8.33, 2.50, 8.33]
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 10 | FREIGHT | col=MIX | size=MIX 0/1 | qty=1 | mrp=446.00 | rate=446.00 | disc%=3.00 | amount=432.62 | gst=null | baitha=-1.85 | needs=[] | raw=[10, FREIGHT-NA-FREIGHT-NA-0X0 MRP: 446.00 MIX 0/1, 64029 990, 1, 446.00, 446.00, 3.00, 13.38, 432.62, 2.50, 10.82, 2.50, 10.82]
+10-28 09:47:09.978  3038  3637 I OCRTEST : [patel_1309_big] ITEM 11 | S11500 | col= | size= | qty=1 | mrp=579.00 | rate=358.41 | disc%=3.00 | amount=347.66 | gst=null | baitha=36.95 | needs=[] | raw=[11, S11500-Stimulus-Ladies-PU-4X8 MRP: 579.00, 64029 990, 1, 358.41, 358.41, 3.00, 10.75, 347.66, 2.50, 8.69, 2.50, 8.69]
+10-28 09:47:09.979  3038  3637 I OCRTEST : [patel_1309_big] TOTALS Totals(lines=11, articleLines=10, qty=134, gross=25526.32, discount=765.79, taxable=24760.53, cgst=619.02, sgst=619.02, igst=0, other=0, grand=25998.57, printedGrand=26012.00)
+10-28 09:47:09.982  3038  3637 I OCRTEST : [patel_1309_big] WARN CHECK Lines add up to ₹25998.57 but the bill total is ₹26012.00 (difference ₹13.43).
+10-28 09:47:09.982  3038  3637 I OCRTEST : [patel_1309_big] WARN CHECK 5 1562: size quantities need checking
+10-28 09:47:09.982  3038  3637 I OCRTEST : [patel_1309_big] WARN CHECK 6 6962: size quantities need checking
+10-28 09:47:09.982  3038  3637 I OCRTEST : [patel_1309_big] WARN CHECK 7 E6225: size quantities need checking
+10-28 09:47:09.982  3038  3637 I OCRTEST : [patel_1309_big] WARN CHECK 8 E6225: size quantities need checking
+10-28 09:47:09.982  3038  3637 I OCRTEST : [patel_1309_big] WARN CHECK 9 E6227: size quantities need checking
+10-28 09:47:09.982  3038  3637 I OCRTEST : [patel_1309_big] WARN TIP 11 S11500: sizes missing
+10-28 09:47:10.074  3038  3637 I OCRTEST : [patel_1309_big] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/patel_1309_big
+10-28 09:47:10.710   494   581 W ActivityManager: Unable to start service Intent { act=com.google.android.gms.drive.ApiService.RESET_AFTER_BOOT flg=0x4 cmp=com.google.android.gms/.drive.api.ApiService (has extras) } U=0: not found
+10-28 09:47:10.713  1365  5788 I Vision  : Requesting optional module download of ocr.
+10-28 09:47:10.713  1365  5788 I Vision  : Checking for download completion for 133104 -- ocr
+10-28 09:47:12.674  3038  3056 I tej.billscanne: JIT allocated 51KB for compiled code of com.shivtej.billscanner.core.ocr.ParsedInvoice com.shivtej.billscanner.core.ocr.InvoiceParser.parse(java.util.List, com.shivtej.billscanner.core.ocr.LayoutMemory)
+10-28 09:47:12.674  3038  3056 I tej.billscanne: Compiler allocated 4607KB to compile com.shivtej.billscanner.core.ocr.ParsedInvoice com.shivtej.billscanner.core.ocr.InvoiceParser.parse(java.util.List, com.shivtej.billscanner.core.ocr.LayoutMemory)
+10-28 09:47:12.914  3038  3056 I tej.billscanne: JIT allocated 59KB for compiled code of com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+10-28 09:47:12.914  3038  3056 I tej.billscanne: Compiler allocated 7218KB to compile com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+10-28 09:47:12.940  3038  3056 I tej.billscanne: JIT allocated 95KB for compiled code of com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+10-28 09:47:12.940  3038  3056 I tej.billscanne: Compiler allocated 8236KB to compile com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+10-28 09:47:15.116  3038  3056 I tej.billscanne: Compiler allocated 4358KB to compile com.shivtej.billscanner.core.ocr.InvoiceParser$PageResult com.shivtej.billscanner.core.ocr.InvoiceParser.parsePage(com.shivtej.billscanner.core.ocr.OcrPage, int, com.shivtej.billscanner.core.ocr.LayoutMemory, int, java.util.Map)
+10-28 09:47:15.208  1365  2806 I TelephonySpam: TelephonySpamChimeraService - Running Telephony Spam Chimera Service
+10-28 09:47:15.242  3038  3637 I OCRTEST : [patel_1309_big] SELFCHECK tried=0 fixed=0 doubtful before=0 after=0 ms=2578
+10-28 09:47:15.253  3038  3056 I tej.billscanne: JIT allocated 51KB for compiled code of com.shivtej.billscanner.core.ocr.ParsedInvoice com.shivtej.billscanner.core.ocr.InvoiceParser.parse(java.util.List, com.shivtej.billscanner.core.ocr.LayoutMemory)
+10-28 09:47:15.253  3038  3056 I tej.billscanne: Compiler allocated 4838KB to compile com.shivtej.billscanner.core.ocr.ParsedInvoice com.shivtej.billscanner.core.ocr.InvoiceParser.parse(java.util.List, com.shivtej.billscanner.core.ocr.LayoutMemory)
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] HEADER supplier=PATEL TRADELINES | gstin=27AHTPP0412H1Z9 | no=G2/2627/1309 | date=20-Oct-2026 | buyer=SHIVTEJ FOOTWEAR AKLUJ | buyerGstin=null | grand=26012.00 | cgst=null sgst=null | qty=null sub=null
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] COLUMNS Sr No.=SR | Description Of Goods=ARTICLE | HSN Code=HSN | Qty in Pairs=QTY | Rate /Pair()=RATE | Total=GROSS | Disc %=DISC_PCT | Discount Amount=DISC_AMT | Taxable Value=TAXABLE | CGST %=CGST_PCT | CGST Amount=CGST_AMT | SGST %=SGST_PCT | SGST Amount=SGST_AMT
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 1 | 1180 | col=BLK | size=BLK 6X8/1 | qty=18 | mrp=235.00 | rate=170.12 | disc%=3.00 | amount=2970.30 | gst=null | baitha=26.27 | needs=[] | raw=[1, 1180-Paralite-Gents-EVA-6X10 MRP: 235.00 BLK 6X8/1, 64029 990, 18, 170.12, 3062.16, 3.00, 91.86, 2970.30, 2.50, 74.26, 2.50, 74.26]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 2 | 1210 | col=Black | size=Black 10/24 | qty=24 | mrp=169.50 | rate=122.71 | disc%=3.00 | amount=2856.69 | gst=null | baitha=26.27 | needs=[] | raw=[2, 1210-Paralite-Gents-EVA-6X10 MRP: 169.50 Black 10/24, 64022 090, 24, 122.71, 2945.04, 3.00, 88.35, 2856.69, 2.50, 71.42, 2.50, 71.42]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 3 | 1251 | col=BlackRed | size=BlackRed 8/5,9/4,10/3 | qty=12 | mrp=245.00 | rate=165.00 | disc%=3.00 | amount=1920.60 | gst=null | baitha=31.41 | needs=[] | raw=[3, 1251-Paralite-Gents-EVA-6X10 MRP: 245.00 BlackRed 8/5,9/4,10/3, 64029 990, 12, 165.00, 1980.0o, 3.00, 59.40, 1920.60, 2.50, 48.02, 2.50, 48.02]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 4 | 1553 | col=Black / Grey | size=Black 6/2,7/3,8/3,9/2,10/2 | Grey 7/3,8/3,9/3,10/3 | qty=24 | mrp=174.00 | rate=117.19 | disc%=3.00 | amount=2728.18 | gst=null | baitha=31.40 | needs=[] | raw=[4, 1553-Paralite-Gents-EVA-6X10 MRP: 174.00 Black 6/2,7/3,8/3,9/2, 10/2 Grey 7/3,8/3,9/3,10/3, 64022 090, 24, 117.19, 2812.56, 3.00, 84.38, 2728.18, 2.50, 68.22, 2.50, 68.22]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 5 | 1562 | col=BLK | size=BLK 6X10/1 | qty=18 | mrp=194.00 | rate=130.66 | disc%=3.00 | amount=2281.32 | gst=null | baitha=31.40 | needs=[] | raw=[5, 1562-Paralite-Gents-EVA-6X10 MRP: 194.00 BLK 6X10/1, 64022 090, 18, 130.66, 2351.88, 3.00, 70.56, 2281.32, 2.50, 57.03, 2.50, 57.03]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 6 | 6962 | col=RedBlack | size=MRP: | RedBlack 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=255.00 | rate=171.73 | disc%=3.00 | amount=1998.94 | gst=null | baitha=31.41 | needs=[] | raw=[6, 6962-Vertex-Gents-PU-6X10 MRP: 255.00 RedBlack 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 171.73, 2060.76, 3.00, 61.82, 1998.94, 2.50, 49.97, 2.50, 49.97]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 7 | E6225 | col=Black | size=:605.00 | Black 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=605.00 | rate=374.50 | disc%=3.00 | amount=4359.18 | gst=null | baitha=36.95 | needs=[] | raw=[7, E6225-EEken-Gents-PU-6X10 MRP :605.00 Black 6/2,7/3,8/3,9 /2,10/2, 64029 990, 12, 374.50, 4494.0o, 3.00, 134.82, 4359.18, 2.5O, 108.98, 2.50, 108.98]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 8 | E6225 | col=Tan | size=:639.00 | Tan 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=639.00 | rate=389.33 | disc%=3.00 | amount=4531.80 | gst=null | baitha=37.94 | needs=[] | raw=[8, E6225-EEken-Gents-PU-6X10 MRP :639.00 Tan 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 389.33, 4671.96, 3.00, 140.16, 4531.80, 2.50, 113.28, 2.50, 113.28]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 9 | E6227 | col=Brown | size=:555.00 | Brown 7/1 | qty=1 | mrp=555.00 | rate=343.55 | disc%=3.00 | amount=333.24 | gst=null | baitha=36.95 | needs=[] | raw=[9., E6227-eeken-Gents-PU-6X10 MRP :555.00 Brown 7/1, 64029 990, 1, 343.55, 343.55, 3.00, 10.31, 333.24, 2.50, 8.33, 2.50, 8.33]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 10 | FREIGHT | col=MIX | size=MIX 0/1 | qty=1 | mrp=446.00 | rate=446.00 | disc%=3.00 | amount=432.62 | gst=null | baitha=-1.85 | needs=[] | raw=[10, FREIGHT-NA-FREIGHT-NA-0X0 MRP: 446.00 MIX 0/1, 64029 990, 1, 446.00, 446.00, 3.00, 13.38, 432.62, 2.50, 10.82, 2.50, 10.82]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] ITEM 11 | S11500 | col= | size= | qty=1 | mrp=579.00 | rate=358.41 | disc%=3.00 | amount=347.66 | gst=null | baitha=36.95 | needs=[] | raw=[11, S11500-Stimulus-Ladies-PU-4X8 MRP: 579.00, 64029 990, 1, 358.41, 358.41, 3.00, 10.75, 347.66, 2.50, 8.69, 2.50, 8.69]
+10-28 09:47:17.804  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] TOTALS Totals(lines=11, articleLines=10, qty=134, gross=25526.32, discount=765.79, taxable=24760.53, cgst=619.02, sgst=619.02, igst=0, other=0, grand=25998.57, printedGrand=26012.00)
+10-28 09:47:17.806  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK Lines add up to ₹25998.57 but the bill total is ₹26012.00 (difference ₹13.43).
+10-28 09:47:17.806  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK 5 1562: size quantities need checking
+10-28 09:47:17.806  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK 6 6962: size quantities need checking
+10-28 09:47:17.806  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK 7 E6225: size quantities need checking
+10-28 09:47:17.806  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK 8 E6225: size quantities need checking
+10-28 09:47:17.806  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK 9 E6227: size quantities need checking
+10-28 09:47:17.806  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] WARN TIP 11 S11500: sizes missing
+10-28 09:47:17.868  3038  3637 I OCRTEST : [patel_1309_big_selfcheck] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/patel_1309_big/selfcheck
+10-28 09:47:17.868  3038  3637 I TestRunner: finished: patelBig(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+10-28 09:47:17.869  3038  3637 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored
+10-28 09:47:17.871   494  1788 I ActivityManager: Force stopping com.shivtej.billscanner appid=10167 user=0: finished inst
+10-28 09:47:17.871   494  1788 I ActivityManager: Killing 3038:com.shivtej.billscanner/u0a167 (adj 0): stop com.shivtej.billscanner due to finished inst
+10-28 09:47:17.877  2885  2885 I app_process: System.exit called, status: 0
+10-28 09:47:17.877  2885  2885 I AndroidRuntime: VM exiting with result code 0.
+10-28 09:47:18.112     0     0 D logd    : logdr: UID=2000 GID=2000 PID=5795 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+10-28 09:47:18.114     0     0 I binder  : undelivered TRANSACTION_COMPLETE
+10-28 09:47:18.116     0     0 I binder  : undelivered transaction 403344, process died.
+10-28 09:47:17.898   286   286 I Zygote  : Process 3038 exited due to signal 9 (Killed)
+10-28 09:47:17.917   494   536 I libprocessgroup: Successfully killed process cgroup uid 10167 pid 3038 in 44ms
