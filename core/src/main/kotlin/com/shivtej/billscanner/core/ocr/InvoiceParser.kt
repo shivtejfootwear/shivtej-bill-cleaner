@@ -1959,8 +1959,16 @@ object InvoiceParser {
             }
             return null
         }
+        // "G2/2627/ 1309": a number the OCR split after "/" or "-" is joined again.
+        fun firstNo(t: String): String? {
+            val ws = t.split(' ').filter { it.isNotEmpty() }
+            val k = ws.indexOfFirst { w -> w.any(Char::isDigit) }.takeIf { it >= 0 } ?: return null
+            var no = ws[k]
+            for (n in ws.drop(k + 1)) { if ((no.endsWith('/') || no.endsWith('-')) && n.first().isLetterOrDigit() && DATE.find(n) == null) no += n else break }
+            return no
+        }
         val invoiceNo = ((after(Regex("""(?i)\bin[vy][o0][il1|]?c[e3]\s*(no|number|#)\.?\s*:?""")) ?: after(Regex("""(?i)\b(inv|bill|memo|voucher)\.?\s*(no|number|#)\.?\s*:?""")))
-            ?.split(' ')?.firstOrNull { t -> t.any(Char::isDigit) }
+            ?.let { firstNo(it) }
             ?: under(Regex("""(?i)\bin[vy][o0][il1|]?c[e3]\s*(no|number|#)"""))
             // "Invoice  - 0754": the label without "No".
             ?: after(Regex("""(?i)^\s*in[vy][o0][il1|]?c[e3]\s*[-:.]?\s*$|^\s*in[vy][o0][il1|]?c[e3]\s*[-:.]\s*(?=\S*\d)"""))?.trimStart('-', ':', '.', ' ')?.split(' ')?.firstOrNull { t -> t.any(Char::isDigit) && DATE.find(t) == null }
