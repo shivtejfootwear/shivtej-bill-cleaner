@@ -158,6 +158,9 @@ class OcrOnRealInvoiceTest {
     /** Patel Tradelines G2/2627/1309 again, a new phone photo of both pages (all lines were doubtful on the phone). */
     @Test fun patelNew() = read("patel_1309_new", listOf("patel_1309_new_1.jpg", "patel_1309_new_2.jpg"))
 
+    /** The same photos at the size a phone camera gives (3200 px), as the app reads them. */
+    @Test fun patelBig() = read("patel_1309_big", listOf("patel_1309_big_1.jpg", "patel_1309_big_2.jpg"))
+
     /** Yash Enterprises (Tally), creased paper: article-colour-MRP in one code ("HSW-012-NAVY-239"), "Less : Dis (-)5 %". */
 
     @Test fun yash() = read("yash", listOf("yash_ye0393.jpg"))
