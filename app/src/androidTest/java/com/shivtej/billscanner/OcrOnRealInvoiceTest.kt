@@ -154,6 +154,8 @@ class OcrOnRealInvoiceTest {
     }
 
     /** Yash Enterprises (Tally), creased paper: article-colour-MRP in one code ("HSW-012-NAVY-239"), "Less : Dis (-)5 %". */
+    @Test fun venkateshwara() = read("venkateshwara_l1235", listOf("venkateshwara_l1235.jpg"))
+
     @Test fun yash() = read("yash", listOf("yash_ye0393.jpg"))
 
     /** S H Patel & Sons (Bata, Tally): "MRP/ Marginal" column "1,099.00/prs", "Output CGST" rows, another sheet's edge beside the amounts. */
