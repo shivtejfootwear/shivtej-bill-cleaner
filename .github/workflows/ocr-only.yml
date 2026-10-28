@@ -5,6 +5,9 @@ on:
   push:
     branches: [ocr-run]
 
+permissions:
+  contents: write
+
 jobs:
   ocr-check:
     runs-on: ubuntu-24.04
