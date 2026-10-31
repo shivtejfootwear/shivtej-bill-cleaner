@@ -23,7 +23,12 @@ object Warnings {
                 "Invoice ${h.invoiceNo} was scanned before.")
         }
         t.difference?.let { d ->
-            if (d.abs() > BigDecimal("0.99")) out += Warning(Warning.Level.CHECK, null,
+            // The bill's own total is higher by about one line's discount (Patel: Freight 426 − 3% = 12.78 never taken off the total).
+            val disc = if (d.abs() > BigDecimal("0.99")) inv.items.firstOrNull { i -> i.current.discAmt?.let { a -> (a - d.abs()).abs() <= BigDecimal("0.50") } == true } else null
+            if (disc != null) out += Warning(Warning.Level.CHECK, null,
+                "सप्लायर के बिल का Total लाइनों से ₹${Calc.fmt(d)} ज़्यादा है — यह \"${disc.current.article.ifBlank { disc.current.name }}\" के डिस्काउंट ₹${Calc.fmt(disc.current.discAmt)} जितना है। लाइन में डिस्काउंट दिखाया पर Total में घटाया नहीं — app का पढ़ना सही है, सप्लायर से पूछें।",
+                "The bill total is ₹${Calc.fmt(d)} above its lines — about the discount ₹${Calc.fmt(disc.current.discAmt)} shown on \"${disc.current.article}\" but not taken off the total.")
+            else if (d.abs() > BigDecimal("0.99")) out += Warning(Warning.Level.CHECK, null,
                 "लाइनों का जोड़ ₹${Calc.fmt(t.grand)}, पर बिल पर कुल ₹${Calc.fmt(t.printedGrand)} छपा है — फ़र्क़ ₹${Calc.fmt(d)}। कोई और चार्ज, round-off या दूसरा पेज तो नहीं?",
                 "Lines add up to ₹${Calc.fmt(t.grand)} but the bill total is ₹${Calc.fmt(t.printedGrand)} (difference ₹${Calc.fmt(d)}).")
             else if (d.signum() != 0) out += Warning(Warning.Level.TIP, null, "कुल में ₹${Calc.fmt(d)} का round-off फ़र्क़ है।", "Round-off difference ₹${Calc.fmt(d)}.")
@@ -69,7 +74,10 @@ object Warnings {
             // Size counts are checked only where the bill prints them per size ("6/2,7/3"); "6X10" alone is a size range.
             if (v.sizeText.contains('/')) {
                 val s = Sizes.read(v.sizeText, v.qty)
-                if (s.state == Sizes.State.MISMATCH || s.state == Sizes.State.UNCLEAR) out += Warning(Warning.Level.CHECK, it.id, "$name: ${s.hindi}", "$name: size quantities need checking")
+                // "6X10/1", "BRN 8X10/1 OLV 7X10/1" (Paragon): a box of a size range, pairs per size not printed — nothing to check.
+                val onlyRanges = Regex("""\d{1,2}[Xx×]\d{1,2}/\d""").containsMatchIn(v.sizeText) && !Regex("""(?<![Xx×\d])\d{1,2}(\.\d)?/\d""").containsMatchIn(v.sizeText)
+                if (s.state == Sizes.State.MISMATCH || s.state == Sizes.State.UNCLEAR) out += Warning(if (onlyRanges && s.state == Sizes.State.UNCLEAR) Warning.Level.TIP else Warning.Level.CHECK, it.id,
+                    "$name: ${if (onlyRanges) "साइज़ सेट (${v.sizeText}) — बिल में साइज़-वार गिनती नहीं छपी" else s.hindi}", "$name: size quantities need checking")
             } else if (v.sizeText.isEmpty() && inv.columns.none { c -> c.field == F.SIZE }) out += Warning(Warning.Level.TIP, it.id, "$name: साइज़ नहीं छपे", "$name: sizes missing")
             val key = "${v.article}|${v.colour}|${v.sizeText}|${v.mrp}"
             seen[key]?.let { other -> out += Warning(Warning.Level.TIP, it.id, "$name: यही आर्टिकल, कलर और MRP लाइन $other में भी है", "$name: same article/colour/MRP as line $other") }

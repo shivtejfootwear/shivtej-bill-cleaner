@@ -54,3 +54,16 @@ class Patel1346Test {
         assertEquals(0, p.header.printedGrandTotal!!.compareTo(BigDecimal("34506.00")))
     }
 }
+
+class Patel1346WarningsTest {
+    private fun page(n: String) = com.shivtej.billscanner.core.store.OcrCodec.decode(javaClass.classLoader!!.getResource("real/$n")!!.readText())
+
+    @Test fun onlyTheSuppliersOwnTotalGapIsAsked() {
+        val p = InvoiceParser.parse(listOf(page("patel_1346_1.tsv"), page("patel_1346_2.tsv")))
+        val inv = com.shivtej.billscanner.core.model.Invoice("p", 0, p.header, p.header, p.items, columns = p.columns)
+        val ws = com.shivtej.billscanner.core.model.Warnings.of(inv).filter { it.level != com.shivtej.billscanner.core.model.Warning.Level.TIP }
+        val all = ws.joinToString("\n") { it.hindi }
+        assertTrue(all, ws.none { it.hindi.contains("साइज़") })
+        assertTrue(all, ws.any { it.hindi.contains("12.78") && it.hindi.contains("सप्लायर") })
+    }
+}
