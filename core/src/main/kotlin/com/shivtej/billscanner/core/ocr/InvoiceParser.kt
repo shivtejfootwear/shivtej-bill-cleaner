@@ -93,8 +93,24 @@ object InvoiceParser {
         var footerNumbers = emptyList<BigDecimal>()
         var carried: Map<String, Kind>? = null
         var carriedFrom = 0
+        // "Page 1 of 1" then a "Page 2 of 2": the later sheet is another bill (scanned with it by mistake) and is left out.
+        val pageOf = Regex("""(?i)page\s*(?:no\.?)?\s*(\d+)\s*(?:of|/)\s*(\d+)""")
+        var lastOf: Pair<Int, Int>? = null
         pages.forEachIndexed { i, p ->
             val r = parsePage(p, items.size, memory, i, carried)
+            val po = r.header.pageNote?.let { pageOf.find(it) }?.let { it.groupValues[1].toInt() to it.groupValues[2].toInt() }
+            val digits = { s: String? -> s?.filter(Char::isDigit)?.takeIf { it.length >= 3 } }
+            val otherBill = i > 0 && (
+                // (The same page twice is not dropped here: the repeated lines are merged further down.)
+                (lastOf != null && po != null && po.first > 1 && po != lastOf && (lastOf!!.first >= lastOf!!.second || po.second != lastOf!!.second)) ||
+                    // A sheet with its own bill head (GSTIN) and another invoice number, as its first page: another bill.
+                    ((po?.first ?: 1) == 1 && header.supplierGstin != null && r.header.supplierGstin != null &&
+                        digits(header.invoiceNo) != null && digits(r.header.invoiceNo) != null && digits(header.invoiceNo) != digits(r.header.invoiceNo)))
+            if (otherBill) {
+                notes += "पेज ${i + 1} किसी दूसरे बिल का है" + (r.header.pageNote?.let { " ($it)" } ?: "") + (lastOf?.let { " — पिछला पेज Page ${it.first} of ${it.second} था" } ?: "") + " — उसे छोड़ दिया। उस बिल को अलग से स्कैन करें।"
+                return@forEachIndexed
+            }
+            if (po != null) lastOf = po
             if (r.articleCount >= 5 && r.articleCount >= carriedFrom) { carried = r.kinds; carriedFrom = r.articleCount }
             if (r.footerNumbers.isNotEmpty()) footerNumbers = r.footerNumbers
             // A line that goes on to the next page: its colour / sizes printed at the top of that page.
@@ -1357,7 +1373,11 @@ object InvoiceParser {
             val t = descLines[0].split(' ')
             t.first().trim('.', ')').toIntOrNull()?.takeIf { it in 1..999 && t.size > 1 }?.let { sr = it; descLines[0] = t.drop(1).joinToString(" ") }
         }
-        val hsn = hsnCis.joinToString("") { ci -> block.joinToString("") { row -> cellText(row[ci]).split(' ').filter { w -> w.any(Char::isDigit) }.joinToString("") } }.filter { it.isLetterOrDigit() }
+        // "990 -7/1", "64041 190 9/1": the line's sizes printed so far right that they sit in the HSN column.
+        val hsnSizes = mutableListOf<String>()
+        val sizeWord = Regex("""^[-–_(]?([0-9Oo]{1,2}(?:[xX][0-9]{1,2})?/[0-9]{1,2})\)?$""")
+        val hsn = hsnCis.joinToString("") { ci -> block.joinToString("") { row -> cellText(row[ci]).split(' ').filter { w -> w.any(Char::isDigit) }
+            .filter { w -> sizeWord.find(w)?.let { m -> hsnSizes += m.groupValues[1].replace('O', '0').replace('o', '0'); false } ?: true }.joinToString("") } }.filter { it.isLetterOrDigit() }
 
         descLines = descLines.map { it.replace(Regex("""\(\s+"""), "(").replace(Regex("""\s+\)"""), ")") }.toMutableList()
         val joined = descLines.joinToString("\n")
@@ -1420,6 +1440,9 @@ object InvoiceParser {
         // "11X1 3": a size range the photo broke in two.
         textOf(Kind.SIZE, " ").takeIf { it.isNotEmpty() }?.let { sizeText = it.trimEnd('.').replace(Regex("""\b(\d{1,2}[xX×]1)\s([0-5])\b"""), "$1$2") }
         textOf(Kind.COLOUR, " ").takeIf { it.isNotEmpty() }?.let { colour = it }
+        hsnSizes.filter { it !in sizeText.replace(" ", "") }.takeIf { it.isNotEmpty() }?.let { extra ->
+            sizeText = (listOf(sizeText.trim(' ', '|', '_')) + extra).filter { it.isNotBlank() }.joinToString(" ")
+        }
 
         val kind = if (CHARGE.containsMatchIn(article.ifEmpty { codeToken }) || CHARGE.containsMatchIn(firstLine)) ItemKind.CHARGE else ItemKind.ARTICLE
         val amount = firstNum(Kind.AMOUNT)
@@ -1875,7 +1898,8 @@ object InvoiceParser {
         fun after(label: Regex): String? {
             for (row in segs) for ((i, s) in row.withIndex()) {
                 val m = label.find(s) ?: continue
-                val rest = s.substring(m.range.last + 1).trim().trimStart(':', '.', '-').trim()
+                // "Invoice No, :" — a comma or semicolon the OCR read beside the label is not the value.
+                val rest = s.substring(m.range.last + 1).trimStart { it in ":.-,; " }.trim()
                 val v = rest.ifEmpty { row.getOrNull(i + 1)?.trim()?.trimStart(':')?.trim() ?: "" }
                 if (v.isNotEmpty()) return v
             }

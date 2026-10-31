@@ -100,6 +100,29 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
     var history by remember { mutableStateOf(false) }
     var teach by remember { mutableStateOf<Int?>(null) }
     var message by remember { mutableStateOf<String?>(null) }
+    var busy by remember { mutableStateOf(false) }
+    // Reads the bill again from its kept scan (with every code and fix) — shows that it is working, then the result.
+    fun readAgain(first: String = "") {
+        if (busy) return
+        busy = true
+        message = first + tr2(c.lang, "⏳ बिल दोबारा पढ़ रहा है…", "⏳ Reading the bill again…")
+        scope.launch {
+            val r = runCatching { c.reread(inv) }
+            busy = false
+            message = first + r.fold(
+                onSuccess = { x ->
+                    if (x == null) tr2(c.lang, "इस बिल की स्कैन जानकारी नहीं मिली — नया स्कैन करें।", "This bill's scan data is not available — scan again.")
+                    else {
+                        val arts = x.items.filter { it.kind == ItemKind.ARTICLE }
+                        val sure = arts.count { com.shivtej.billscanner.core.ocr.Heal.sure(it) }
+                        tr2(c.lang, "🔄 दोबारा पढ़ा ✓ बिल ${x.header.invoiceNo ?: "?"} · $sure/${arts.size} लाइन पक्की", "🔄 Read again ✓ bill ${x.header.invoiceNo ?: "?"} · $sure/${arts.size} lines add up")
+                    }
+                },
+                onFailure = { e -> tr2(c.lang, "दोबारा पढ़ने में दिक्कत आई: ", "Could not read again: ") + (e.message ?: e::class.simpleName) },
+            )
+            android.widget.Toast.makeText(ctxApp, message, android.widget.Toast.LENGTH_LONG).show()
+        }
+    }
     val warnings = Warnings.of(inv, previous)
     // Lines the scan did not understand: asked about once, as soon as the bill opens.
     var askFix by remember(inv.id) { mutableStateOf(inv.id !in askedFix && doubtful(inv).isNotEmpty()) }
@@ -116,14 +139,22 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
         onGst = { on -> ed.change { Edits.setSittingWithGst(it, on, System.currentTimeMillis()) } },
         canUndo = ed.canUndo, onUndo = { ed.undo() }, message = message, onFix = onFix,
         onSendClaude = { scope.launch { withContext(Dispatchers.IO) { runCatching { Files.shareForClaude(ctxApp, inv) } } } },
-        onReread = {
-            scope.launch {
-                val r = c.reread(inv)
-                message = if (r == null) tr2(c.lang, "इस बिल की स्कैन जानकारी नहीं मिली — नया स्कैन करें।", "This bill's scan data is not available — scan again.")
-                else {
-                    val sure = r.items.count { it.kind == ItemKind.ARTICLE && com.shivtej.billscanner.core.ocr.Heal.sure(it) }
-                    tr2(c.lang, "🔄 दोबारा पढ़ा — $sure/${r.items.count { it.kind == ItemKind.ARTICLE }} लाइन पक्की", "🔄 Read again — $sure/${r.items.count { it.kind == ItemKind.ARTICLE }} lines add up")
+        onReread = { readAgain() }, busy = busy,
+        // Claude's code pasted right under the bill: kept for good (and backed up), then the bill is read again with it.
+        onPasteCode = { text ->
+            val got = com.shivtej.billscanner.core.store.Backup.read(text).patterns
+            if (got.isEmpty()) {
+                message = tr2(c.lang, "यह कोड सही नहीं है — Claude का पूरा कोड (SBP1: से शुरू) पेस्ट करें।", "Not a valid code — paste Claude's whole code starting with SBP1:")
+                android.widget.Toast.makeText(ctxApp, message, android.widget.Toast.LENGTH_LONG).show()
+                false
+            } else {
+                c.prefs.patterns = (got + c.prefs.patterns).distinctBy { it.name.uppercase() }
+                runCatching {
+                    val backup = com.shivtej.billscanner.core.store.Backup.write(c.prefs.patterns, c.prefs.learnt.encode(), c.prefs.taughtRaw)
+                    Files.saveToDownloads(ctxApp, "Shivtej_Bill_Codes_Backup.txt", "text/plain", backup.toByteArray(Charsets.UTF_8))
                 }
+                readAgain(tr2(c.lang, "✓ कोड लगा (${got.joinToString { it.name }}) और याद रखा।\n", "✓ Code added (${got.joinToString { it.name }}) and kept.\n"))
+                true
             }
         },
     )
@@ -239,6 +270,7 @@ fun BillContent(
     onDelete: () -> Unit = {}, onAdd: () -> Unit = {}, onGst: (Boolean) -> Unit = {}, canUndo: Boolean = false, onUndo: () -> Unit = {},
     message: String? = null, showWarnings: Boolean = false, onView: () -> Unit = {}, onFix: () -> Unit = {},
     onSendClaude: () -> Unit = {}, onReread: () -> Unit = {}, onCheck: () -> Unit = {},
+    busy: Boolean = false, onPasteCode: (String) -> Boolean = { false },
 ) {
     val h = inv.header
     val t = Totals.of(inv)
@@ -319,7 +351,18 @@ fun BillContent(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onSendClaude) { Text(tr("📤 समझ नहीं आया? Claude को भेजें", "📤 Not understood? Send to Claude"), color = C.orangeDark, fontSize = 13.sp) }
                 Box(Modifier.weight(1f))
-                TextButton(onClick = onReread) { Text(tr("🔄 दोबारा पढ़ें", "🔄 Read again"), color = C.navy, fontSize = 13.sp) }
+                TextButton(onClick = onReread, enabled = !busy) { Text(if (busy) tr("⏳ पढ़ रहा है…", "⏳ Reading…") else tr("🔄 दोबारा पढ़ें", "🔄 Read again"), color = C.navy, fontSize = 13.sp) }
+            }
+            // Claude's code goes straight in here: "लगाएँ" keeps it and reads the bill again with it.
+            var code by remember { mutableStateOf("") }
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                androidx.compose.material3.OutlinedTextField(code, { code = it }, singleLine = true, modifier = Modifier.weight(1f),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 13.sp),
+                    placeholder = { Text(tr("Claude का कोड (SBP1:…) यहाँ पेस्ट करें", "Paste Claude's code (SBP1:…) here"), fontSize = 12.sp, maxLines = 1) })
+                androidx.compose.material3.Button(onClick = { if (onPasteCode(code)) code = "" }, enabled = code.isNotBlank() && !busy,
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = C.orange)) {
+                    Text(tr("लगाएँ ✓", "Apply ✓"), fontSize = 13.sp, color = Color.White)
+                }
             }
         }
     }
