@@ -1382,6 +1382,12 @@ object InvoiceParser {
             .filter { w -> sizeWord.find(w)?.let { m -> hsnSizes += m.groupValues[1].replace('O', '0').replace('o', '0'); false } ?: true }.joinToString("") } }.filter { it.isLetterOrDigit() }
 
         descLines = descLines.map { it.replace(Regex("""\(\s+"""), "(").replace(Regex("""\s+\)"""), ")") }.toMutableList()
+        // "MRP64029 :615.00", "MRP64029 (: 645.00" (Patel): the HSN printed beside it ran into "MRP" — the HSN goes back to its column.
+        var gluedHsn: String? = null
+        Regex("""(?i)M\.?R\.?P\.?\s*(64\d{3,6})\s*[(\[{|]?\s*[:;.]\s*(\d{2,5}[.,]\d{2})""").let { re ->
+            val all = descLines.joinToString("\n")
+            re.find(all)?.let { m -> gluedHsn = m.groupValues[1]; descLines = all.replace(m.value, "MRP : " + m.groupValues[2].replace(',', '.')).lines().toMutableList() }
+        }
         val joined = descLines.joinToString("\n")
         val mrpCol = anyNum(Kind.MRP)
         val mrpMatch = if (mrpCol == null) MRP.find(joined) else null
@@ -1449,7 +1455,7 @@ object InvoiceParser {
         val kind = if (CHARGE.containsMatchIn(article.ifEmpty { codeToken }) || CHARGE.containsMatchIn(firstLine)) ItemKind.CHARGE else ItemKind.ARTICLE
         val amount = firstNum(Kind.AMOUNT)
         var v = ItemValues(
-            sr = sr, article = article, name = name, brand = brand, colour = colour, sizeText = sizeText, hsn = hsn,
+            sr = sr, article = article, name = name, brand = brand, colour = colour, sizeText = sizeText, hsn = gluedHsn?.takeIf { hsn.length <= 4 && !hsn.startsWith(it) }?.let { it + hsn } ?: hsn,
             qty = firstNum(Kind.QTY), mrp = mrp, rate = firstNum(Kind.RATE), gross = firstNum(Kind.GROSS),
             discPct = firstNum(Kind.DISC_PCT), discAmt = firstNum(Kind.DISC_AMT), taxable = firstNum(Kind.TAXABLE) ?: amount,
             cgstPct = firstNum(Kind.CGST_PCT), cgstAmt = firstNum(Kind.CGST_AMT), sgstPct = firstNum(Kind.SGST_PCT), sgstAmt = firstNum(Kind.SGST_AMT),

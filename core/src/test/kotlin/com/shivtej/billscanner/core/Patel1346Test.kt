@@ -33,6 +33,9 @@ class Patel1346Test {
         val l6 = arts.first { it.current.sr == 6 }.current
         assertTrue(l6.sizeText, l6.sizeText.replace(" ", "").contains("7/1"))
         assertFalse(l6.hsn, l6.hsn.contains("71"))
+        assertEquals(0, l6.mrp!!.compareTo(BigDecimal("645.00"))); assertEquals("64029990", l6.hsn)
+        val l4 = arts.first { it.current.sr == 4 }.current
+        assertFalse(l4.sizeText, l4.sizeText.contains("MRP")); assertEquals(0, l4.mrp!!.compareTo(BigDecimal("615.00")))
         val l5 = arts.first { it.current.sr == 5 }.current
         assertEquals(0, l5.mrp!!.compareTo(BigDecimal("619.00"))); assertEquals(0, l5.taxable!!.compareTo(BigDecimal("2230.05")))
     }
@@ -63,7 +66,7 @@ class Patel1346WarningsTest {
         val inv = com.shivtej.billscanner.core.model.Invoice("p", 0, p.header, p.header, p.items, columns = p.columns)
         val ws = com.shivtej.billscanner.core.model.Warnings.of(inv).filter { it.level != com.shivtej.billscanner.core.model.Warning.Level.TIP }
         val all = ws.joinToString("\n") { it.hindi }
-        assertTrue(all, ws.none { it.hindi.contains("साइज़") })
+        assertTrue(all, ws.none { it.hindi.contains("साइज़") || it.hindi.contains("64029") || it.hindi.contains("MRP") })
         assertTrue(all, ws.any { it.hindi.contains("12.78") && it.hindi.contains("सप्लायर") })
     }
 }

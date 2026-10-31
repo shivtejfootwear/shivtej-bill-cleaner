@@ -79,7 +79,8 @@ class ExportTest {
         assertTrue(w.joinToString { it.hindi }, w.any { it.hindi.contains("फ़र्क़ ₹13.43") })
         assertTrue(w.any { it.hindi.contains("Needs Verification") })
         assertTrue(w.any { it.hindi.contains("Page 1 of 2") })
-        assertTrue(w.any { it.hindi.contains("1562") && it.hindi.contains("बराबर नहीं") })
+        // "BLK 6X10/1" (Paragon box of a size range): told as a tip, not asked as a mistake.
+        assertTrue(w.any { it.hindi.contains("1562") && it.hindi.contains("साइज़ सेट") && it.level == com.shivtej.billscanner.core.model.Warning.Level.TIP })
         assertTrue(w.none { it.hindi.contains("पैकिंग में") })     // (134) = 134 pairs
     }
 }

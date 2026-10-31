@@ -26,7 +26,7 @@ object Warnings {
             // The bill's own total is higher by about one line's discount (Patel: Freight 426 − 3% = 12.78 never taken off the total).
             val disc = if (d.abs() > BigDecimal("0.99")) inv.items.firstOrNull { i -> i.current.discAmt?.let { a -> (a - d.abs()).abs() <= BigDecimal("0.50") } == true } else null
             if (disc != null) out += Warning(Warning.Level.CHECK, null,
-                "सप्लायर के बिल का Total लाइनों से ₹${Calc.fmt(d)} ज़्यादा है — यह \"${disc.current.article.ifBlank { disc.current.name }}\" के डिस्काउंट ₹${Calc.fmt(disc.current.discAmt)} जितना है। लाइन में डिस्काउंट दिखाया पर Total में घटाया नहीं — app का पढ़ना सही है, सप्लायर से पूछें।",
+                "सप्लायर के बिल का Total लाइनों से ज़्यादा है (फ़र्क़ ₹${Calc.fmt(d)}) — यह \"${disc.current.article.ifBlank { disc.current.name }}\" के डिस्काउंट ₹${Calc.fmt(disc.current.discAmt)} जितना है। लाइन में डिस्काउंट दिखाया पर Total में घटाया नहीं — app का पढ़ना सही है, सप्लायर से पूछें।",
                 "The bill total is ₹${Calc.fmt(d)} above its lines — about the discount ₹${Calc.fmt(disc.current.discAmt)} shown on \"${disc.current.article}\" but not taken off the total.")
             else if (d.abs() > BigDecimal("0.99")) out += Warning(Warning.Level.CHECK, null,
                 "लाइनों का जोड़ ₹${Calc.fmt(t.grand)}, पर बिल पर कुल ₹${Calc.fmt(t.printedGrand)} छपा है — फ़र्क़ ₹${Calc.fmt(d)}। कोई और चार्ज, round-off या दूसरा पेज तो नहीं?",
