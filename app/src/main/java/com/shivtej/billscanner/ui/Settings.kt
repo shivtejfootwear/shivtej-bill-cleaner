@@ -161,7 +161,7 @@ fun SettingsContent(
             Card {
                 Title(tr("PDF", "PDF"))
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(tr("आड़ा (landscape) पेज — ज़्यादा कॉलम", "Landscape page — more columns"), modifier = Modifier.weight(1f)); Switch(landscape, onLandscape)
+                    Text(tr("पुरानी चौड़ी टेबल वाली PDF (बंद = फ़ोन में बैठने वाले कार्ड)", "Old wide table PDF (off = phone-size cards)"), modifier = Modifier.weight(1f)); Switch(landscape, onLandscape)
                 }
             }
             Card {

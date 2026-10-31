@@ -82,7 +82,7 @@ object Files {
         val out = ByteArrayOutputStream()
         when (k) {
             ExportKind.XLSX -> InvoiceExport.xlsx(inv, out)
-            ExportKind.PDF_REPORT -> Pdf.report(inv, landscape, out)
+            ExportKind.PDF_REPORT -> if (landscape) Pdf.report(inv, true, out) else Pdf.cards(inv, out)
             ExportKind.PDF_PHOTO -> {
                 val bmps = inv.pages.mapNotNull { runCatching { Ocr.loadBitmap(File(it)) }.getOrNull() }
                 Pdf.photos(bmps, "${inv.header.supplierName ?: ""} ${inv.header.invoiceNo ?: ""}".trim(), out)
@@ -233,7 +233,7 @@ fun ExportContent(inv: Invoice, landscape: Boolean, onLandscape: (Boolean) -> Un
             row(ExportKind.XLSX, "XLSX", Color(0xFF13795B), "Excel (.xlsx)", tr("बिल जैसा छपा + हरा बैठा % + पीला अपना % (Excel में बदल सकते हैं) + नई रकम और Total", "Bill as printed + green baitha % + yellow our % (editable) + new amount and total"))
             row(ExportKind.PDF_REPORT, "PDF", C.err, tr("पूरा बिल PDF (बैठा % + अपना % + नई रकम)", "Whole bill PDF (baitha % + our % + new amount)"), tr("बिल के सारे कॉलम जैसे छपे · हर पेज पर हेडर", "All bill columns as printed · headers on every page"))
             Row(Modifier.fillMaxWidth().padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Muted(tr("PDF आड़ा (landscape) — ज़्यादा कॉलम", "Landscape PDF — more columns"), Modifier.weight(1f)); Switch(landscape, onLandscape)
+                Muted(tr("पुरानी चौड़ी टेबल वाली PDF (बंद = फ़ोन में बैठने वाले कार्ड)", "Old wide table PDF (off = phone-size cards)"), Modifier.weight(1f)); Switch(landscape, onLandscape)
             }
             row(ExportKind.PDF_TARGET, "%", C.orange, tr("नया बिल (अपने %) PDF", "New bill at our % — PDF"), tr("कंपनी-वार %, नई रकम, Total और फ़र्क़", "Company %, new amount, total and difference"))
             row(ExportKind.IMAGE_TARGET, "PNG", C.orangeDark, tr("नया बिल — फ़ोटो (WhatsApp के लिए)", "New bill — image (for WhatsApp)"), tr("एक लंबी फ़ोटो में पूरा नया बिल", "The whole new bill as one image"))

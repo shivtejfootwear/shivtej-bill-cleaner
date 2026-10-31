@@ -36,12 +36,11 @@ object Pdf {
 
     private class Col(val title: String, val w: Float, val right: Boolean = true, val orange: Boolean = false, val green: Boolean = false)
 
-    private class Writer(val doc: PdfDocument, val w: Int, val h: Int, val footer: String) {
+    private class Writer(val doc: PdfDocument, val w: Int, val h: Int, val footer: String, val margin: Float = 30f) {
         var page: PdfDocument.Page? = null
         var c: Canvas? = null
         var y = 0f
         var n = 0
-        val margin = 30f
         val text = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = 8.5f; color = 0xFF14202E.toInt(); typeface = Typeface.DEFAULT }
         val bold = Paint(text).apply { typeface = Typeface.DEFAULT_BOLD }
         val fill = Paint().apply { style = Paint.Style.FILL }
@@ -178,6 +177,109 @@ object Pdf {
         if (ws.isNotEmpty()) {
             wr.line("Points to check", wr.bold, 10f, NAVY, 4f)
             ws.forEach { wr.line("• ${it.english}", size = 8f, color = ORANGE_DARK) }
+        }
+        wr.finish(); doc.writeTo(out); doc.close()
+    }
+
+    /**
+     * The bill as cards on a phone-size page (owner's choice, option A): one card per article with the supplier's
+     * rate and amount, our rate and amount at the target % below it (orange), and the baitha %. Fits a phone
+     * screen without zooming out; zoom still works.
+     */
+    fun cards(inv: Invoice, out: OutputStream) {
+        val doc = PdfDocument()
+        val pw = 360; val ph = 740
+        val wr = Writer(doc, pw, ph, "Shivtej Bill Scanner AI · ${stamp()} · सप्लायर का असली बिल नहीं", margin = 12f)
+        val h = inv.header; val t = Totals.of(inv)
+        val sheet = Target.sheet(inv)
+        val lines = sheet.lines.associateBy { it.item.id }
+        val m = wr.margin; val right = pw - m
+        val ink = 0xFF14202E.toInt()
+        fun paint(size: Float, color: Int = ink, b: Boolean = false) = Paint(if (b) wr.bold else wr.text).apply { textSize = size; this.color = color }
+        fun rs(v: BigDecimal?) = v?.let { "₹" + String.format(Locale.ENGLISH, "%,.2f", Calc.r2(it)) } ?: "—"
+        fun cut(s: String, p: Paint, max: Float): String {
+            if (p.measureText(s) <= max) return s
+            var e = s
+            while (e.isNotEmpty() && p.measureText("$e…") > max) e = e.dropLast(1)
+            return "$e…"
+        }
+        // Left text and right text on one line.
+        fun pair(y: Float, l: String, r: String, lp: Paint, rp: Paint, inset: Float = 8f) {
+            val rw = rp.measureText(r)
+            wr.c!!.drawText(cut(l, lp, right - m - 2 * inset - rw - 8f), m + inset, y, lp)
+            wr.c!!.drawText(r, right - inset - rw, y, rp)
+        }
+        fun band() {
+            // Navy head on every page.
+            wr.fill.color = NAVY
+            wr.c!!.drawRect(0f, 0f, pw.toFloat(), 48f, wr.fill)
+            wr.c!!.drawText(cut(h.supplierName ?: "सप्लायर", paint(13f, Color.WHITE, true), pw - 24f), m, 20f, paint(13f, Color.WHITE, true))
+            val sub = "बिल ${h.invoiceNo ?: "?"} · ${h.invoiceDate ?: "?"} · ${t.qty.stripTrailingZeros().toPlainString()} जोड़ी" + (if (wr.n > 1) " · पेज ${wr.n}" else "")
+            wr.c!!.drawText(cut(sub, paint(8.5f, 0xFFD5DCE6.toInt()), pw - 24f), m, 36f, paint(8.5f, 0xFFD5DCE6.toInt()))
+            wr.y = 58f
+        }
+        fun ensure(space: Float) { if (wr.page == null || wr.y + space > ph - 30f) { wr.newPage(); band() } }
+        val rowH = 13f
+        for (it in inv.items) {
+            val v = it.current
+            if (it.kind == ItemKind.CHARGE) {
+                ensure(24f)
+                val top = wr.y
+                wr.stroke.color = LINE
+                wr.c!!.drawRoundRect(RectF(m, top, right, top + 20f), 7f, 7f, wr.stroke)
+                pair(top + 13.5f, listOf(v.article, v.name).filter { s -> s.isNotBlank() }.joinToString(" ").ifBlank { "खर्च" } + (v.gross?.let { g -> " · ${rs(g)}" } ?: ""),
+                    rs(v.taxable ?: v.gross), paint(8.5f, MUTED), paint(8.5f, MUTED))
+                wr.y = top + 26f
+                continue
+            }
+            val l = lines[it.id]
+            val sit = Calc.sittingPct(v, h, inv.sittingWithGst)
+            val n = 3 + (if (l != null) 1 else 0) + (if (sit != null) 1 else 0) + (if (it.needs.isNotEmpty()) 1 else 0)
+            val cardH = 10f + n * rowH
+            ensure(cardH + 6f)
+            val top = wr.y
+            val box = RectF(m, top, right, top + cardH)
+            wr.stroke.color = if (it.needs.isNotEmpty()) ORANGE else LINE
+            wr.stroke.strokeWidth = if (it.needs.isNotEmpty()) 1f else 0.6f
+            wr.c!!.drawRoundRect(box, 8f, 8f, wr.stroke)
+            wr.stroke.strokeWidth = 0.5f
+            var y = top + 14f
+            pair(y, "${v.sr?.let { s -> "$s. " } ?: ""}${v.article.ifBlank { v.name }}", v.mrp?.let { mm -> "MRP ${rs(mm)}" } ?: "MRP —", paint(10f, NAVY, true), paint(8.5f, MUTED))
+            y += rowH
+            val qty = v.qty?.stripTrailingZeros()?.toPlainString()
+            pair(y, listOf(v.name.takeIf { s -> s != v.article }.orEmpty(), listOf(v.colour, v.sizeText).filter { s -> s.isNotBlank() }.joinToString(" "), qty?.let { q -> "$q जोड़ी" }.orEmpty())
+                .filter { s -> s.isNotBlank() }.joinToString(" · "), "", paint(8f, MUTED), paint(8f, MUTED))
+            y += rowH
+            pair(y, "उनका रेट ${rs(v.rate)}" + (v.discPct?.let { d -> " · ${p(d)}" } ?: ""), rs(v.taxable), paint(9f), paint(9.5f, ink, true))
+            if (l != null) { y += rowH; pair(y, "अपना रेट ${rs(l.net)} · ${p(l.pct)}", rs(Target.newShown(inv, l)), paint(9f, ORANGE_DARK), paint(9.5f, ORANGE_DARK, true)) }
+            if (sit != null) { y += rowH; pair(y, "बैठा ${p(sit)}", "", paint(9f, GREEN, true), paint(9f)) }
+            if (it.needs.isNotEmpty()) { y += rowH; pair(y, "⚠ जाँचें: " + it.needs.joinToString(", ") { f -> f.name.lowercase() }, "", paint(8f, ORANGE_DARK), paint(8f)) }
+            wr.y = top + cardH + 6f
+        }
+        // Totals: theirs, ours, the difference.
+        val tl = 3 + (if (sheet.any) 2 else 0)
+        ensure(14f + tl * 14f)
+        val top = wr.y + 2f
+        val tb = RectF(m, top, right, top + 10f + tl * 14f)
+        wr.fill.color = 0xFFF4F6FA.toInt(); wr.c!!.drawRoundRect(tb, 8f, 8f, wr.fill)
+        var y = top + 16f
+        val bill = t.printedGrand ?: t.grand
+        pair(y, "उनका Total (बिल पर)", rs(bill), paint(9.5f), paint(10f, NAVY, true)); y += 14f
+        val d = t.difference
+        pair(y, "लाइनों से जोड़ ${rs(t.grand)}", if (d == null || d.abs() <= BigDecimal("0.99")) "✓ मिला" else "फ़र्क़ ${rs(d)}", paint(8.5f, MUTED),
+            paint(8.5f, if (d == null || d.abs() <= BigDecimal("0.99")) GREEN else ORANGE_DARK, true)); y += 14f
+        if (sheet.any) {
+            pair(y, "अपना Total", rs(sheet.rounded), paint(9.5f, ORANGE_DARK), paint(10f, ORANGE_DARK, true)); y += 14f
+            pair(y, "फ़र्क़", rs(sheet.difference), paint(9.5f), paint(10f, if (sheet.difference.signum() < 0) GREEN else ORANGE_DARK, true)); y += 14f
+        }
+        pair(y, "पूरे बिल पर बैठा %", p(Calc.sittingTotal(inv)), paint(9.5f, GREEN), paint(10f, GREEN, true))
+        wr.y = tb.bottom + 10f
+        val ws = Warnings.of(inv).filter { w -> w.level.name != "TIP" }
+        if (ws.isNotEmpty()) {
+            ensure(16f); wr.c!!.drawText("जाँचें", m, wr.y + 8f, paint(10f, NAVY, true)); wr.y += 16f
+            for (w in ws) for (ln in wr.wrap("• ${w.hindi}", paint(8f, ORANGE_DARK), right - m)) {
+                ensure(11f); wr.c!!.drawText(ln, m, wr.y + 7f, paint(8f, ORANGE_DARK)); wr.y += 11f
+            }
         }
         wr.finish(); doc.writeTo(out); doc.close()
     }

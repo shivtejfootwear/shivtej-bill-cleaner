@@ -104,8 +104,10 @@ object InvoiceParser {
                 // (The same page twice is not dropped here: the repeated lines are merged further down.)
                 (lastOf != null && po != null && po.first > 1 && po != lastOf && (lastOf!!.first >= lastOf!!.second || po.second != lastOf!!.second)) ||
                     // A sheet with its own bill head (GSTIN) and another invoice number, as its first page: another bill.
-                    ((po?.first ?: 1) == 1 && header.supplierGstin != null && r.header.supplierGstin != null &&
-                        digits(header.invoiceNo) != null && digits(r.header.invoiceNo) != null && digits(header.invoiceNo) != digits(r.header.invoiceNo)))
+                    ((po?.first ?: r.header.pageNote?.let { Regex("""(?i)page\D{0,6}(\d+)""").find(it)?.groupValues?.get(1)?.toIntOrNull() } ?: 1) == 1 && header.supplierGstin != null && r.header.supplierGstin != null &&
+                        digits(header.invoiceNo) != null && digits(r.header.invoiceNo) != null && digits(header.invoiceNo) != digits(r.header.invoiceNo) &&
+                        // and another date too: a misread number on the same bill's next page never drops it.
+                        digits(header.invoiceDate) != null && digits(r.header.invoiceDate) != null && digits(header.invoiceDate) != digits(r.header.invoiceDate)))
             if (otherBill) {
                 notes += "पेज ${i + 1} किसी दूसरे बिल का है" + (r.header.pageNote?.let { " ($it)" } ?: "") + (lastOf?.let { " — पिछला पेज Page ${it.first} of ${it.second} था" } ?: "") + " — उसे छोड़ दिया। उस बिल को अलग से स्कैन करें।"
                 return@forEachIndexed

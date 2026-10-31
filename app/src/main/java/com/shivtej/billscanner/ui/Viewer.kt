@@ -66,14 +66,14 @@ fun FullBillScreen(id: String, onBack: () -> Unit) {
     val pages by produceState<List<ImageBitmap>?>(null, inv) {
         value = withContext(Dispatchers.IO) {
             runCatching {
-                val pdf = ByteArrayOutputStream().also { Pdf.report(inv, true, it) }.toByteArray()
+                val pdf = ByteArrayOutputStream().also { Pdf.cards(inv, it) }.toByteArray()
                 renderPages(File(ctx.cacheDir, "view_${inv.id}.pdf").apply { writeBytes(pdf) }).map { it.asImageBitmap() }
             }.getOrElse { emptyList() }
         }
     }
     fun act(k: ExportKind, share: Boolean) = scope.launch {
         runCatching {
-            val data = withContext(Dispatchers.IO) { Files.bytes(ctx, inv, k, true) }
+            val data = withContext(Dispatchers.IO) { Files.bytes(ctx, inv, k, c.prefs.pdfLandscape) }
             val name = Files.name(inv, k)
             if (share) Files.share(ctx, name, k.mime, data) else {
                 withContext(Dispatchers.IO) { Files.saveToDownloads(ctx, name, k.mime, data) }

@@ -113,8 +113,9 @@ class Prefs(ctx: Context) {
         get() = (p.getString("disc", "30,35,40,45,50") ?: "").split(',').mapNotNull { it.trim().toIntOrNull() }.distinct()
         set(v) { p.edit().putString("disc", v.distinct().sorted().joinToString(",")).apply() }
     var pdfLandscape: Boolean
-        get() = p.getBoolean("pdf_land", true)
-        set(v) { p.edit().putBoolean("pdf_land", v).apply() }
+        // On = the old wide table PDF; off (default) = the phone-size card PDF the owner chose (option A).
+        get() = p.getBoolean("pdf_wide_table", false)
+        set(v) { p.edit().putBoolean("pdf_wide_table", v).apply() }
 
     /** What the scanner learnt from the person's corrections (see core Learnt). */
     var learnt: com.shivtej.billscanner.core.ocr.Learnt
