@@ -1,0 +1,200 @@
+> Task :app:kspReleaseKotlin
+> Task :app:mergeReleaseNativeLibs
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libmlkit_google_ocr_pipeline.so.
+
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :core:compileTestKotlin
+> Task :core:compileTestJava NO-SOURCE
+> Task :core:testClasses
+
+> Task :core:test
+
+BackupAndKnownTest > aBackupComesBackWhole PASSED
+
+BackupAndKnownTest > patelTradingComesWithTheApp PASSED
+
+BillPatternTest > codeGoesAndComesBack PASSED
+
+BillPatternTest > theMrpInTheDescriptionIsTakenWithThePattern PASSED
+
+BillPatternTest > matchesTheSupplierEvenWhenTheGstinIsMisread PASSED
+
+CleaningTest > gluedWordsAreSplit PASSED
+
+DharashivExportTest > excelHasThePrintedBillTheGreenColumnAndTheNewBill PASSED
+
+DharashivTest > totalsMatchTheBill PASSED
+
+DharashivTest > bothPagesInOnePhotoAndWordsReadTwice PASSED
+
+DharashivTest > misplacedHeadingsAreFixedByTheBillsOwnArithmetic PASSED
+
+DharashivTest > unreadableDiscIsWorkedOutOnlyWhenTheLineProvesIt PASSED
+
+DharashivTest > columnsAreTheBillsOwn PASSED
+
+DharashivTest > photoStartingInTheMiddleOfTheTable PASSED
+
+DharashivTest > sittingPercentIsWhatTheShopReallyGets PASSED
+
+DharashivTest > newBillAtTargetPerCompany PASSED
+
+DharashivTest > flatPhotoToo PASSED
+
+DharashivTest > headerIsRead PASSED
+
+EditsTest > addDuplicateDelete PASSED
+
+EditsTest > editingTheBillPercentRecalculatesAndLogs PASSED
+
+ExportTest > savingAndLoadingKeepsEveryPaisa PASSED
+
+ExportTest > warningsExplainInHindi PASSED
+
+ExportTest > stockCsvOnlyHasSizesThatAddUp PASSED
+
+ExportTest > xlsxIsAValidWorkbookWithTheBillDiscountColumn PASSED
+
+LearningFromFixesTest > aFixTeachesTheNextBill PASSED
+
+LearningFromFixesTest > aDeletedJunkLineIsSkippedNextTime PASSED
+
+LearningFromFixesTest > aWrongNumberTypedInTheWrongBoxTeachesNothing PASSED
+
+LearningTest > aTaughtColumnIsUsedNextTime PASSED
+
+NextPageTest > theEndOfALineOnTheNextPageJoinsItAndTheTotalsAreRead PASSED
+
+ParserTest > everyLineAndEveryNumberIsRead PASSED
+
+ParserTest > totalsAndReconciliation PASSED
+
+ParserTest > discountMaths PASSED
+
+ParserTest > sizeAssortments PASSED
+
+ParserTest > textPartsAreKept PASSED
+
+ParserTest > supplierRoundingIsNotAnError PASSED
+
+ParserTest > unreadableDiscountIsNeedsVerificationNotInvented PASSED
+
+ParserTest > headerIsRead PASSED
+
+Patel1346Test > pageOfAnotherBillIsLeftOut PASSED
+
+Patel1346Test > withTheBuiltInCode PASSED
+
+Patel1346Test > firstPageAlone PASSED
+
+Patel1346WarningsTest > onlyTheSuppliersOwnTotalGapIsAsked PASSED
+
+PatelNewPhotoTest > lineSolverFixesLinesWhateverTheColumns PASSED
+
+PatelNewPhotoTest > ownersPhoneReadingIsUnderstood PASSED
+
+PatelNewPhotoTest > readsEveryLine PASSED
+
+PatelNewPhotoTest > gstDigitsCutAtTheEdgeDoNotMakeLinesDoubtful PASSED
+
+PatelNewPhotoTest > aWronglyTaughtColumnCannotSpoilIt PASSED
+
+PatelNewPhotoTest > aWrongPastedCodeCannotSpoilIt PASSED
+
+PatelTradingTest > baithaIsAgainstTheRateWithGstAndNewAmountsIncludeGstLikeTheBill PASSED
+
+PatelTradingTest > everyLineIsReadAndAddsUp PASSED
+
+RealOcrTest > sameBillAddedTwiceKeepsOneCopy PASSED
+
+> Task :app:compileDebugKotlin
+> Task :app:compileReleaseKotlin
+w: file:///home/runner/work/shivtej-bill-cleaner/shivtej-bill-cleaner/app/src/main/java/com/shivtej/billscanner/ui/Add.kt:179:33 'val Icons.Outlined.RotateRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Outlined.RotateRight.
+
+> Task :app:compileDebugKotlin
+w: file:///home/runner/work/shivtej-bill-cleaner/shivtej-bill-cleaner/app/src/main/java/com/shivtej/billscanner/ui/Add.kt:179:33 'val Icons.Outlined.RotateRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Outlined.RotateRight.
+
+> Task :core:test
+
+RealOcrTest > aLineThatSlidSidewaysIsDealtAgainByWhatItsWordsLookLike PASSED
+
+RealOcrTest > shPatelBillsWithAnotherBooksEdge PASSED
+
+RealOcrTest > lostPairsAndLostPointTogetherAreWorkedOut PASSED
+
+RealOcrTest > lakhaniOldAndNewMrpCartonsAndBillDiscounts PASSED
+
+RealOcrTest > memosAndSmallSuppliers PASSED
+
+RealOcrTest > lakhaniPdfAsThePhoneReadsIt PASSED
+
+RealOcrTest > eachLineKnowsWhereItIsOnThePhoto PASSED
+
+RealOcrTest > patelTradingRateOnlyAndHiddenSerial PASSED
+
+RealOcrTest > dharashivV3617ScreenshotOfTwoPages PASSED
+
+RealOcrTest > bankAndSignatureLinesAreNeverArticles PASSED
+
+RealOcrTest > dharashivR2395BentPhoto PASSED
+
+RealOcrTest > patelWithStampAndGluedSerial PASSED
+
+RealOcrTest > yashArticleColourMrpCodes PASSED
+
+RobustnessTest > patelUnderBadPhotos PASSED
+
+RobustnessTest > dharashivUnderBadPhotos PASSED
+
+VenkateshwaraTest > cutPhotoIsReadFully PASSED
+
+SynthTest > everyKindOfBillIsReadExactly PASSED
+
+SynthTest > ocrSlipsAreShownNeverHidden PASSED
+
+> Task :app:compileDebugJavaWithJavac
+> Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:compileReleaseJavaWithJavac
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:kspDebugUnitTestKotlin
+> Task :app:dexBuilderRelease
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:processReleaseJavaRes
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:mergeReleaseJavaResource
+> Task :app:mergeDexRelease
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:testDebugUnitTest
+
+Exception in thread "DefaultDispatcher-worker-1 @coroutine#483" Exception in thread "DefaultDispatcher-worker-2 @coroutine#484" ---- read threw an exception
+--- Failed to create image decoder with message 'unimplemented'
+---- read threw an exception
+--- Failed to create image decoder with message 'unimplemented'
+
+> Task :app:finalizeTestRoborazziDebug
+> Task :app:recordRoborazziDebug
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:assembleRelease
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/build-1793448804806.json
+
+[Incubating] Problems report is available at: file:///home/runner/work/shivtej-bill-cleaner/shivtej-bill-cleaner/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 17s
+87 actionable tasks: 87 executed

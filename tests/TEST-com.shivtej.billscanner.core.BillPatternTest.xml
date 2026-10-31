@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.BillPatternTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-31T12:14:34.211Z" hostname="runnervmnwato" time="1.898">
+  <properties/>
+  <testcase name="codeGoesAndComesBack" classname="com.shivtej.billscanner.core.BillPatternTest" time="0.031"/>
+  <testcase name="theMrpInTheDescriptionIsTakenWithThePattern" classname="com.shivtej.billscanner.core.BillPatternTest" time="1.865"/>
+  <testcase name="matchesTheSupplierEvenWhenTheGstinIsMisread" classname="com.shivtej.billscanner.core.BillPatternTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.ExportTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-31T12:14:45.695Z" hostname="runnervmnwato" time="0.982">
+  <properties/>
+  <testcase name="savingAndLoadingKeepsEveryPaisa" classname="com.shivtej.billscanner.core.ExportTest" time="0.137"/>
+  <testcase name="warningsExplainInHindi" classname="com.shivtej.billscanner.core.ExportTest" time="0.197"/>
+  <testcase name="stockCsvOnlyHasSizesThatAddUp" classname="com.shivtej.billscanner.core.ExportTest" time="0.255"/>
+  <testcase name="xlsxIsAValidWorkbookWithTheBillDiscountColumn" classname="com.shivtej.billscanner.core.ExportTest" time="0.39"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

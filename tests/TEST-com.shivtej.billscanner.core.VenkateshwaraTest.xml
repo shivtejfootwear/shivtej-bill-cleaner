@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.VenkateshwaraTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-31T12:15:03.289Z" hostname="runnervmnwato" time="0.101">
+  <properties/>
+  <testcase name="cutPhotoIsReadFully" classname="com.shivtej.billscanner.core.VenkateshwaraTest" time="0.101"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

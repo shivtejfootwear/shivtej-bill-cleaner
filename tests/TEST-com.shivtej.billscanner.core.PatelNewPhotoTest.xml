@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.PatelNewPhotoTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-31T12:14:53.292Z" hostname="runnervmnwato" time="1.848">
+  <properties/>
+  <testcase name="lineSolverFixesLinesWhateverTheColumns" classname="com.shivtej.billscanner.core.PatelNewPhotoTest" time="0.54"/>
+  <testcase name="ownersPhoneReadingIsUnderstood" classname="com.shivtej.billscanner.core.PatelNewPhotoTest" time="0.132"/>
+  <testcase name="readsEveryLine" classname="com.shivtej.billscanner.core.PatelNewPhotoTest" time="0.145"/>
+  <testcase name="gstDigitsCutAtTheEdgeDoNotMakeLinesDoubtful" classname="com.shivtej.billscanner.core.PatelNewPhotoTest" time="0.248"/>
+  <testcase name="aWronglyTaughtColumnCannotSpoilIt" classname="com.shivtej.billscanner.core.PatelNewPhotoTest" time="0.422"/>
+  <testcase name="aWrongPastedCodeCannotSpoilIt" classname="com.shivtej.billscanner.core.PatelNewPhotoTest" time="0.355"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

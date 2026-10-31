@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.ScreenshotTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-10-31T12:16:08.103Z" hostname="runnervmnwato" time="24.664">
+  <properties/>
+  <testcase name="s04c_bill_patel" classname="com.shivtej.billscanner.ScreenshotTest" time="8.308"/>
+  <testcase name="s04_bill_dharashiv" classname="com.shivtej.billscanner.ScreenshotTest" time="1.904"/>
+  <testcase name="s08_export" classname="com.shivtej.billscanner.ScreenshotTest" time="1.105"/>
+  <testcase name="s06_item_sheet" classname="com.shivtej.billscanner.ScreenshotTest" time="2.481"/>
+  <testcase name="s10_fix_line" classname="com.shivtej.billscanner.ScreenshotTest" time="1.375"/>
+  <testcase name="s07_targets" classname="com.shivtej.billscanner.ScreenshotTest" time="1.638"/>
+  <testcase name="s01b_home_empty" classname="com.shivtej.billscanner.ScreenshotTest" time="0.808"/>
+  <testcase name="s04b_bill_dharashiv_targets" classname="com.shivtej.billscanner.ScreenshotTest" time="1.293"/>
+  <testcase name="s01d_home_check" classname="com.shivtej.billscanner.ScreenshotTest" time="1.039"/>
+  <testcase name="s01_home" classname="com.shivtej.billscanner.ScreenshotTest" time="1.505"/>
+  <testcase name="s01c_home_english" classname="com.shivtej.billscanner.ScreenshotTest" time="0.5"/>
+  <testcase name="s30_goods_check" classname="com.shivtej.billscanner.ScreenshotTest" time="0.676"/>
+  <testcase name="s03_processing" classname="com.shivtej.billscanner.ScreenshotTest" time="0.293"/>
+  <testcase name="s02_add" classname="com.shivtej.billscanner.ScreenshotTest" time="0.36"/>
+  <testcase name="s09_settings" classname="com.shivtej.billscanner.ScreenshotTest" time="0.31"/>
+  <testcase name="s03b_processing_failed" classname="com.shivtej.billscanner.ScreenshotTest" time="0.257"/>
+  <testcase name="s10b_doubtful_popup" classname="com.shivtej.billscanner.ScreenshotTest" time="0.524"/>
+  <testcase name="s02b_add_empty" classname="com.shivtej.billscanner.ScreenshotTest" time="0.284"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+java.lang.UnsupportedOperationException: You must use ShadowContentResolver.registerInputStream() in order to call read()
+	at org.robolectric.shadows.ShadowContentResolver$UnregisteredInputStream.read(ShadowContentResolver.java:1154)
+	at org.robolectric.nativeruntime.BitmapFactoryNatives.nativeDecodeStream(Native Method)
+	at org.robolectric.shadows.ShadowNativeBitmapFactory.nativeDecodeStream(ShadowNativeBitmapFactory.java:73)
+	at android.graphics.BitmapFactory.nativeDecodeStream(BitmapFactory.java)
+	at android.graphics.BitmapFactory.$$robo$$android_graphics_BitmapFactory$decodeStreamInternal(BitmapFactory.java:803)
+	at android.graphics.BitmapFactory.decodeStreamInternal(BitmapFactory.java)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.robolectric.shadows.ShadowNativeBitmapFactory$BitmapFactoryReflector$$Reflector73.decodeStreamInternal(Unknown Source)
+	at org.robolectric.shadows.ShadowNativeBitmapFactory.decodeStream(ShadowNativeBitmapFactory.java:60)
+	at android.graphics.BitmapFactory.decodeStream(BitmapFactory.java)
+	at com.shivtej.billscanner.ui.AddKt$PageThumb$bmp$2$1$1.invokeSuspend(Add.kt:168)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:113)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:589)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:823)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:720)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:707)
+java.lang.UnsupportedOperationException: You must use ShadowContentResolver.registerInputStream() in order to call read()
+	at org.robolectric.shadows.ShadowContentResolver$UnregisteredInputStream.read(ShadowContentResolver.java:1154)
+	at org.robolectric.nativeruntime.BitmapFactoryNatives.nativeDecodeStream(Native Method)
+	at org.robolectric.shadows.ShadowNativeBitmapFactory.nativeDecodeStream(ShadowNativeBitmapFactory.java:73)
+	at android.graphics.BitmapFactory.nativeDecodeStream(BitmapFactory.java)
+	at android.graphics.BitmapFactory.$$robo$$android_graphics_BitmapFactory$decodeStreamInternal(BitmapFactory.java:803)
+	at android.graphics.BitmapFactory.decodeStreamInternal(BitmapFactory.java)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.robolectric.shadows.ShadowNativeBitmapFactory$BitmapFactoryReflector$$Reflector73.decodeStreamInternal(Unknown Source)
+	at org.robolectric.shadows.ShadowNativeBitmapFactory.decodeStream(ShadowNativeBitmapFactory.java:60)
+	at android.graphics.BitmapFactory.decodeStream(BitmapFactory.java)
+	at com.shivtej.billscanner.ui.AddKt$PageThumb$bmp$2$1$1.invokeSuspend(Add.kt:168)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:113)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:589)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:823)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:720)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:707)
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+Invalid ID 0x00000000.
+]]></system-err>
+</testsuite>

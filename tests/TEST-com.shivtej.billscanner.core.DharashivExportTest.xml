@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.DharashivExportTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-31T12:14:36.127Z" hostname="runnervmnwato" time="0.809">
+  <properties/>
+  <testcase name="excelHasThePrintedBillTheGreenColumnAndTheNewBill" classname="com.shivtej.billscanner.core.DharashivExportTest" time="0.809"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.EditsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-31T12:14:45.136Z" hostname="runnervmnwato" time="0.549">
+  <properties/>
+  <testcase name="addDuplicateDelete" classname="com.shivtej.billscanner.core.EditsTest" time="0.28"/>
+  <testcase name="editingTheBillPercentRecalculatesAndLogs" classname="com.shivtej.billscanner.core.EditsTest" time="0.268"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

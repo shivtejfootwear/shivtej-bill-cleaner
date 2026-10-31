@@ -1,0 +1,44 @@
+build-tools: /usr/local/lib/android/sdk/build-tools/37.0.0
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v3.2 scheme (APK Signature Scheme v3.2): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+V3.0 Signer: certificate DN: CN=Shivtej Footwear, O=Shivtej Footwear, L=Akluj, ST=Maharashtra, C=IN
+V3.0 Signer: certificate SHA-256 digest: 40e6742e73bc6372a797191b39ffeec8a1c46d9c130e47e76e132e9099e2014c
+V3.0 Signer: certificate SHA-1 digest: fe1ac4339dd26a5b14aaf259c79e3ee2bd2667a0
+V3.0 Signer: certificate MD5 digest: f6b7e4cee031ba0f3b6c5724b4ea33de
+V3.0 Signer: key algorithm: RSA
+V3.0 Signer: key size (bits): 2048
+V3.0 Signer: public key SHA-256 digest: 779d4bf67968adc158679e79c088f32b1bc600d661dc3554173ee0d94a81ea34
+V3.0 Signer: public key SHA-1 digest: 22b08e9542dd332a9dc0c82a51bea6a1fe12caa8
+V3.0 Signer: public key MD5 digest: 33e5bb62d03cbd50ec2e0f63bac38fe1
+apksigner exit=0
+package: name='com.shivtej.billscanner' versionCode='153' versionName='2.0.53' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'
+minSdkVersion:'26'
+targetSdkVersion:'35'
+uses-permission: name='com.shivtej.billscanner.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
+uses-permission: name='android.permission.INTERNET'
+application-label:'Shivtej Bill Scanner AI'
+application-label-af:'Shivtej Bill Scanner AI'
+application-label-am:'Shivtej Bill Scanner AI'
+application-label-ar:'Shivtej Bill Scanner AI'
+application-label-as:'Shivtej Bill Scanner AI'
+application-label-az:'Shivtej Bill Scanner AI'
+application-label-be:'Shivtej Bill Scanner AI'
+application-label-bg:'Shivtej Bill Scanner AI'
+application-label-bn:'Shivtej Bill Scanner AI'
+application-label-bs:'Shivtej Bill Scanner AI'
+application-label-ca:'Shivtej Bill Scanner AI'
+application-label-cs:'Shivtej Bill Scanner AI'
+application-label-da:'Shivtej Bill Scanner AI'
+application-label-de:'Shivtej Bill Scanner AI'
+64110817 META-INF/CERT.RSA (OK - compressed)
+64111973 META-INF/MANIFEST.MF (OK - compressed)
+Verification successful
+zipalign exit=0

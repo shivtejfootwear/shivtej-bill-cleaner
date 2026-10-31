@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.DharashivTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-31T12:14:36.943Z" hostname="runnervmnwato" time="8.188">
+  <properties/>
+  <testcase name="totalsMatchTheBill" classname="com.shivtej.billscanner.core.DharashivTest" time="0.655"/>
+  <testcase name="bothPagesInOnePhotoAndWordsReadTwice" classname="com.shivtej.billscanner.core.DharashivTest" time="1.541"/>
+  <testcase name="misplacedHeadingsAreFixedByTheBillsOwnArithmetic" classname="com.shivtej.billscanner.core.DharashivTest" time="1.371"/>
+  <testcase name="unreadableDiscIsWorkedOutOnlyWhenTheLineProvesIt" classname="com.shivtej.billscanner.core.DharashivTest" time="1.654"/>
+  <testcase name="columnsAreTheBillsOwn" classname="com.shivtej.billscanner.core.DharashivTest" time="0.235"/>
+  <testcase name="photoStartingInTheMiddleOfTheTable" classname="com.shivtej.billscanner.core.DharashivTest" time="0.805"/>
+  <testcase name="sittingPercentIsWhatTheShopReallyGets" classname="com.shivtej.billscanner.core.DharashivTest" time="0.412"/>
+  <testcase name="newBillAtTargetPerCompany" classname="com.shivtej.billscanner.core.DharashivTest" time="0.406"/>
+  <testcase name="flatPhotoToo" classname="com.shivtej.billscanner.core.DharashivTest" time="0.732"/>
+  <testcase name="headerIsRead" classname="com.shivtej.billscanner.core.DharashivTest" time="0.376"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

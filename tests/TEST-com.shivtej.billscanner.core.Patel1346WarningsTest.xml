@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.Patel1346WarningsTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-31T12:14:53.032Z" hostname="runnervmnwato" time="0.248">
+  <properties/>
+  <testcase name="onlyTheSuppliersOwnTotalGapIsAsked" classname="com.shivtej.billscanner.core.Patel1346WarningsTest" time="0.248"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
