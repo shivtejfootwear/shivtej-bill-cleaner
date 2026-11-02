@@ -70,3 +70,20 @@ class Patel1346WarningsTest {
         assertTrue(all, ws.any { it.hindi.contains("12.78") && it.hindi.contains("सप्लायर") })
     }
 }
+
+class WarningsWithPreviousBillsTest {
+    private fun page(n: String) = com.shivtej.billscanner.core.store.OcrCodec.decode(javaClass.classLoader!!.getResource("real/$n")!!.readText())
+
+    /** The owner's phone closed when a bill opened: a line without MRP compared with an earlier scan of the same bill. */
+    @Test fun aLineWithoutMrpBesideAnEarlierBillDoesNotCrash() {
+        val p = InvoiceParser.parse(listOf(page("patel_1309_new_1.tsv"), page("patel_1309_new_2.tsv")))
+        val old = com.shivtej.billscanner.core.model.Invoice("old", 0, p.header, p.header, p.items, columns = p.columns)
+        val noMrp = p.items.map { it.copy(current = it.current.copy(mrp = null, rate = it.current.rate?.add(BigDecimal.ONE))) }
+        val now = com.shivtej.billscanner.core.model.Invoice("new", 1, p.header, p.header, noMrp, columns = p.columns)
+        com.shivtej.billscanner.core.model.Warnings.of(now, listOf(old, now))
+        val sameMrp = com.shivtej.billscanner.core.model.Invoice("new2", 2, p.header, p.header,
+            p.items.map { it.copy(current = it.current.copy(rate = it.current.rate?.add(BigDecimal.ONE))) }, columns = p.columns)
+        val oldNoMrp = old.copy(items = noMrp)
+        com.shivtej.billscanner.core.model.Warnings.of(sameMrp, listOf(oldNoMrp))
+    }
+}

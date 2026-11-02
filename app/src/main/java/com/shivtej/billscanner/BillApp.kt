@@ -162,6 +162,15 @@ class BillApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // If the app ever closes by itself, what went wrong is kept in Download/Shivtej Bills to send to Claude.
+        val before = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { t, e ->
+            runCatching {
+                val text = "Shivtej Bill Scanner AI crash ${java.util.Date()}\n" + android.util.Log.getStackTraceString(e)
+                com.shivtej.billscanner.ui.Files.saveToDownloads(this, "Shivtej_Bill_Crash.txt", "text/plain", text.toByteArray(Charsets.UTF_8))
+            }
+            before?.uncaughtException(t, e)
+        }
         container = Container(this, BillDb.open(this))
     }
 }

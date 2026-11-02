@@ -85,7 +85,8 @@ object Warnings {
             // Same article from the same supplier at a different rate before.
             val before = previous.filter { p -> p.id != inv.id && p.header.supplierGstin == h.supplierGstin }
                 .flatMap { p -> p.items.map { i -> p to i.current } }
-                .filter { (_, o) -> o.article == v.article && o.mrp?.compareTo(v.mrp) == 0 && o.rate != null }
+                // (A line whose MRP was not read is not compared: BigDecimal.compareTo(null) crashed the bill screen.)
+                .filter { (_, o) -> v.mrp != null && o.article == v.article && o.mrp != null && o.mrp.compareTo(v.mrp) == 0 && o.rate != null }
                 .maxByOrNull { (p, _) -> p.createdAt }
             if (before != null && v.rate != null && before.second.rate!!.compareTo(v.rate) != 0) out += Warning(Warning.Level.TIP, it.id,
                 "$name: पिछली बार रेट ₹${Calc.fmt(before.second.rate)} था (बिल ${before.first.header.invoiceNo ?: ""}), अब ₹${Calc.fmt(v.rate)}",

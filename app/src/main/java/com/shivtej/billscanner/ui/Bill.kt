@@ -123,7 +123,8 @@ fun BillScreen(id: String, onBack: () -> Unit, onTargets: () -> Unit, onExport: 
             android.widget.Toast.makeText(ctxApp, message, android.widget.Toast.LENGTH_LONG).show()
         }
     }
-    val warnings = Warnings.of(inv, previous)
+    // A check that fails must never close the app: the bill opens with the checks it could make.
+    val warnings = runCatching { Warnings.of(inv, previous) }.getOrElse { runCatching { Warnings.of(inv) }.getOrDefault(emptyList()) }
     // Lines the scan did not understand: asked about once, as soon as the bill opens.
     var askFix by remember(inv.id) { mutableStateOf(inv.id !in askedFix && doubtful(inv).isNotEmpty()) }
     if (askFix) DoubtfulDialog(inv, onFix = { askedFix += inv.id; askFix = false; onFix() }, onLater = { askedFix += inv.id; askFix = false })
