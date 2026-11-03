@@ -78,6 +78,8 @@ data class BillPattern(
         }
 
         private fun parseOrThrow(pages: List<OcrPage>, patterns: List<BillPattern>, base: LayoutMemory?): ParsedInvoice {
+            // A handwritten kachha bill on a printed form (Patel Trading): read by its own rules.
+            runCatching { KachaBill.parse(pages) }.getOrNull()?.let { return it }
             val first = InvoiceParser.parse(pages, base)
             // A column taught wrongly by hand must never spoil a whole bill: the plain reading is tried too.
             val plain = if (base != null) InvoiceParser.parse(pages) else first

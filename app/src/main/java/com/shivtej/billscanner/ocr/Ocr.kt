@@ -68,6 +68,26 @@ object Ocr {
      * the OCR needs each letter to be big enough — and the reading with more numbers is kept.
      */
     suspend fun read(bmp: Bitmap): OcrPage = withContext(Dispatchers.Default) {
+        val first = readOnce(bmp)
+        if (!sideways(first.words)) return@withContext first
+        // A bill photographed sideways (the phone held upright over a wide bill): read it turned both ways, keep the better.
+        val tries = listOf(90, 270).map { d ->
+            val r = rotate(bmp, d)
+            val p = readOnce(r)
+            if (r !== bmp) r.recycle()
+            p
+        }
+        (tries + first).maxBy { p -> p.words.sumOf { w -> w.text.count { it.isLetterOrDigit() } } + if (com.shivtej.billscanner.core.ocr.KachaBill.upright(p) != null) 100000 else 0 }
+    }
+
+    /** Most words standing on end (taller than wide): the text runs up or down the photo. */
+    private fun sideways(ws: List<OcrWord>): Boolean {
+        val long = ws.filter { it.text.length >= 4 }
+        if (long.size < 8) return false
+        return long.count { it.box.h > it.box.w * 1.3 } > long.size * 0.5
+    }
+
+    private suspend fun readOnce(bmp: Bitmap): OcrPage = withContext(Dispatchers.Default) {
         val whole = recognise(bmp, 0, 0, 1.0)
         val heights = whole.map { it.box.h }.sorted()
         val mh = if (heights.isEmpty()) 0 else heights[heights.size / 2]

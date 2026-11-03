@@ -33,12 +33,15 @@ object Warnings {
                 "Lines add up to ₹${Calc.fmt(t.grand)} but the bill total is ₹${Calc.fmt(t.printedGrand)} (difference ₹${Calc.fmt(d)}).")
             else if (d.signum() != 0) out += Warning(Warning.Level.TIP, null, "कुल में ₹${Calc.fmt(d)} का round-off फ़र्क़ है।", "Round-off difference ₹${Calc.fmt(d)}.")
         }
-        if (h.printedGrandTotal == null) out += Warning(Warning.Level.CHECK, null, "बिल का कुल (Grand Total) नहीं पढ़ा गया — हाथ से डालें।", "Grand total not found.")
+        val kacha = h.pageNote == com.shivtej.billscanner.core.ocr.KachaBill.NOTE
+        // A kachha bill: no printed total, but the running pair total written at the bottom of each bill.
+        if (kacha) com.shivtej.billscanner.core.ocr.KachaBill.pairNotes(inv.items).forEach { (id, msg) -> out += Warning(Warning.Level.CHECK, id, msg.removePrefix("⚠ "), msg.removePrefix("⚠ ")) }
+        if (h.printedGrandTotal == null && !kacha) out += Warning(Warning.Level.CHECK, null, "बिल का कुल (Grand Total) नहीं पढ़ा गया — हाथ से डालें।", "Grand total not found.")
         Regex("""\((\d+)\)""").find(h.packing.orEmpty())?.groupValues?.get(1)?.toBigDecimalOrNull()?.let { packed ->
             if (packed.compareTo(t.qty) != 0) out += Warning(Warning.Level.CHECK, null,
                 "पैकिंग में $packed लिखा है, पर आर्टिकल की कुल जोड़ी ${t.qty.toPlainString()} है।", "Packing says $packed, items total ${t.qty.toPlainString()} pairs.")
         }
-        if (h.pageNote != null) Regex("""(\d+)\s*of\s*(\d+)""", RegexOption.IGNORE_CASE).find(h.pageNote)?.let { m ->
+        if (h.pageNote != null && !kacha) Regex("""(\d+)\s*of\s*(\d+)""", RegexOption.IGNORE_CASE).find(h.pageNote)?.let { m ->
             val (p, n) = m.destructured
             if (p.toInt() < n.toInt() && inv.pages.size < n.toInt()) out += Warning(Warning.Level.CHECK, null,
                 "बिल पर \"${h.pageNote}\" लिखा है — बाकी पेज भी जोड़ें।", "The bill says ${h.pageNote}; add the remaining page(s).")

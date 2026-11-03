@@ -153,6 +153,31 @@ class OcrOnRealInvoiceTest {
         report("${name}_selfcheck", dir2, checked.pages)
     }
 
+    /**
+     * The 12 handwritten kachha bills of Patel Trading (4672–4683, 02-11-2026) read as one delivery:
+     * the real OCR of each photo is kept (kacha_<bill>.tsv) to measure and train the kachha reader.
+     */
+    @Test fun kacha() = runBlocking {
+        val ins = InstrumentationRegistry.getInstrumentation()
+        val dir = File(ins.targetContext.filesDir, "ocrtest/kacha").apply { mkdirs() }
+        val bills = (4672..4683).map { it.toString() }
+        val pages = bills.map { b ->
+            val bmp = ins.context.assets.open("kacha_$b.jpg").use { BitmapFactory.decodeStream(it) }
+            val t0 = System.currentTimeMillis()
+            val pg = Ocr.read(bmp)
+            File(dir, "kacha_$b.tsv").writeText(OcrCodec.encode(pg))
+            log("[kacha] $b words=${pg.words.size} size=${pg.width}x${pg.height} upright=${com.shivtej.billscanner.core.ocr.KachaBill.upright(pg) != null} ms=${System.currentTimeMillis() - t0}")
+            pg
+        }
+        val p = com.shivtej.billscanner.core.ocr.BillPattern.parse(pages, emptyList())
+        val h = p.header
+        log("[kacha] HEADER supplier=${h.supplierName} no=${h.invoiceNo} date=${h.invoiceDate} printedQty=${h.printedQty} lines=${p.items.size}")
+        for (i in p.items) { val v = i.current; log("[kacha] ITEM ${v.notes.substringBefore('|')}|${v.sr}|${v.mrp}|${v.article}|${v.colour}|${v.sizeText}|${v.qty}|${v.rate}|needs=${i.needs}|raw=${i.raw}") }
+        p.notes.forEach { log("[kacha] NOTE $it") }
+        val inv = Invoice("kacha", System.currentTimeMillis(), h, h, p.items, columns = p.columns)
+        File(dir, "kacha.pdf").outputStream().use { Pdf.kacha(inv, it) }
+    }
+
     @Test fun venkateshwara() = read("venkateshwara_l1235", listOf("venkateshwara_l1235.jpg"))
 
     /** Patel Tradelines G2/2627/1309 again, a new phone photo of both pages (all lines were doubtful on the phone). */

@@ -82,7 +82,7 @@ object Files {
         val out = ByteArrayOutputStream()
         when (k) {
             ExportKind.XLSX -> InvoiceExport.xlsx(inv, out)
-            ExportKind.PDF_REPORT -> if (landscape) Pdf.report(inv, true, out) else Pdf.cards(inv, out)
+            ExportKind.PDF_REPORT -> if (inv.header.pageNote == com.shivtej.billscanner.core.ocr.KachaBill.NOTE) Pdf.kacha(inv, out) else if (landscape) Pdf.report(inv, true, out) else Pdf.cards(inv, out)
             ExportKind.PDF_PHOTO -> {
                 val bmps = inv.pages.mapNotNull { runCatching { Ocr.loadBitmap(File(it)) }.getOrNull() }
                 Pdf.photos(bmps, "${inv.header.supplierName ?: ""} ${inv.header.invoiceNo ?: ""}".trim(), out)

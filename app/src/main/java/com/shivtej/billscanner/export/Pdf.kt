@@ -284,6 +284,82 @@ object Pdf {
         wr.finish(); doc.writeTo(out); doc.close()
     }
 
+    /**
+     * A kachha bill typed out clean (the owner's chosen layout): Sr, Bill, MRP, Article, Colour, Size, Qty, Rate, Amount,
+     * the bills one under another, totals at the end. Plain text, so the app (or anyone) can read it back exactly.
+     */
+    fun kacha(inv: Invoice, out: OutputStream) {
+        val doc = PdfDocument()
+        val w = 595; val h = 842; val x0 = 30f
+        val cols = listOf("Sr No" to 34f, "Bill" to 34f, "MRP" to 40f, "Article" to 150f, "Colour" to 86f, "Size" to 42f, "Qty" to 30f, "Rate" to 42f, "Amount" to 58f)
+        val right = setOf(2, 6, 7, 8)
+        val tw = cols.sumOf { it.second.toDouble() }.toFloat()
+        val p = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = 9f; color = Color.BLACK; typeface = Typeface.DEFAULT }
+        val b = Paint(p).apply { typeface = Typeface.DEFAULT_BOLD }
+        val line = Paint().apply { color = Color.BLACK; strokeWidth = 0.6f }
+        val dots = Paint(line).apply { pathEffect = android.graphics.DashPathEffect(floatArrayOf(1.5f, 2.5f), 0f) }
+        val arts = inv.items.filter { it.kind == ItemKind.ARTICLE }
+        val hd = inv.header
+        val perFirst = 34; val per = 44
+        val pages = mutableListOf(arts.take(perFirst))
+        var i = perFirst
+        while (i < arts.size) { pages.add(arts.subList(i, minOf(arts.size, i + per))); i += per }
+        fun cell(c: android.graphics.Canvas, ci: Int, x: Float, y: Float, t: String, paint: Paint) {
+            val cw = cols[ci].second
+            var s = t
+            while (s.isNotEmpty() && paint.measureText(s) > cw - 5) s = s.dropLast(1)
+            if (ci in right) c.drawText(s, x + cw - 3 - paint.measureText(s), y, paint) else c.drawText(s, x + 3, y, paint)
+        }
+        fun money(v: BigDecimal?) = v?.let { Calc.r2(it).toPlainString() } ?: ""
+        var qty = BigDecimal.ZERO; var amt = BigDecimal.ZERO
+        for ((pi, pg) in pages.withIndex()) {
+            val page = doc.startPage(PdfDocument.PageInfo.Builder(w, h, pi + 1).create())
+            val c = page.canvas
+            var y = 40f
+            if (pi == 0) {
+                c.drawText(hd.supplierName ?: "Kachha bill", x0, y, Paint(b).apply { textSize = 16f }); y += 16f
+                c.drawText("Invoice No: ${hd.invoiceNo ?: ""}", x0, y, b); c.drawText("Date: ${hd.invoiceDate ?: ""}", x0 + 300, y, b); y += 13f
+                c.drawText("M/s SHIVTEJ FOOTWEAR AKLUJ", x0, y, p); c.drawText("Kachha bill (estimate)", x0 + 300, y, p); y += 12f
+                c.drawText("Typed from the handwritten bill for goods check. MRP blank = bill has no MRP (rate only).", x0, y, p); y += 18f
+            }
+            c.drawLine(x0, y - 11, x0 + tw, y - 11, line)
+            var x = x0
+            for ((ci, col) in cols.withIndex()) { cell(c, ci, x, y, col.first, b); x += col.second }
+            c.drawLine(x0, y + 4, x0 + tw, y + 4, line)
+            y += 16f
+            var prevBill: String? = null
+            for (item in pg) {
+                val v = item.current
+                val bill = com.shivtej.billscanner.core.ocr.KachaBill.billOf(v)
+                if (prevBill != null && bill != prevBill) c.drawLine(x0, y - 10, x0 + tw, y - 10, dots)
+                prevBill = bill
+                val a = v.taxable ?: v.qty?.let { q -> v.rate?.let { q * it } }
+                v.qty?.let { q -> qty += q }; a?.let { amt += it }
+                val vals = listOf("${v.sr ?: ""}", bill, money(v.mrp), v.article, v.colour, v.sizeText, v.qty?.stripTrailingZeros()?.toPlainString() ?: "", money(v.rate), money(a))
+                x = x0
+                for ((ci, t) in vals.withIndex()) { cell(c, ci, x, y, t, if (item.needs.isNotEmpty() && ci >= 6) Paint(p).apply { color = ORANGE_DARK } else p); x += cols[ci].second }
+                y += 15.5f
+            }
+            if (pi == pages.lastIndex) {
+                y += 4f
+                c.drawLine(x0, y - 10, x0 + tw, y - 10, line)
+                c.drawText("Total", x0 + 3, y + 2, b)
+                val tq = qty.stripTrailingZeros().toPlainString()
+                c.drawText(tq, x0 + cols.take(7).sumOf { it.second.toDouble() }.toFloat() - 3 - b.measureText(tq), y + 2, b)
+                val ta = money(amt)
+                c.drawText(ta, x0 + tw - 3 - b.measureText(ta), y + 2, b)
+                y += 22f
+                c.drawText("Grand Total", x0 + 300, y, b); c.drawText(ta, x0 + tw - 3 - b.measureText(ta), y, b)
+                val ws = Warnings.of(inv).filter { w0 -> w0.level.name != "TIP" }
+                y += 18f
+                for (w0 in ws.take(12)) { c.drawText("• " + w0.hindi.take(110), x0, y, Paint(p).apply { color = ORANGE_DARK; textSize = 8f }); y += 11f }
+            }
+            c.drawText("Page ${pi + 1} of ${pages.size}", x0, h - 20f, Paint(p).apply { textSize = 8f })
+            doc.finishPage(page)
+        }
+        doc.writeTo(out); doc.close()
+    }
+
     /** B. The original photos embedded as they are — a copy for reference, not a digital original. */
     fun photos(pages: List<Bitmap>, title: String, out: OutputStream) {
         val doc = PdfDocument()

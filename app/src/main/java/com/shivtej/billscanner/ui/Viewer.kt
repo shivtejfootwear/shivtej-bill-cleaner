@@ -66,7 +66,7 @@ fun FullBillScreen(id: String, onBack: () -> Unit) {
     val pages by produceState<List<ImageBitmap>?>(null, inv) {
         value = withContext(Dispatchers.IO) {
             runCatching {
-                val pdf = ByteArrayOutputStream().also { Pdf.cards(inv, it) }.toByteArray()
+                val pdf = ByteArrayOutputStream().also { if (inv.header.pageNote == com.shivtej.billscanner.core.ocr.KachaBill.NOTE) Pdf.kacha(inv, it) else Pdf.cards(inv, it) }.toByteArray()
                 renderPages(File(ctx.cacheDir, "view_${inv.id}.pdf").apply { writeBytes(pdf) }).map { it.asImageBitmap() }
             }.getOrElse { emptyList() }
         }
