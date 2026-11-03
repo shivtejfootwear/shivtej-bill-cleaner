@@ -1,0 +1,30 @@
+--------- beginning of main
+--------- beginning of system
+--------- beginning of kernel
+--------- beginning of crash
+11-03 14:52:07.474  3056  3712 I OCRTEST : [kacha] 4672 words=116 size=1659x2212 upright=true ms=23026
+11-03 14:52:44.207  3056  3712 I OCRTEST : [kacha] 4673 words=100 size=2212x1659 upright=false ms=36709
+11-03 14:53:16.294  3056  3712 I OCRTEST : [kacha] 4674 words=117 size=2212x1659 upright=true ms=32068
+11-03 14:53:46.033  3056  3712 I OCRTEST : [kacha] 4675 words=111 size=1659x2212 upright=false ms=29721
+11-03 14:53:56.180  3056  3712 I OCRTEST : [kacha] 4676 words=83 size=1659x2212 upright=true ms=10131
+11-03 14:54:23.655  3056  3712 I OCRTEST : [kacha] 4677 words=74 size=2212x1659 upright=true ms=27458
+11-03 14:54:51.545  3056  3712 I OCRTEST : [kacha] 4678 words=81 size=1659x2212 upright=true ms=27873
+11-03 14:55:17.956  3056  3712 I OCRTEST : [kacha] 4679 words=93 size=2212x1659 upright=true ms=26394
+11-03 14:55:43.316  3056  3712 I OCRTEST : [kacha] 4680 words=78 size=1659x2212 upright=true ms=25342
+11-03 14:56:08.283  3056  3712 I OCRTEST : [kacha] 4681 words=71 size=1659x2212 upright=true ms=24951
+11-03 14:56:31.832  3056  3712 I OCRTEST : [kacha] 4682 words=74 size=2212x1659 upright=true ms=23531
+11-03 14:56:51.101  3056  3712 I OCRTEST : [kacha] 4683 words=60 size=1659x2212 upright=true ms=19253
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] HEADER supplier=TRADING CORPORATION no=null date=null printedQty=null lines=0
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 1: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 2: आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 3: आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 4: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 5: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 6: आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 7: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 8: आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 9: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 10: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 11: आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 12: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE बिल में आर्टिकल की टेबल नहीं मिली। फ़ोटो साफ़ और पूरी हो, फिर दोबारा स्कैन करें या आर्टिकल हाथ से जोड़ें।

@@ -1,0 +1,1198 @@
+--------- beginning of main
+11-03 14:52:39.152   393   407 I adbd    : jdwp connection from 5631
+11-03 14:52:39.170  5631  5631 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+11-03 14:52:39.171  5631  5631 I apters.contact: The ClassLoaderContext is a special shared library.
+11-03 14:52:39.172  5631  5631 I apters.contact: The ClassLoaderContext is a special shared library.
+11-03 14:52:39.172  5631  5631 D nativeloader: classloader namespace configured for unbundled product apk. library_path=/product/app/GoogleContactsSyncAdapter/lib/x86_64:/product/lib64:/system/product/lib64
+11-03 14:52:39.173  5631  5631 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+11-03 14:52:39.173  5631  5631 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+11-03 14:52:39.181  5631  5631 I GoogleHttpClient: GMS http client unavailable, use old client
+11-03 14:52:39.186  5631  5647 I ProxyGalProvider: QueryGalProvider in Legacy provider.
+11-03 14:52:39.188  5631  5648 I ProxyGalProvider: QueryGalProvider in Legacy provider.
+11-03 14:52:39.190  5605  5629 I ContactDirectoryManager: deleted 0 stale rows which don't have any relevant directory
+11-03 14:52:39.190  5605  5629 I ContactDirectoryManager: Discovered 0 contact directories in 63ms
+11-03 14:52:39.190   686   686 D BluetoothPbapService:  onChange on contact uri 
+11-03 14:52:39.212   686  5653 D BluetoothPbapUtils: primaryVersionCounter = 0, secondaryVersionCounter=0
+11-03 14:52:39.218  5605  5630 I ContactDirectoryManager: deleted 0 stale rows which don't have any relevant directory
+11-03 14:52:39.218  5605  5630 I ContactDirectoryManager: Discovered 0 contact directories in 91ms
+11-03 14:52:39.218   686   686 D BluetoothPbapService:  onChange on contact uri 
+11-03 14:52:39.226   686  5657 D BluetoothPbapUtils: primaryVersionCounter = 0, secondaryVersionCounter=0
+--------- beginning of system
+11-03 14:52:40.231   497   585 I ActivityManager: Killing 1282:com.google.android.apps.wellbeing/u0a116 (adj 985): empty #17
+11-03 14:52:40.251   286   286 I Zygote  : Process 1282 exited due to signal 9 (Killed)
+11-03 14:52:40.279   497   538 I libprocessgroup: Successfully killed process cgroup uid 10116 pid 1282 in 48ms
+11-03 14:52:40.413   497  2576 W UriGrantsManagerService: No permission grants found for com.google.android.apps.photos
+11-03 14:52:40.600  5569  5569 W dex2oat32: Verification of androidx.compose.ui.graphics.vector.ImageVector androidx.compose.material.icons.rounded.LibraryAddCheckKt.getLibraryAddCheck(androidx.compose.material.icons.Icons$Rounded) took 100.305ms (5473.26 bytecodes/s) (4816B approximate peak alloc)
+11-03 14:52:40.545   497  2576 I chatty  : uid=1000(system) Binder:497_21 identical 4 lines
+11-03 14:52:40.557   497  2576 W UriGrantsManagerService: No permission grants found for com.google.android.apps.photos
+11-03 14:52:41.486   497  1768 I ActivityManager: Killing 2943:com.google.android.apps.messaging/u0a145 (adj 925): empty #17
+11-03 14:52:41.613   497  1762 D ConnectivityService: ConnectivityService NetworkRequestInfo binderDied(NetworkRequest [ TRACK_DEFAULT id=28, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED Uid: 10145 AdministratorUids: [] RequestorUid: 10145 RequestorPackageName: com.google.android.apps.messaging] ], android.os.BinderProxy@1e43f1)
+11-03 14:52:41.613   497   642 D ConnectivityService: releasing NetworkRequest [ TRACK_DEFAULT id=28, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED Uid: 10145 AdministratorUids: [] RequestorUid: 10145 RequestorPackageName: com.google.android.apps.messaging] ] (release request)
+11-03 14:52:41.614   497   585 D ConnectivityService: ConnectivityService NetworkRequestInfo binderDied(NetworkRequest [ LISTEN id=29, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED Uid: 10145 AdministratorUids: [] RequestorUid: 10145 RequestorPackageName: com.google.android.apps.messaging] ], android.os.BinderProxy@2fc8bd6)
+11-03 14:52:41.617   692   692 V KeyguardUpdateMonitor: onSubscriptionInfoChanged()
+11-03 14:52:41.617   692   692 V KeyguardUpdateMonitor: SubInfo:{id=1 iccId=89014103211118510720 simSlotIndex=0 carrierId=1 displayName=T-Mobile carrierName=T-Mobile nameSource=3 iconTint=-16746133 number=+15555215554 dataRoaming=0 iconBitmap=android.graphics.Bitmap@e73ef75 mcc=310 mnc=260 countryIso=us isEmbedded=false nativeAccessRules=null cardString=89014103211118510720 cardId=-1 isOpportunistic=false groupUUID=null isGroupDisabled=false profileClass=-1 ehplmns=null hplmns=null subscriptionType=0 groupOwner=null carrierConfigAccessRules=null areUiccApplicationsEnabled=true}
+11-03 14:52:41.617  1027  1027 D Telephony: isEmergencyPreferredAccount: subId=1, activeData=1
+11-03 14:52:41.617  1027  1027 D Telephony: isEmergencyPreferredAccount: Device does not require preference.
+11-03 14:52:41.618   287   287 I Zygote  : Process 2943 exited due to signal 9 (Killed)
+11-03 14:52:41.620   497   538 I libprocessgroup: Successfully killed process cgroup uid 10145 pid 2943 in 134ms
+11-03 14:52:42.824  1354  5661 I Vision  : Requesting optional module download of ocr.
+11-03 14:52:42.824  1354  5661 I Vision  : Checking for download completion for 120320 -- ocr
+11-03 14:52:42.864   497   585 D WifiNl80211Manager: Scan result ready event
+11-03 14:52:42.864   497   585 D WifiNative: Scan result ready event
+11-03 14:52:44.163  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:52:44.197  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:52:44.207  3056  3712 I OCRTEST : [kacha] 4673 words=100 size=2212x1659 upright=false ms=36709
+11-03 14:52:44.224  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:52:44.226  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:52:44.228  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:52:44.232  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:52:44.373  5569  5569 W dex2oat32: Verification of void androidx.compose.material3.OutlinedTextFieldKt.OutlinedTextFieldLayout(androidx.compose.ui.Modifier, kotlin.jvm.functions.Function2, kotlin.jvm.functions.Function3, kotlin.jvm.functions.Function2, kotlin.jvm.functions.Function2, kotlin.jvm.functions.Function2, kotlin.jvm.functions.Function2, kotlin.jvm.functions.Function2, boolean, float, kotlin.jvm.functions.Function1, kotlin.jvm.functions.Function2, kotlin.jvm.functions.Function2, androidx.compose.foundation.layout.PaddingValues, androidx.compose.runtime.Composer, int, int) took 137.661ms (24378.72 bytecodes/s) (53824B approximate peak alloc)
+11-03 14:52:45.489  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 71499(10MB) AllocSpace objects, 0(0B) LOS objects, 99% free, 8376B/1544KB, paused 14us total 376.621ms
+11-03 14:52:45.609  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 434(78KB) AllocSpace objects, 0(0B) LOS objects, 99% free, 10128B/1545KB, paused 7us total 1.124ms
+11-03 14:52:45.779  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 366(62KB) AllocSpace objects, 0(0B) LOS objects, 99% free, 11KB/1547KB, paused 7us total 1.174ms
+11-03 14:52:45.830  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 271(62KB) AllocSpace objects, 0(0B) LOS objects, 99% free, 13KB/1549KB, paused 6us total 1.122ms
+11-03 14:52:46.144  5569  5666 W dex2oat32: Verification of com.shivtej.billscanner.core.ocr.InvoiceParser$Footer com.shivtej.billscanner.core.ocr.InvoiceParser.readFooter(java.util.List, java.util.List, com.shivtej.billscanner.core.ocr.InvoiceParser$Bounds, double) took 120.507ms (35483.38 bytecodes/s) (106632B approximate peak alloc)
+11-03 14:52:46.296  5569  5666 W dex2oat32: Verification of com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List) took 152.136ms (38504.81 bytecodes/s) (165240B approximate peak alloc)
+11-03 14:52:46.505  5569  5666 W dex2oat32: Verification of com.shivtej.billscanner.core.model.LineItem com.shivtej.billscanner.core.ocr.InvoiceParser.readItemOnce(java.util.List, java.util.List, int) took 208.286ms (45048.43 bytecodes/s) (271368B approximate peak alloc)
+11-03 14:52:46.789  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 1084(173KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 15KB/1551KB, paused 7us total 1.247ms
+11-03 14:52:46.830  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 701(142KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 17KB/1553KB, paused 6us total 1.320ms
+11-03 14:52:46.959  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 1200(224KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 19KB/1555KB, paused 8us total 1.344ms
+11-03 14:52:47.072  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 690(110KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 21KB/1557KB, paused 30us total 1.285ms
+11-03 14:52:47.202  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 338(61KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 23KB/1559KB, paused 8us total 1.186ms
+11-03 14:52:47.475  5569  5569 W dex2oat32: Verification of void com.shivtej.billscanner.ui.BillKt.BillContent(com.shivtej.billscanner.core.model.Invoice, java.util.List, android.graphics.Bitmap, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function1, kotlin.jvm.functions.Function1, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function1, boolean, kotlin.jvm.functions.Function0, java.lang.String, boolean, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, kotlin.jvm.functions.Function0, boolean, kotlin.jvm.functions.Function1, androidx.compose.runtime.Composer, int, int, int, int) took 176.342ms (59497.73 bytecodes/s) (293144B approximate peak alloc)
+11-03 14:52:47.878  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 4226(531KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 25KB/1561KB, paused 8us total 1.483ms
+11-03 14:52:47.912  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 751(142KB) AllocSpace objects, 0(0B) LOS objects, 98% free, 27KB/1563KB, paused 6us total 24.439ms
+11-03 14:52:48.407  5569  5673 W dex2oat32: Class androidx.compose.runtime.snapshots.SnapshotStateList failed lock verification and will run slower.
+11-03 14:52:48.407  5569  5673 W dex2oat32: Common causes for lock verification issues are non-optimized dex code
+11-03 14:52:48.407  5569  5673 W dex2oat32: and incorrect proguard optimizations.
+11-03 14:52:48.468  5569  5673 W dex2oat32: Class androidx.compose.runtime.snapshots.SnapshotStateMap failed lock verification and will run slower.
+11-03 14:52:49.720  5569  5673 W dex2oat32: Verification of int androidx.compose.ui.platform.DecodeHelper.decodeFontStyle-_-LCdwA() took 112.095ms (267.63 bytecodes/s) (1128B approximate peak alloc)
+11-03 14:52:49.724  5569  5569 W dex2oat32: Verification of void androidx.compose.ui.platform.EncodeHelper.encode(androidx.compose.ui.text.SpanStyle) took 107.148ms (2370.54 bytecodes/s) (3488B approximate peak alloc)
+11-03 14:52:49.799  5569  5569 W dex2oat32: Accessing hidden method Landroid/view/ScrollCaptureSession;->getSurface()Landroid/view/Surface; (blacklist, linking, denied)
+11-03 14:52:49.799  5569  5569 I chatty  : uid=50167(com.shivtej.billscanner) /apex/com.android.art/bin/dex2oat32 identical 1 line
+11-03 14:52:49.799  5569  5569 W dex2oat32: Accessing hidden method Landroid/view/ScrollCaptureSession;->getSurface()Landroid/view/Surface; (blacklist, linking, denied)
+11-03 14:52:49.799  5569  5569 W dex2oat32: Accessing hidden method Landroid/view/ScrollCaptureTarget;-><init>(Landroid/view/View;Landroid/graphics/Rect;Landroid/graphics/Point;Landroid/view/ScrollCaptureCallback;)V (blacklist, linking, denied)
+11-03 14:52:49.799  5569  5569 W dex2oat32: Accessing hidden method Landroid/view/ScrollCaptureTarget;->setScrollBounds(Landroid/graphics/Rect;)V (blacklist, linking, denied)
+11-03 14:52:49.961  5569  5569 W dex2oat32: Accessing hidden method Landroid/graphics/Canvas;->drawPatch(Landroid/graphics/NinePatch;Landroid/graphics/Rect;Landroid/graphics/Paint;)V (greylist-max-o, linking, denied)
+11-03 14:52:49.961  5569  5569 W dex2oat32: Accessing hidden method Landroid/graphics/Canvas;->drawPatch(Landroid/graphics/NinePatch;Landroid/graphics/RectF;Landroid/graphics/Paint;)V (greylist-max-o, linking, denied)
+11-03 14:52:50.613  5569  5673 W dex2oat32: Accessing hidden method Landroid/graphics/Bitmap;->getHardwareBuffer()Landroid/hardware/HardwareBuffer; (blacklist, linking, denied)
+11-03 14:52:52.608   285  1920 W resolv  : SSL_connect ssl error =5, mark 0xf0065: Connection refused
+11-03 14:52:52.608   285  1920 W resolv  : Validation failed
+11-03 14:52:52.628  5569  5673 W dex2oat32: Verification of void com.google.android.gms.internal.mlkit_vision_document_scanner.zzjh.<clinit>() took 104.100ms (922.19 bytecodes/s) (1616B approximate peak alloc)
+11-03 14:52:52.640  5569  5569 W dex2oat32: Verification of void com.google.android.gms.internal.mlkit_vision_document_scanner.zzfb.<clinit>() took 120.071ms (1290.90 bytecodes/s) (1968B approximate peak alloc)
+11-03 14:52:52.736  5569  5673 W dex2oat32: Verification of java.lang.String com.google.android.gms.internal.mlkit_vision_document_scanner.zzrn.zzc() took 104.079ms (374.71 bytecodes/s) (1456B approximate peak alloc)
+11-03 14:52:52.824   497   584 W ActivityManager: Unable to start service Intent { act=com.google.android.gms.drive.ApiService.RESET_AFTER_BOOT flg=0x4 cmp=com.google.android.gms/.drive.api.ApiService (has extras) } U=0: not found
+11-03 14:52:52.827   497  1768 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10149; state: DISABLED
+11-03 14:52:52.827   497   537 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10149; state: DISABLED
+11-03 14:52:52.835   286   286 D Zygote  : Forked child process 5676
+11-03 14:52:52.836   497   537 I ActivityManager: Start proc 5676:com.google.android.apps.wallpaper/u0a149 for broadcast {com.google.android.apps.wallpaper/com.android.wallpaper.module.DailyLoggingAlarmReceiver}
+11-03 14:52:52.838  5676  5676 W .apps.wallpape: Unexpected CPU variant for X86 using defaults: x86_64
+11-03 14:52:52.840  1354  5682 I Vision  : Requesting optional module download of ocr.
+11-03 14:52:52.840  1354  5682 I Vision  : Checking for download completion for 130336 -- ocr
+11-03 14:52:52.847   393   407 I adbd    : jdwp connection from 5676
+11-03 14:52:52.852  5676  5676 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+11-03 14:52:52.852  5676  5676 I .apps.wallpape: The ClassLoaderContext is a special shared library.
+11-03 14:52:52.853  5676  5676 I .apps.wallpape: The ClassLoaderContext is a special shared library.
+11-03 14:52:52.866  5676  5676 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+11-03 14:52:52.866  5676  5676 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+11-03 14:52:52.921   497   590 E ReportEncoder: No watchlist hash
+11-03 14:52:52.941  5676  5702 W DiskBasedLogger: Disk-based log buffer doesn't exist, so there's nothing to clean up.
+11-03 14:52:52.942   497  1683 I ActivityManager: Killing 5082:com.google.android.apps.pixelmigrate/u0a112 (adj 985): empty #17
+11-03 14:52:52.974   497   590 I WatchlistLoggingHandler: Milliseconds spent on tryAggregateRecords(): 100214
+11-03 14:52:52.980   497   529 I DropBoxManagerService: add tag=system_server_strictmode isTagEnabled=true flags=0x2
+11-03 14:52:53.005   286   286 I Zygote  : Process 5082 exited due to signal 9 (Killed)
+11-03 14:52:53.036   497   538 I libprocessgroup: Successfully killed process cgroup uid 10112 pid 5082 in 93ms
+11-03 14:52:53.506  5569  5569 W dex2oat32: Verification of com.google.firebase.components.Component com.google.firebase.components.Component$Builder.build() took 153.832ms (273.02 bytecodes/s) (1608B approximate peak alloc)
+11-03 14:52:53.540  5569  5673 W dex2oat32: Verification of java.nio.MappedByteBuffer com.google.mlkit.common.sdkinternal.model.LocalModelLoader.load() took 114.267ms (2809.19 bytecodes/s) (6080B approximate peak alloc)
+11-03 14:52:54.131  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 47665(7240KB) AllocSpace objects, 0(0B) LOS objects, 96% free, 63KB/1599KB, paused 8us total 170.846ms
+11-03 14:52:54.980  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:52:53.020   497   529 I chatty  : uid=1000(system) android.io identical 8 lines
+11-03 14:52:53.024   497   529 I DropBoxManagerService: add tag=system_server_strictmode isTagEnabled=true flags=0x2
+11-03 14:52:54.984   497   536 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+11-03 14:52:54.984   497   536 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+11-03 14:52:55.082  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:52:55.083  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:52:55.088  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:52:57.798  5569  5569 W dex2oat32: Verification of void org.bouncycastle.pqc.crypto.falcon.FPREngine.<clinit>() took 695.624ms (41615.84 bytecodes/s) (350592B approximate peak alloc)
+11-03 14:52:57.808  5569  5704 W dex2oat32: Verification of void org.bouncycastle.pqc.jcajce.spec.McElieceCCA2KeyGenParameterSpec.<init>(int, java.lang.String) took 100.055ms (399.78 bytecodes/s) (1312B approximate peak alloc)
+11-03 14:52:58.218  1354  5682 I GmscoreIpa: Starting mediastore instant index
+11-03 14:52:58.342  5569  5569 I dex2oat32: Explicit concurrent copying GC freed 37380(5519KB) AllocSpace objects, 0(0B) LOS objects, 94% free, 84KB/1620KB, paused 8us total 120.574ms
+11-03 14:52:58.516  5569  5569 I dex2oat32: dex2oat took 39.844s (3.478s cpu) (threads: 2) arena alloc=0B (0B) java alloc=84KB (86968B) native alloc=7773KB (7959760B) free=1998KB (2046768B) swap=16MB (16777216B)
+11-03 14:52:58.609   424   512 V installd: DexInv: --- END '/data/app/~~CFtj1LvHBQ6PHp9iTiYSaA==/com.shivtej.billscanner-jno84I-kelx0nzoEoPG7ew==/base.apk' (success) ---
+11-03 14:52:58.611   497  5492 I system_server: The ClassLoaderContext is a special shared library.
+11-03 14:52:58.632   497  5492 I chatty  : uid=1000(system) Binder:497_3 identical 16 lines
+11-03 14:52:58.640   497  5492 I system_server: The ClassLoaderContext is a special shared library.
+11-03 14:52:58.648   497  5492 I BackgroundDexOptService: Pinning optimized code {com.shivtej.billscanner.test, android, com.shivtej.billscanner}
+11-03 14:52:58.648   497  5492 D IorapForwardingService: onPackagesUpdated: com.shivtej.billscanner.test
+11-03 14:52:58.648   497  5492 D IorapForwardingService: onPackagesUpdated: android
+11-03 14:52:58.648   497  5492 D IorapForwardingService: onPackagesUpdated: com.shivtej.billscanner
+11-03 14:52:58.655  2014  2014 I BgTaskExecutorImpl: Starting EXCLUSIVE background task INTERNAL_PERIODIC_TASK_SYNC.
+11-03 14:52:58.657  2014  2014 I BgTaskExecutorImpl: Starting NONEXCLUSIVE background task DOODLE_SCHEDULE_SYNC_TASK.
+11-03 14:52:58.659  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task ACTIVITY_LEVEL_TASK.
+11-03 14:52:58.662  2014  2297 E MDD     : DownloadProgressMonitor: Can't find file group for uri: android://com.google.android.googlequicksearchbox/files/growthtracking/shared/GrowthTrackingData.pb.tmp
+11-03 14:52:58.672  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task AWARE_TIP_WORKER_PROCESS_TIPS.
+11-03 14:52:58.688  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task BACKGROUNDRETRY_CACHE_SWEEP.
+11-03 14:52:58.705  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task CHROME_EXPERIMENT_SYNC.
+11-03 14:52:58.708  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task CLEAR_DATA_DETECTOR.
+11-03 14:52:58.710  2014  2532 I FirstRunClassifier: First run of com.google.android.googlequicksearchbox on this device detected
+11-03 14:52:58.711   497  1764 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+11-03 14:52:58.711   497  1764 D PackageManager: Clear ephemeral installer activity
+11-03 14:52:58.732  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task CONTACT_AFFINITY_MODEL_CONTACTS_CHANGE_REFRESH.
+11-03 14:52:58.734  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task CONTACT_AFFINITY_MODEL_PERIODIC_REFRESH.
+11-03 14:52:58.762  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task DOODLE_SCHEDULE_SYNC_TASK.
+11-03 14:52:58.783  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task FETCH_ADVERTISING_INFO.
+11-03 14:52:58.787  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task FETCH_SCHEDULED_BUBBLES.
+11-03 14:52:58.804  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task LOG_ATTEMPTED_SEARCHES_TO_KANSAS.
+11-03 14:52:58.844  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task MDD_CELLULAR_CHARGING_TASK.
+11-03 14:52:58.850  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task MDD_MAINTENANCE_TASK.
+11-03 14:52:59.011  2014  5709 I LogsBasedTopContactLook: We received a null logged in account name.
+11-03 14:52:59.021  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task MDD_CHARGING_TASK.
+11-03 14:52:59.024  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task MDD_WIFI_CHARGING_TASK.
+11-03 14:52:59.026  2014  2027 I earchbox:searc: Background concurrent copying GC freed 227499(9787KB) AllocSpace objects, 31(2604KB) LOS objects, 49% free, 10MB/21MB, paused 16us total 214.996ms
+11-03 14:52:59.098  2014  5714 E MDD     : MDDManager Failed to init shared file metadata.
+11-03 14:52:59.281  1150  1176 I .gms.persisten: Background young concurrent copying GC freed 166585(7835KB) AllocSpace objects, 79(2224KB) LOS objects, 35% free, 14MB/22MB, paused 16us total 201.417ms
+11-03 14:52:59.346  2014  2282 I PolicyConfigSyncManager: Refresh account policy.
+11-03 14:52:59.353  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task MDH_FORCED_SYNC.
+11-03 14:52:59.372  2014  2565 W earchbox:searc: Long monitor contention with owner Blocking Thread #16 (5708) at java.util.Map com.google.android.libraries.phenotype.client.d.a()(SourceFile:15) waiters=1 in java.util.Map com.google.android.libraries.phenotype.client.d.a() for 284ms
+11-03 14:52:59.378  2014  2310 D PhFileGroupPop: Failed to add file group 
+11-03 14:52:59.378  2014  2310 I chatty  : uid=10123 com.google.android.googlequicksearchbox:search identical 5 lines
+11-03 14:52:59.378  2014  2310 D PhFileGroupPop: Failed to add file group 
+11-03 14:52:59.378  2014  2565 D PhFileGroupPop: Failed to add file group 
+11-03 14:52:59.379  2014  2565 I chatty  : uid=10123 com.google.android.googlequicksearchbox:search identical 5 lines
+11-03 14:52:59.379  2014  2565 D PhFileGroupPop: Failed to add file group 
+11-03 14:52:59.380  2014  5708 D PhFileGroupPop: Failed to add file group 
+11-03 14:52:59.380  2014  5708 I chatty  : uid=10123 com.google.android.googlequicksearchbox:search identical 5 lines
+11-03 14:52:59.380  2014  5708 D PhFileGroupPop: Failed to add file group 
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@d85ed40} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:91)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.382  2014  2565 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.382  2014  2565 D PhFileGroupPop: Failed to add file group 
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@302e5be} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:92)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.382  2014  5708 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.382  2014  5708 D PhFileGroupPop: Failed to add file group 
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@c7c9d6c} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:93)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.396  2014  2310 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.396  2014  2310 D PhFileGroupPop: Failed to add file group 
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@39fca} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:92)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.397  2014  5708 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@54c2458} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:91)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.398  2014  2565 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@da3ee96} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:93)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.404  2014  2310 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@8b2e04} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:91)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.405  2014  2565 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@d285e22} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:93)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.408  2014  2310 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@78f2670} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:92)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.409  2014  5708 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@d923a6e} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:92)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.412  2014  5708 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@a063fa5} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:120)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:91)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.416  2014  2565 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@7bd5388} with executor MoreExecutors.directExecutor()
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.b(SourceFile:93)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.staticplugins.cb.c.a(SourceFile:1)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.c.a(SourceFile:20)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.android.apps.gsa.tasks.b.a.a(Unknown Source:4)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.android.libraries.gsa.l.a.n.a(Unknown Source:2)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.dm.b(SourceFile:7)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.cg.run(SourceFile:11)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.common.v.a.do.run(SourceFile:8)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.424  2014  2310 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.551  2014  2566 I MDH     : [Storage] Creating database v2
+11-03 14:52:59.551  2014  2566 I MDH     : Creating MDH subscription table.
+11-03 14:52:59.552  2014  2566 I MDH     : Creating MDH wipeout table.
+11-03 14:52:59.571  2014  2566 V MDH     : Opening MDH wipeout table.
+11-03 14:52:59.596  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task MDH_WIPEOUT.
+11-03 14:52:59.607  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task REFRESH_AUTH_TOKENS.
+11-03 14:52:59.613  2014  2297 I PolicyConfigSyncManager: Refresh account policy.
+11-03 14:52:59.619  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task REFRESH_NOW_CONFIGURATION.
+11-03 14:52:59.621  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task REFRESH_SEARCH_HISTORY.
+11-03 14:52:59.641  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task RESTORE_SPEAKER_MODEL.
+11-03 14:52:59.641  2014  2565 W LocationOracle: getBestLocation(): no location is available
+11-03 14:52:59.644  2014  2566 I RestoreSpeakerModelTask: Canceling restore - user account is null
+11-03 14:52:59.666  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task UPDATE_GSERVICES_CONFIG.
+11-03 14:52:59.666  2014  5708 I GservicesUpdateTask: Updating Gservices keys
+11-03 14:52:59.685  2014  2565 W LocationOracle: getBestLocation(): no location is available
+11-03 14:52:59.694  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task UPDATE_LANGUAGE_PACKS.
+11-03 14:52:59.732  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task UPDATE_LAUNCHER_SHORTCUT.
+11-03 14:52:59.748   497   553 I AppsFilter: interaction: PackageSetting{3e18b6f com.shivtej.billscanner/10167} -> PackageSetting{d14415a com.google.android.googlequicksearchbox/10123} BLOCKED
+11-03 14:52:59.748   497   553 I AppsFilter: interaction: PackageSetting{37d0d05 com.shivtej.billscanner.test/10168} -> PackageSetting{d14415a com.google.android.googlequicksearchbox/10123} BLOCKED
+11-03 14:52:59.750   497   587 I InputReader: Reconfiguring input devices, changes=KEYBOARD_LAYOUTS | 
+11-03 14:52:59.751   497   527 I RoleManagerService: Granting default roles...
+11-03 14:52:59.751   686   686 V AvrcpMediaPlayerList: mPackageChangedBroadcastReceiver: action: android.intent.action.PACKAGE_CHANGED
+11-03 14:52:59.751   686   686 D AvrcpMediaPlayerList: Name of package changed: com.google.android.googlequicksearchbox
+11-03 14:52:59.757  2014  2262 I EngineIdGenerator: Refusing EXCLUSIVE task 43, it is already pending. Try again in 7438 seconds.
+11-03 14:52:59.767   497   497 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AKA
+11-03 14:52:59.769  2014  2262 W CPDataMediator: Failed to get primary cards from work profile
+11-03 14:52:59.769  2014  2262 W CPDataMediator: com.google.android.enterprise.profileaware.b.c: No profile available
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.g(SourceFile:63)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.e(SourceFile:53)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.c(SourceFile:12)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.a(SourceFile:26)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.aa.a(SourceFile:6)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.f.a(SourceFile:26)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.m.c(SourceFile:17)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.ae.b(SourceFile:4)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.smartspace.ab.a(SourceFile:984)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.smartspace.ab.a(SourceFile:289)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.aq.dp.a.b.a(SourceFile:2)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.a(SourceFile:64)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.a(SourceFile:39)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.g.run(Unknown Source:1)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.a(SourceFile:26)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.h.a(SourceFile:20)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.e.run(Unknown Source:12)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.a(SourceFile:26)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.b(SourceFile:32)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.f.a.j.a(SourceFile:23)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.aq.dp.a.k.a(SourceFile:2)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.x.b.b.a(SourceFile:19)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.q.a(SourceFile:126)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.q.c(SourceFile:95)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.search.core.service.b.run(Unknown Source:1)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.libraries.gsa.l.a.k.run(Unknown Source:2)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.bx.a(SourceFile:2)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.ca.run(SourceFile:1)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.aa.run(Unknown Source:2)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.aj.a(SourceFile:3)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.ag.run(Unknown Source:2)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.e.run(Unknown Source:2)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:301)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.769  2014  2262 W CPDataMediator: 	at com.google.android.apps.gsa.shared.util.c.a.g.run(SourceFile:8)
+11-03 14:52:59.775  1150  5591 I Fitness : OnPackageChangedOperation got intent: Intent { act=android.intent.action.PACKAGE_CHANGED dat=package:com.google.android.googlequicksearchbox flg=0x45000010 cmp=com.google.android.gms/.chimera.PersistentIntentOperationService (has extras) } [CONTEXT service_id=17 ]
+11-03 14:52:59.783  1150  5591 I Fitness : FitCleanupIntentOperation received Intent android.intent.action.PACKAGE_CHANGED [CONTEXT service_id=17 ]
+11-03 14:52:59.787  1027  1027 D CarrierSvcBindHelper: No carrier app for: 0
+11-03 14:52:59.807   944  2529 W QsbUiManager: Doodle is not valid.
+11-03 14:52:59.807   944  2529 W QsbUiManager: Doodle bitmap is not valid.
+11-03 14:52:59.827   710   748 I PermissionControllerServiceImpl: Updating user sensitive for uid 10123
+11-03 14:52:59.860  2014  2297 E MDD     : DownloadProgressMonitor: Can't find file group for uri: android://com.google.android.googlequicksearchbox/files/refreshzeroprefixtask/shared/ZeroPrefixTaskStats.pb.tmp
+11-03 14:52:59.927  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task UPLOAD_AUDIO_LOGS.
+11-03 14:52:59.930  2014  2566 I S3UtteranceSender: send account: %s, audioType: %d[null, OK_HEY_GOOGLE]
+11-03 14:52:59.932   497   793 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10084; state: DISABLED
+11-03 14:52:59.932   497   537 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10084; state: ENABLED
+11-03 14:52:59.937   286   286 D Zygote  : Forked child process 5741
+11-03 14:52:59.939  2014  2262 I NetworkRecognitionRnr: Using pair HTTP connection
+11-03 14:52:59.940   497   537 I ActivityManager: Start proc 5741:com.android.providers.calendar/u0a84 for content provider {com.android.providers.calendar/com.android.providers.calendar.CalendarProvider2}
+11-03 14:52:59.947  2014  4995 I PairHttpConnection: [Upload] Connected
+11-03 14:52:59.950  2014  2279 W LocationOracle: No location history returned by ContextManager
+11-03 14:52:59.969  2014  2298 W CronetNetworkRqstWrppr: Upload request without a content type.
+11-03 14:52:59.990  2014  2280 D StrictMode: StrictMode policy violation: android.os.strictmode.DiskReadViolation
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.os.StrictMode$AndroidBlockGuardPolicy.onReadFromDisk(StrictMode.java:1596)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.database.sqlite.SQLiteConnection.applyBlockGuardPolicy(SQLiteConnection.java:1197)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.database.sqlite.SQLiteConnection.executeForCursorWindow(SQLiteConnection.java:998)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.database.sqlite.SQLiteSession.executeForCursorWindow(SQLiteSession.java:838)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.database.sqlite.SQLiteQuery.fillWindow(SQLiteQuery.java:62)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.database.sqlite.SQLiteCursor.fillWindow(SQLiteCursor.java:153)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.database.sqlite.SQLiteCursor.getCount(SQLiteCursor.java:140)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.database.CursorToBulkCursorAdaptor.getBulkCursorDescriptor(CursorToBulkCursorAdaptor.java:161)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.content.ContentProviderNative.onTransact(ContentProviderNative.java:116)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.os.Binder.execTransactInternal(Binder.java:1154)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.os.Binder.execTransact(Binder.java:1123)
+11-03 14:52:59.990  2014  2280 D StrictMode: # via Binder call with stack:
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.os.StrictMode.readAndHandleBinderCallViolations(StrictMode.java:2358)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.os.Parcel.readExceptionCode(Parcel.java:2318)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:139)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.content.ContentProviderProxy.query(ContentProviderNative.java:472)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.content.ContentResolver.query(ContentResolver.java:1183)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.content.ContentResolver.query(ContentResolver.java:1115)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at android.content.ContentResolver.query(ContentResolver.java:1071)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.android.h.b.a(SourceFile:1)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.az.a(SourceFile:6)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.az.d(SourceFile:2)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.bj.a(SourceFile:6)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.cb.a(SourceFile:215)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.cb.a(SourceFile:199)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.android.apps.gsa.search.core.google.cb.c(SourceFile:192)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.android.apps.gsa.staticplugins.i.e.a(SourceFile:23)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.android.apps.gsa.staticplugins.i.b.b.a(Unknown Source:1)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.android.libraries.gsa.l.a.m.call(Unknown Source:2)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:52:59.990  2014  2280 D StrictMode: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:52:59.991  2014  2280 W LocationOracle: getBestLocation(): no location is available
+11-03 14:52:59.993  5741  5741 W viders.calenda: Unexpected CPU variant for X86 using defaults: x86_64
+11-03 14:52:59.995   393   407 I adbd    : jdwp connection from 5741
+11-03 14:52:59.995  2014  2566 I S3UtteranceSender: No utterances found. Returning!
+11-03 14:52:59.998   497  1745 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10117; state: DISABLED
+11-03 14:52:59.998   497   537 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10117; state: ENABLED
+11-03 14:53:00.001   692   692 D KeyguardClockSwitch: Updating clock: 253
+11-03 14:53:00.004   286   286 D Zygote  : Forked child process 5759
+11-03 14:53:00.007   497   537 I ActivityManager: Start proc 5759:com.google.android.partnersetup/u0a117 for content provider {com.google.android.partnersetup/com.google.android.partnersetup.RlzAppProvider}
+11-03 14:53:00.008  5741  5741 I viders.calenda: The ClassLoaderContext is a special shared library.
+11-03 14:53:00.012  5759  5759 W id.partnersetu: Unexpected CPU variant for X86 using defaults: x86_64
+11-03 14:53:00.012  5741  5741 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+11-03 14:53:00.013  5741  5741 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+11-03 14:53:00.013  1150  2754 W GCoreFlp: No location to return for getLastLocation()
+11-03 14:53:00.022   393   407 I adbd    : jdwp connection from 5759
+11-03 14:53:00.026  5741  5741 I CalendarProvider2: Created com.android.providers.calendar.CalendarAlarmManager@1bb0117(com.android.providers.calendar.CalendarProvider2@5bea904)
+11-03 14:53:00.027   692   692 D KeyguardClockSwitch: Updating clock: 253
+11-03 14:53:00.065  5759  5759 I id.partnersetu: The ClassLoaderContext is a special shared library.
+11-03 14:53:00.067  5759  5759 I id.partnersetu: The ClassLoaderContext is a special shared library.
+11-03 14:53:00.068  5759  5759 D nativeloader: classloader namespace configured for unbundled product apk. library_path=/product/priv-app/PartnerSetupPrebuilt/lib/x86_64:/product/lib64:/system/product/lib64
+11-03 14:53:00.070  5759  5759 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+11-03 14:53:00.070  5759  5759 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+11-03 14:53:00.100  2014  2279 W LocationOracle: No location returned by GMS core getLastLocation()
+11-03 14:53:00.109  1354  2429 I Icing   : IndexChimeraService.getServiceInterface callingPackage=com.google.android.gms componentName=AppsCorpus serviceId=36 [CONTEXT service_id=21 ]
+11-03 14:53:00.144  2014  2014 I BgTaskExecutorImpl: Starting PERIODIC background task UPLOAD_HOTWORD_SETTINGS.
+11-03 14:53:00.151  2014  5714 I DynamiteModule: Considering local module com.google.android.gms.cronet_dynamite:0 and remote module com.google.android.gms.cronet_dynamite:1311
+11-03 14:53:00.151  2014  5714 I DynamiteModule: Selected remote version of com.google.android.gms.cronet_dynamite, version >= 1311
+11-03 14:53:00.151  2014  5714 V DynamiteModule: Dynamite loader version >= 2, using loadModule2NoCrashUtils
+11-03 14:53:00.152  2014  5714 I DynamiteLoaderV2: [70] Cronetdynamite
+11-03 14:53:00.152  2014  5714 W earchbox:searc: Unsupported class loader
+11-03 14:53:00.187  1922  5783 D DownloadManager: [5] Starting
+11-03 14:53:00.188  1354  4889 W Icing   : No valid account for uploading user actions [CONTEXT service_id=21 ]
+11-03 14:53:00.226  1922  5783 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: false
+11-03 14:53:00.228  2014  2298 W CPDataMediator: Failed to get primary cards from work profile
+11-03 14:53:00.228  2014  2298 W CPDataMediator: com.google.android.enterprise.profileaware.b.c: No profile available
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.g(SourceFile:63)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.e(SourceFile:53)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.c(SourceFile:12)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.enterprise.profileaware.l.a(SourceFile:26)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.aa.a(SourceFile:6)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.f.a(SourceFile:26)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.m.a(SourceFile:26)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.ae.c(SourceFile:6)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.crossprofile.p.a(SourceFile:5)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.apps.gsa.staticplugins.opa.smartspace.k.n.a(Unknown Source:1)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.android.libraries.gsa.l.a.p.a(Unknown Source:2)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.common.v.a.f.a(SourceFile:3)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.common.v.a.h.run(SourceFile:21)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.common.v.a.co.run(SourceFile:1)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:53:00.228  2014  2298 W CPDataMediator: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:53:00.232   944  2573 D ProtoStore: deleting smartspace_current
+11-03 14:53:00.232   944  2573 D ProtoStore: no cached data
+11-03 14:53:00.232   944  2573 D ProtoStore: no cached data
+11-03 14:53:00.236  1354  4889 I Icing   : Usage reports ok 0, Failed Usage reports 0, indexed 0, rejected 0 [CONTEXT service_id=21 ]
+11-03 14:53:00.271  1354  2614 I Icing   : IndexChimeraService.getServiceInterface callingPackage=com.google.android.gms componentName=null serviceId=30 [CONTEXT service_id=21 ]
+11-03 14:53:00.273  1354  2088 W Icing   : No valid account for uploading user actions [CONTEXT service_id=21 ]
+11-03 14:53:00.288  1354  2088 I Icing   : Usage reports ok 0, Failed Usage reports 0, indexed 0, rejected 0 [CONTEXT service_id=21 ]
+11-03 14:53:00.291  1922  5783 D NetworkSecurityConfig: Using Network Security Config from resource network_security_config debugBuild: false
+11-03 14:53:00.341  2014  5714 W earchbox:searc: Unsupported class loader
+11-03 14:53:00.341   497  1763 E system_server: Invalid class loader spec: =UnsupportedClassLoaderContext=
+11-03 14:53:00.341   497  1763 E PackageDexUsage: Unsupported context?
+11-03 14:53:00.362  2014  3240 I PairHttpConnection: [Download] starting read
+11-03 14:53:00.426  2014  2565 D t       : Starting download: https://www.gstatic.com/android-search/hotword/x_google/7db96c566dbd33b2218d5799ec330d22/hotword.data
+11-03 14:53:00.426  2014  2565 V t       : Is http uri, downloading (uri: https://www.gstatic.com/android-search/hotword/x_google/7db96c566dbd33b2218d5799ec330d22/hotword.data)
+11-03 14:53:00.454  2014  2298 W WeatherDataAdapter: Incomplete data for smartspace request
+11-03 14:53:00.454  2014  2298 W OpaSSRequestSender: Weather data could not be extracted from Zerostate response
+11-03 14:53:00.533  2014  2565 E MDD     : DownloadProgressMonitor: Can't find file group for uri: android://com.google.android.googlequicksearchbox/files/datadownload/shared/public/datadownloadfile_1793717579446
+11-03 14:53:00.534  2014  2565 E MDD     : DownloadProgressMonitor: Can't find file group for uri: android://com.google.android.googlequicksearchbox/files/datadownload/shared/public/datadownloadfile_1793717579446
+11-03 14:53:00.885  2014  5714 D PhFileGroupPop: Failed to add file group 
+11-03 14:53:00.885  2014  5714 I chatty  : uid=10123 com.google.android.googlequicksearchbox:search identical 5 lines
+11-03 14:53:00.885  2014  5714 D PhFileGroupPop: Failed to add file group 
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@f7b07cc} with executor MoreExecutors.directExecutor()
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:53:00.885  2014  5714 D PhFileGroupPop: Failed to add file group 
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@71b012a} with executor MoreExecutors.directExecutor()
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@d36d4b8} with executor MoreExecutors.directExecutor()
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@7c005f6} with executor MoreExecutors.directExecutor()
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:53:00.885  2014  5714 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:53:00.887  2014  5714 D PhFileGroupPop: Failed to add file group 
+11-03 14:53:00.887  2014  5714 I chatty  : uid=10123 com.google.android.googlequicksearchbox:search identical 5 lines
+11-03 14:53:00.887  2014  5714 D PhFileGroupPop: Failed to add file group 
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@6e08464} with executor MoreExecutors.directExecutor()
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:53:00.887  2014  5714 D PhFileGroupPop: Failed to add file group 
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@4de8b82} with executor MoreExecutors.directExecutor()
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@f5382d0} with executor MoreExecutors.directExecutor()
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: RuntimeException while executing runnable bq{com.google.android.libraries.mdi.download.i.ax@16dddce} with executor MoreExecutors.directExecutor()
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: java.lang.NullPointerException: Attempt to read from field 'java.lang.String com.google.android.libraries.mdi.download.s.b' on a null object reference
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.ax.a(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bq.run(SourceFile:7)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.aw.execute(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.b(SourceFile:73)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.d.a(SourceFile:25)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.bu.a(SourceFile:2)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.i.az.a(SourceFile:29)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.dy.a(SourceFile:128)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.android.libraries.mdi.download.cu.a(Unknown Source:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.f.a(SourceFile:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.h.run(SourceFile:21)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.co.run(SourceFile:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.common.v.a.dc.run(SourceFile:5)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.aq.run(SourceFile:1)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at com.google.apps.tiktok.concurrent.f.run(Unknown Source:3)
+11-03 14:53:00.887  2014  5714 E com.google.common.v.a.d: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:53:01.097  2014  2279 I PolicyConfigSyncManager: Refresh account policy.
+11-03 14:53:01.142  2014  2282 I PolicyConfigSyncManager: Refresh account policy.
+11-03 14:53:01.241  1354  2088 I Icing   : Indexing com.google.android.gms-apps from com.google.android.gms [CONTEXT service_id=21 ]
+11-03 14:53:01.378  1354  2088 I Icing   : Indexing done com.google.android.gms-apps [CONTEXT service_id=21 ]
+11-03 14:53:01.379  1354  2088 I Icing   : Indexing com.google.android.gms-internal.3p:MobileApplication from com.google.android.gms [CONTEXT service_id=21 ]
+11-03 14:53:01.479  1354  2088 I Icing   : Indexing done com.google.android.gms-internal.3p:MobileApplication [CONTEXT service_id=21 ]
+11-03 14:53:02.845  1354  5732 I Vision  : Requesting optional module download of ocr.
+11-03 14:53:02.845  1354  5732 I Vision  : Checking for download completion for 140340 -- ocr
+--------- beginning of kernel
+11-03 14:53:06.172     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=300000 cc=10 chg=a
+11-03 14:53:06.110  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:53:06.141  1922  5783 D DownloadManager: [5] Finished with status SUCCESS
+11-03 14:53:06.152  2014  2565 W BlobLobber: Not processing download id 5, not a BlobLobber blob
+11-03 14:53:06.152  2014  2565 W BlobLobber: Notification for download id 5 which we didn't know or failed
+11-03 14:53:06.156  2014  2014 I BgTaskExecutorImpl: Starting NONEXCLUSIVE background task ZIP_DOWNLOAD_PROCESSOR.
+11-03 14:53:06.158  2014  2297 I ModelDnldProcssHelpr: #handleDownloadComplete, downloadId=5
+11-03 14:53:06.158  2014  2297 E ModelDnldProcssHelpr: pending download info for pending_hotword_model_download_info is null
+11-03 14:53:06.158  2014  2297 E ModelDnldProcssHelpr: pending download info for pending_xgoogle_hotword_model_download_info is null
+11-03 14:53:06.172  2014  2279 I ZipDownloadProcessorTsk: cacheDestination: /data/user/0/com.google.android.googlequicksearchbox/app_g3_models/en-US.zip
+11-03 14:53:06.243  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: Could not register for notifications with InnerTube: 
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: rff: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at rex.b(PG:18)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at uqp.f(PG:65)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at uqp.g(PG:134)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at uqp.b(PG:99)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at uqn.run(Unknown Source:1)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:462)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at ywx.run(Unknown Source:1)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at pqt.run(PG:13)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: Caused by: java.util.concurrent.ExecutionException: qjl: Precondition check failed.
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at zsp.a(PG:135)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at zsp.get(PG:91)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at rex.b(PG:17)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	... 11 more
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: Caused by: qjl: Precondition check failed.
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at rdu.b(PG:106)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at pyo.a(PG:61)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at pxo.run(Unknown Source:17)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	... 4 more
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: Caused by: bjj
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	at pxo.run(Unknown Source:13)
+11-03 14:53:06.328  5179  5384 W YouTubeMusic: 	... 4 more
+11-03 14:53:12.846  1354  5728 I Vision  : Requesting optional module download of ocr.
+11-03 14:53:12.846  1354  5728 I Vision  : Checking for download completion for 150342 -- ocr
+11-03 14:53:14.059  2014  2297 I Greco3DataManager: #handleLocale  en-US
+11-03 14:53:14.072  2014  2297 I Greco3DataManager: available language pack of en-US is version 310
+11-03 14:53:14.144  1922  5454 V DownloadManager: Deleting /storage/emulated/0/Android/data/com.google.android.googlequicksearchbox/files/download_cache/en-US-v310-f32.zip via provider delete
+11-03 14:53:14.212  1635  1652 I MediaProvider: Scanned external_primary due to REASON_DEMAND, found 0 items in 11ms, 0 inserts 0 updates 0 deletes
+11-03 14:53:16.248  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:53:16.270  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:53:16.274  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:53:16.276  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:53:16.278  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:53:16.294  3056  3712 I OCRTEST : [kacha] 4674 words=117 size=2212x1659 upright=true ms=32068
+11-03 14:53:16.312  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:53:20.038  1354  1493 I TelephonySpam: TelephonySpamChimeraService - Running Telephony Spam Chimera Service
+11-03 14:53:22.848   497  1763 I ActivityManager: Killing 4558:com.google.android.projection.gearhead:car/u0a113 (adj 985): empty #17
+11-03 14:53:22.848   497  1763 I ActivityManager: Killing 4523:com.google.android.projection.gearhead:shared/u0a113 (adj 985): empty #18
+11-03 14:53:22.868  1354  5798 I Vision  : Requesting optional module download of ocr.
+11-03 14:53:22.868  1354  5798 I Vision  : Checking for download completion for 160364 -- ocr
+11-03 14:53:22.889   286   286 I Zygote  : Process 4558 exited due to signal 9 (Killed)
+11-03 14:53:22.890   497  1763 W ActivityManager: Scheduling restart of crashed service com.google.android.projection.gearhead/com.google.android.apps.auto.carservice.service.impl.GearheadCarStartupService in 1000ms for connection
+11-03 14:53:22.892   497   538 I libprocessgroup: Successfully killed process cgroup uid 10113 pid 4558 in 42ms
+11-03 14:53:22.900   286   286 I Zygote  : Process 4523 exited due to signal 9 (Killed)
+11-03 14:53:22.903   497  1768 W ActivityManager: Failure disconnecting service com.google.android.projection.gearhead/com.google.android.gearhead.service.SharedService to connection android.os.BinderProxy@647dd01 (in com.google.android.projection.gearhead:shared)
+11-03 14:53:22.903   497  1768 W ActivityManager: android.os.DeadObjectException
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at android.os.BinderProxy.transactNative(Native Method)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at android.os.BinderProxy.transact(BinderProxy.java:540)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at android.app.IServiceConnection$Stub$Proxy.connected(IServiceConnection.java:129)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at com.android.server.am.ActiveServices.bringDownServiceLocked(ActiveServices.java:3289)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at com.android.server.am.ActiveServices.bringDownServiceIfNeededLocked(ActiveServices.java:3270)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at com.android.server.am.ActiveServices.removeConnectionLocked(ActiveServices.java:3566)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at com.android.server.am.ActiveServices.killServicesLocked(ActiveServices.java:3947)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at com.android.server.am.ActivityManagerService.cleanUpApplicationRecordLocked(ActivityManagerService.java:14771)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at com.android.server.am.ActivityManagerService.handleAppDiedLocked(ActivityManagerService.java:3772)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at com.android.server.am.ActivityManagerService.appDiedLocked(ActivityManagerService.java:3926)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at com.android.server.am.ActivityManagerService$AppDeathRecipient.binderDied(ActivityManagerService.java:1601)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at android.os.IBinder$DeathRecipient.binderDied(IBinder.java:305)
+11-03 14:53:22.903   497  1768 W ActivityManager: 	at android.os.BinderProxy.sendDeathNotice(BinderProxy.java:654)
+11-03 14:53:23.135     0     0 I binder  : 497:1768 transaction failed 29189/-22, size 304-0 line 3053
+11-03 14:53:22.936   497   538 I libprocessgroup: Successfully killed process cgroup uid 10113 pid 4523 in 43ms
+11-03 14:53:26.132  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:53:26.221  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:53:26.226  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:53:26.228  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:53:32.870   497  1769 I ActivityManager: Killing 5112:com.google.android.apps.restore/u0a122 (adj 985): empty #17
+11-03 14:53:32.875   286   286 I Zygote  : Process 5112 exited due to signal 9 (Killed)
+11-03 14:53:32.888  1354  5800 I Vision  : Requesting optional module download of ocr.
+11-03 14:53:32.888  1354  5800 I Vision  : Checking for download completion for 170384 -- ocr
+11-03 14:53:32.916   497   538 I libprocessgroup: Successfully killed process cgroup uid 10122 pid 5112 in 43ms
+11-03 14:53:36.400  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:53:36.505  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:53:38.201   497  1763 I ActivityManager: Killing 3427:com.google.android.calendar/u0a146 (adj 985): empty #17
+11-03 14:53:38.206   286   286 I Zygote  : Process 3427 exited due to signal 9 (Killed)
+11-03 14:53:38.248   497   538 I libprocessgroup: Successfully killed process cgroup uid 10146 pid 3427 in 46ms
+11-03 14:53:38.744  2014  2298 W OpaSSRequestSender: Failed to get ZeroStateResponse from AssistantClientSyncWorker with error java.util.concurrent.TimeoutException
+11-03 14:53:39.064  1485  2758 I Dialer  : OmtpVvmCarrierCfgHlpr - OmtpEvent:CONFIG_STATUS_SMS_TIME_OUT
+11-03 14:53:39.064  1485  1485 I Dialer  : RetryPolicy - discarding deferred status: configuration_state=4
+11-03 14:53:39.065  1485  1485 I Dialer  : VvmTaskExecutor - no more tasks, stopping service if no task are added in 5000 millis
+11-03 14:53:39.065  1485  1485 I Dialer  : VvmTaskReceiver - task received
+11-03 14:53:39.065  1485  1485 I Dialer  : VvmTaskReceiver - TaskExecutor already running
+11-03 14:53:39.065  1485  1485 I Dialer  : Task.createTask - create task:com.android.voicemail.impl.ActivationTask
+11-03 14:53:39.065  1485  1485 I Dialer  : RetryPolicy - retry #2 for com.android.voicemail.impl.ActivationTask@6f023c9 queued, executing in 5000
+11-03 14:53:39.065  1485  1485 I Dialer  : VvmTaskExecutor - com.android.voicemail.impl.ActivationTask@6f023c9 added
+11-03 14:53:39.065  1485  1485 I Dialer  : VvmTaskExecutor - minimal wait time:5000
+11-03 14:53:39.065  1485  1485 I Dialer  : VvmTaskExecutor - sleep for 5000 millis
+11-03 14:53:42.920  1354  5802 I Vision  : Requesting optional module download of ocr.
+11-03 14:53:42.921  1354  5802 I Vision  : Checking for download completion for 180416 -- ocr
+11-03 14:53:44.104  1485  2758 I Dialer  : VvmTaskExecutor - executing task com.android.voicemail.impl.ActivationTask@6f023c9
+11-03 14:53:44.104  1485  2758 I Dialer  : PreOMigrationHandler - ComponentInfo{com.android.phone/com.android.services.telephony.TelephonyConnectionService}, ***, UserHandle{0} already migrated
+11-03 14:53:44.111  5605  5621 I VoicemailNotifier: receivers for android.intent.action.PROVIDER_CHANGED :[]
+11-03 14:53:44.112  1485  2758 I Dialer  : VvmActivationTask - VVM content provider configured - vvm_type_cvvm
+11-03 14:53:44.112  1485  2758 I Dialer  : OmtpVvmCarrierCfgHlpr - OmtpEvent:CONFIG_ACTIVATING
+11-03 14:53:44.114  5605  5621 I VoicemailNotifier: receivers for android.intent.action.PROVIDER_CHANGED :[]
+11-03 14:53:44.117  1027  1327 D SmsNumberUtils: enter filterDestAddr. destAddr="[BajqU4K5_YhSYbs-7QUn0dOwcmI]"
+11-03 14:53:44.118  1027  1327 D SmsNumberUtils: destAddr is not formatted.
+11-03 14:53:44.118  1027  1327 D SmsNumberUtils: leave filterDestAddr, new destAddr="[BajqU4K5_YhSYbs-7QUn0dOwcmI]"
+11-03 14:53:45.995  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:53:46.033  3056  3712 I OCRTEST : [kacha] 4675 words=111 size=1659x2212 upright=false ms=29721
+11-03 14:53:46.050  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:53:52.941  1354  5804 I Vision  : Requesting optional module download of ocr.
+11-03 14:53:52.941  1354  5804 I Vision  : Checking for download completion for 190436 -- ocr
+11-03 14:53:56.162  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:53:56.180  3056  3712 I OCRTEST : [kacha] 4676 words=83 size=1659x2212 upright=true ms=10131
+11-03 14:53:56.180  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:53:56.182  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:53:56.185  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:53:56.188  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:53:56.198  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:54:00.002   692   692 D KeyguardClockSwitch: Updating clock: 254
+11-03 14:54:02.971  1354  5807 I Vision  : Requesting optional module download of ocr.
+11-03 14:54:02.971  1354  5807 I Vision  : Checking for download completion for 200467 -- ocr
+11-03 14:54:05.349  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:54:05.431  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:54:05.434  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:54:05.438  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:54:06.171     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=300000 cc=10 chg=a
+11-03 14:54:12.973   497  1763 I ActivityManager: Killing 5011:com.google.android.apps.maps/u0a136 (adj 985): empty #17
+11-03 14:54:12.981   286   286 I Zygote  : Process 5011 exited due to signal 9 (Killed)
+11-03 14:54:12.993  1354  5809 I Vision  : Requesting optional module download of ocr.
+11-03 14:54:12.993  1354  5809 I Vision  : Checking for download completion for 210488 -- ocr
+11-03 14:54:13.016   497   538 I libprocessgroup: Successfully killed process cgroup uid 10136 pid 5011 in 42ms
+11-03 14:54:14.672  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:54:14.768  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:54:23.025  1354  5811 I Vision  : Requesting optional module download of ocr.
+11-03 14:54:23.025  1354  5811 I Vision  : Checking for download completion for 220520 -- ocr
+11-03 14:54:23.630  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:54:23.655  3056  3712 I OCRTEST : [kacha] 4677 words=74 size=2212x1659 upright=true ms=27458
+11-03 14:54:23.676  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:54:32.987  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:54:33.002  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:54:33.005  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:54:33.007  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:54:33.009  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:54:33.042  1354  5814 I Vision  : Requesting optional module download of ocr.
+11-03 14:54:33.042  1354  5814 I Vision  : Checking for download completion for 230537 -- ocr
+11-03 14:54:33.073   497  1752 D WifiNl80211Manager: Scan result ready event
+11-03 14:54:33.073   497  1752 D WifiNative: Scan result ready event
+11-03 14:54:33.080  1354  2088 I ChmraDebugLogger: [52] null
+11-03 14:54:33.082  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:54:33.088  1354  2088 I ChimeraConfigService: Scheduling checkin for one-off execution between [3300,43200] seconds from now (1793717673088)
+11-03 14:54:33.092  1354  2088 I ChimeraConfigService: Scheduling checkin every 43200 seconds, with flex of 1800 seconds
+11-03 14:54:33.252  4877  4999 E libc    : Access denied finding property "persist.adb.tls_server.enable"
+11-03 14:54:33.252  4877  4999 E libc    : Access denied finding property "service.adb.tls.port"
+11-03 14:54:33.361  1150  2258 W GLSUser : [AppCertManager] Failed to get security token.
+11-03 14:54:33.361  1150  2258 W GLSUser : java.io.IOException: Invalid scope
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at adac.b(:com.google.android.gms@201817023@20.18.17 (040800-311416286):23)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at adac.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):18)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at adac.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):11)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at huk.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):16)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at hui.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):41)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at hud.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):0)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at hug.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):10)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at fzn.call(:com.google.android.gms@201817023@20.18.17 (040800-311416286):5)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at sji.b(:com.google.android.gms@201817023@20.18.17 (040800-311416286):12)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at sji.run(:com.google.android.gms@201817023@20.18.17 (040800-311416286):7)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at spj.run(:com.google.android.gms@201817023@20.18.17 (040800-311416286):0)
+11-03 14:54:33.361  1150  2258 W GLSUser : 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:54:33.244  4877  4877 W Binder:4877_5: type=1400 audit(0.0:62): avc: denied { read } for name="u:object_r:system_adbd_prop:s0" dev="tmpfs" ino=8602 scontext=u:r:gmscore_app:s0:c512,c768 tcontext=u:object_r:system_adbd_prop:s0 tclass=file permissive=0 app=com.google.android.gms
+11-03 14:54:33.396  1150  2258 W GLSUser : [AppCertManager] IOException while requesting key: 
+11-03 14:54:33.396  1150  2258 W GLSUser : java.io.IOException: Invalid device key response.
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at huk.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):46)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at hui.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):41)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at hud.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):0)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at hug.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):10)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at fzn.call(:com.google.android.gms@201817023@20.18.17 (040800-311416286):5)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at sji.b(:com.google.android.gms@201817023@20.18.17 (040800-311416286):12)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at sji.run(:com.google.android.gms@201817023@20.18.17 (040800-311416286):7)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at spj.run(:com.google.android.gms@201817023@20.18.17 (040800-311416286):0)
+11-03 14:54:33.396  1150  2258 W GLSUser : 	at java.lang.Thread.run(Thread.java:923)
+11-03 14:54:33.252  4877  4877 W Binder:4877_5: type=1400 audit(0.0:63): avc: denied { read } for name="u:object_r:adbd_prop:s0" dev="tmpfs" ino=8462 scontext=u:r:gmscore_app:s0:c512,c768 tcontext=u:object_r:adbd_prop:s0 tclass=file permissive=0 app=com.google.android.gms
+11-03 14:54:42.248  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:54:42.346  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:54:42.348  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:54:42.351  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:54:43.051  1354  5820 I Vision  : Requesting optional module download of ocr.
+11-03 14:54:43.051  1354  5820 I Vision  : Checking for download completion for 240547 -- ocr
+11-03 14:54:44.160  1485  2758 I Dialer  : OmtpVvmCarrierCfgHlpr - OmtpEvent:CONFIG_STATUS_SMS_TIME_OUT
+11-03 14:54:44.160  1485  1485 I Dialer  : RetryPolicy - discarding deferred status: configuration_state=4
+11-03 14:54:44.161  1485  1485 I Dialer  : VvmTaskExecutor - no more tasks, stopping service if no task are added in 5000 millis
+11-03 14:54:44.161  1485  1485 I Dialer  : VvmTaskReceiver - task received
+11-03 14:54:44.161  1485  1485 I Dialer  : VvmTaskReceiver - TaskExecutor already running
+11-03 14:54:44.161  1485  1485 I Dialer  : Task.createTask - create task:com.android.voicemail.impl.ActivationTask
+11-03 14:54:44.161  1485  1485 I Dialer  : RetryPolicy - retry #3 for com.android.voicemail.impl.ActivationTask@2ce3385 queued, executing in 5000
+11-03 14:54:44.161  1485  1485 I Dialer  : VvmTaskExecutor - com.android.voicemail.impl.ActivationTask@2ce3385 added
+11-03 14:54:44.161  1485  1485 I Dialer  : VvmTaskExecutor - minimal wait time:5000
+11-03 14:54:44.162  1485  1485 I Dialer  : VvmTaskExecutor - sleep for 5000 millis
+11-03 14:54:49.200  1485  2758 I Dialer  : VvmTaskExecutor - executing task com.android.voicemail.impl.ActivationTask@2ce3385
+11-03 14:54:49.200  1485  2758 I Dialer  : PreOMigrationHandler - ComponentInfo{com.android.phone/com.android.services.telephony.TelephonyConnectionService}, ***, UserHandle{0} already migrated
+11-03 14:54:49.206  5605  5621 I VoicemailNotifier: receivers for android.intent.action.PROVIDER_CHANGED :[]
+11-03 14:54:49.207  1485  2758 I Dialer  : VvmActivationTask - VVM content provider configured - vvm_type_cvvm
+11-03 14:54:49.207  1485  2758 I Dialer  : OmtpVvmCarrierCfgHlpr - OmtpEvent:CONFIG_ACTIVATING
+11-03 14:54:49.209  5605  5621 I VoicemailNotifier: receivers for android.intent.action.PROVIDER_CHANGED :[]
+11-03 14:54:49.212  1027  1273 D SmsNumberUtils: enter filterDestAddr. destAddr="[BajqU4K5_YhSYbs-7QUn0dOwcmI]"
+11-03 14:54:49.212  1027  1273 D SmsNumberUtils: destAddr is not formatted.
+11-03 14:54:49.212  1027  1273 D SmsNumberUtils: leave filterDestAddr, new destAddr="[BajqU4K5_YhSYbs-7QUn0dOwcmI]"
+11-03 14:54:51.519  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:54:51.545  3056  3712 I OCRTEST : [kacha] 4678 words=81 size=1659x2212 upright=true ms=27873
+11-03 14:54:51.562  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:54:53.068  1354  5822 I Vision  : Requesting optional module download of ocr.
+11-03 14:54:53.068  1354  5822 I Vision  : Checking for download completion for 250564 -- ocr
+11-03 14:54:59.769  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:54:59.852  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:55:00.002   692   692 D KeyguardClockSwitch: Updating clock: 255
+11-03 14:55:03.080  1354  5824 I Vision  : Requesting optional module download of ocr.
+11-03 14:55:03.080  1354  5824 I Vision  : Checking for download completion for 260576 -- ocr
+11-03 14:55:09.146  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:55:09.161  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:55:09.164  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:55:09.167  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:55:09.169  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:55:09.249  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:55:13.092  1354  5827 I Vision  : Requesting optional module download of ocr.
+11-03 14:55:13.092  1354  5827 I Vision  : Checking for download completion for 270588 -- ocr
+11-03 14:55:17.927  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:55:17.956  3056  3712 I OCRTEST : [kacha] 4679 words=93 size=2212x1659 upright=true ms=26394
+11-03 14:55:17.974  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:55:17.976  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:55:17.978  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:55:20.958  1150  1150 I NearbyDiscovery: DiscoveryService destroyed [CONTEXT service_id=49 ]
+11-03 14:55:20.981  1150  2636 I NearbyDiscovery: Show notifications: 0 total, no changes since last shown, no-op. [CONTEXT service_id=49 ]
+11-03 14:55:20.981  1150  2139 D BluetoothHeadset: Proxy object disconnected
+11-03 14:55:20.981  1150  2636 D BluetoothA2dp: Unbinding service...
+11-03 14:55:20.982  1150  2636 I NearbyDiscovery: EventStreamLoggingManager: destroy, unbind service [CONTEXT service_id=49 ]
+11-03 14:55:20.989  1150  2636 I NearbyDiscovery: DiscoveryService destroy EventLoop [CONTEXT service_id=49 ]
+11-03 14:55:23.104  1354  5829 I Vision  : Requesting optional module download of ocr.
+11-03 14:55:23.104  1354  5829 I Vision  : Checking for download completion for 280600 -- ocr
+11-03 14:55:26.431  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:55:26.514  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:55:33.120  1354  5831 I Vision  : Requesting optional module download of ocr.
+11-03 14:55:33.121  1354  5831 I Vision  : Checking for download completion for 290616 -- ocr
+11-03 14:55:34.674  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:55:34.773  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:55:43.140  1354  5833 I Vision  : Requesting optional module download of ocr.
+11-03 14:55:43.141  1354  5833 I Vision  : Checking for download completion for 300636 -- ocr
+11-03 14:55:43.287  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:55:43.302  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:55:43.305  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:55:43.308  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:55:43.310  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:55:43.316  3056  3712 I OCRTEST : [kacha] 4680 words=78 size=1659x2212 upright=true ms=25342
+11-03 14:55:43.333  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:55:49.256  1485  2758 I Dialer  : OmtpVvmCarrierCfgHlpr - OmtpEvent:CONFIG_STATUS_SMS_TIME_OUT
+11-03 14:55:49.256  1485  1485 I Dialer  : RetryPolicy - discarding deferred status: configuration_state=4
+11-03 14:55:49.257  1485  1485 I Dialer  : VvmTaskExecutor - no more tasks, stopping service if no task are added in 5000 millis
+11-03 14:55:49.257  1485  1485 I Dialer  : VvmTaskReceiver - task received
+11-03 14:55:49.257  1485  1485 I Dialer  : VvmTaskReceiver - TaskExecutor already running
+11-03 14:55:49.257  1485  1485 I Dialer  : Task.createTask - create task:com.android.voicemail.impl.ActivationTask
+11-03 14:55:49.257  1485  1485 I Dialer  : RetryPolicy - retry #4 for com.android.voicemail.impl.ActivationTask@4ef45a6 queued, executing in 5000
+11-03 14:55:49.257  1485  1485 I Dialer  : VvmTaskExecutor - com.android.voicemail.impl.ActivationTask@4ef45a6 added
+11-03 14:55:49.257  1485  1485 I Dialer  : VvmTaskExecutor - minimal wait time:5000
+11-03 14:55:49.257  1485  1485 I Dialer  : VvmTaskExecutor - sleep for 5000 millis
+11-03 14:55:51.692  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:55:51.775  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:55:51.777  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:55:51.780  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:55:53.152  1354  5836 I Vision  : Requesting optional module download of ocr.
+11-03 14:55:53.152  1354  5836 I Vision  : Checking for download completion for 310648 -- ocr
+11-03 14:55:54.296  1485  2758 I Dialer  : VvmTaskExecutor - executing task com.android.voicemail.impl.ActivationTask@4ef45a6
+11-03 14:55:54.296  1485  2758 I Dialer  : PreOMigrationHandler - ComponentInfo{com.android.phone/com.android.services.telephony.TelephonyConnectionService}, ***, UserHandle{0} already migrated
+11-03 14:55:54.303  5605  5621 I VoicemailNotifier: receivers for android.intent.action.PROVIDER_CHANGED :[]
+11-03 14:55:54.303  1485  2758 I Dialer  : VvmActivationTask - VVM content provider configured - vvm_type_cvvm
+11-03 14:55:54.304  1485  2758 I Dialer  : OmtpVvmCarrierCfgHlpr - OmtpEvent:CONFIG_ACTIVATING
+11-03 14:55:54.305  5605  5621 I VoicemailNotifier: receivers for android.intent.action.PROVIDER_CHANGED :[]
+11-03 14:55:54.309  1027  1273 D SmsNumberUtils: enter filterDestAddr. destAddr="[BajqU4K5_YhSYbs-7QUn0dOwcmI]"
+11-03 14:55:54.309  1027  1273 D SmsNumberUtils: destAddr is not formatted.
+11-03 14:55:54.309  1027  1273 D SmsNumberUtils: leave filterDestAddr, new destAddr="[BajqU4K5_YhSYbs-7QUn0dOwcmI]"
+11-03 14:56:00.001   692   692 D KeyguardClockSwitch: Updating clock: 256
+11-03 14:56:00.099  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:56:00.198  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:56:03.164  1354  5838 I Vision  : Requesting optional module download of ocr.
+11-03 14:56:03.164  1354  5838 I Vision  : Checking for download completion for 320660 -- ocr
+11-03 14:56:08.260  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:56:08.283  3056  3712 I OCRTEST : [kacha] 4681 words=71 size=1659x2212 upright=true ms=24951
+11-03 14:56:08.300  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:56:13.181  1354  5840 I Vision  : Requesting optional module download of ocr.
+11-03 14:56:13.181  1354  5840 I Vision  : Checking for download completion for 330677 -- ocr
+11-03 14:56:14.470   497   529 I DropBoxManagerService: add tag=system_server_strictmode isTagEnabled=true flags=0x2
+11-03 14:56:16.180  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:56:16.193  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:56:16.197  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:56:16.201  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:56:16.204  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:56:16.265  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:56:14.471   497   529 I chatty  : uid=1000(system) android.io identical 2 lines
+11-03 14:56:14.472   497   529 I DropBoxManagerService: add tag=system_server_strictmode isTagEnabled=true flags=0x2
+11-03 14:56:16.472   497   536 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+11-03 14:56:16.472   497   536 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+11-03 14:56:23.183  1354  5840 I Vision  : Requesting optional module download of ocr.
+11-03 14:56:23.184  1354  5840 I Vision  : Checking for download completion for 340679 -- ocr
+11-03 14:56:24.082  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:56:24.180  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:56:24.180  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:56:24.182  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:56:31.809  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:56:31.832  3056  3712 I OCRTEST : [kacha] 4682 words=74 size=2212x1659 upright=true ms=23531
+11-03 14:56:31.848  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:56:33.200  1354  5846 I Vision  : Requesting optional module download of ocr.
+11-03 14:56:33.208  1354  5846 I Vision  : Checking for download completion for 350704 -- ocr
+11-03 14:56:37.192  2770  3156 I CarrierServices: [84] drv.a: (PEv2-SM): DisabledState: event Timeout
+11-03 14:56:38.499  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:56:38.579  3056  3753 D PipelineManager: Start process bitmap
+11-03 14:56:43.224  1354  5848 I Vision  : Requesting optional module download of ocr.
+11-03 14:56:43.224  1354  5848 I Vision  : Checking for download completion for 360720 -- ocr
+11-03 14:55:06.171     0     0 I chatty  : uid=0(root) logd identical 1 line
+11-03 14:56:06.171     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=300000 cc=10 chg=a
+11-03 14:56:43.962     0     0 I         : kworker/dying (128) used greatest stack depth: 10840 bytes left
+11-03 14:56:44.691  3056  3753 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:56:44.786  3056  3742 D PipelineManager: Start process bitmap
+11-03 14:56:51.081  3056  3742 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-03 14:56:51.093  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:56:51.095  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:56:51.098  3056  3732 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-03 14:56:51.101  3056  3712 I OCRTEST : [kacha] 4683 words=60 size=1659x2212 upright=true ms=19253
+11-03 14:56:51.104  3056  3732 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-03 14:56:51.312  3056  3076 I tej.billscanne: JIT allocated 59KB for compiled code of com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+11-03 14:56:51.313  3056  3076 I tej.billscanne: Compiler allocated 7241KB to compile com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+11-03 14:56:51.359  3056  3076 I tej.billscanne: JIT allocated 95KB for compiled code of com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+11-03 14:56:51.359  3056  3076 I tej.billscanne: Compiler allocated 8251KB to compile com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+11-03 14:56:51.451  3056  3076 I tej.billscanne: JIT allocated 81KB for compiled code of com.shivtej.billscanner.core.ocr.InvoiceParser$TableResult com.shivtej.billscanner.core.ocr.InvoiceParser.readTableAt(java.util.List, java.util.List, double, com.shivtej.billscanner.core.ocr.LayoutMemory, com.shivtej.billscanner.core.model.Header, int, boolean, double, java.util.Map)
+11-03 14:56:51.451  3056  3076 I tej.billscanne: Compiler allocated 10MB to compile com.shivtej.billscanner.core.ocr.InvoiceParser$TableResult com.shivtej.billscanner.core.ocr.InvoiceParser.readTableAt(java.util.List, java.util.List, double, com.shivtej.billscanner.core.ocr.LayoutMemory, com.shivtej.billscanner.core.model.Header, int, boolean, double, java.util.Map)
+11-03 14:56:51.650  3056  3076 I tej.billscanne: JIT allocated 59KB for compiled code of com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+11-03 14:56:51.650  3056  3076 I tej.billscanne: Compiler allocated 7241KB to compile com.shivtej.billscanner.core.model.Header com.shivtej.billscanner.core.ocr.InvoiceParser.readHeader(java.util.List, int, double, java.util.List)
+11-03 14:56:51.882  3056  3076 I tej.billscanne: Compiler allocated 4370KB to compile com.shivtej.billscanner.core.ocr.InvoiceParser$PageResult com.shivtej.billscanner.core.ocr.InvoiceParser.parsePage(com.shivtej.billscanner.core.ocr.OcrPage, int, com.shivtej.billscanner.core.ocr.LayoutMemory, int, java.util.Map)
+11-03 14:56:53.230  1354  5851 I Vision  : Requesting optional module download of ocr.
+11-03 14:56:53.230  1354  5851 I Vision  : Checking for download completion for 370726 -- ocr
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] HEADER supplier=TRADING CORPORATION no=null date=null printedQty=null lines=0
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 1: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 2: आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 3: आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 4: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 5: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 6: आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 7: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 8: आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 9: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 10: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 11: आर्टिकल टेबल का हेडर (Item, Qty, Rate, Amount…) नहीं मिला
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE पेज 12: टेबल मिली पर कोई आर्टिकल लाइन नहीं पढ़ी जा सकी
+11-03 14:56:53.251  3056  3712 I OCRTEST : [kacha] NOTE बिल में आर्टिकल की टेबल नहीं मिली। फ़ोटो साफ़ और पूरी हो, फिर दोबारा स्कैन करें या आर्टिकल हाथ से जोड़ें।
+11-03 14:56:53.316  3056  3712 I TestRunner: finished: kacha(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-03 14:56:53.318  3056  3712 I TestRunner: run finished: 1 tests, 0 failed, 0 ignored
+11-03 14:56:53.320   497  1752 I ActivityManager: Force stopping com.shivtej.billscanner appid=10167 user=0: finished inst
+11-03 14:56:53.321   497  1752 I ActivityManager: Killing 3056:com.shivtej.billscanner/u0a167 (adj 0): stop com.shivtej.billscanner due to finished inst
+11-03 14:56:53.322  2957  2957 I app_process: System.exit called, status: 0
+11-03 14:56:53.322  2957  2957 I AndroidRuntime: VM exiting with result code 0.
+11-03 14:56:53.340   286   286 I Zygote  : Process 3056 exited due to signal 9 (Killed)
+11-03 14:56:53.573     0     0 I binder  : undelivered TRANSACTION_COMPLETE
+11-03 14:56:53.575     0     0 I binder  : undelivered transaction 422315, process died.
+11-03 14:56:53.580     0     0 D logd    : logdr: UID=2000 GID=2000 PID=5856 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+11-03 14:56:53.359   497   538 I libprocessgroup: Successfully killed process cgroup uid 10167 pid 3056 in 36ms
