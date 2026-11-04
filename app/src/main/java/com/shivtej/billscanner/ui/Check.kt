@@ -70,7 +70,7 @@ import java.math.BigDecimal
 import kotlinx.coroutines.launch
 
 /** One bill line for the goods check. */
-data class CheckLine(val id: String, val no: String, val name: String, val mrp: String, val size: String, val qty: Int, val got: Int, val rate: String = "") {
+data class CheckLine(val id: String, val no: String, val name: String, val mrp: String, val size: String, val qty: Int, val got: Int, val rate: String = "", val rateShown: String = rate) {
     val left get() = (qty - got).coerceAtLeast(0)
     fun matches(q: String): Boolean {
         val t = q.trim(); if (t.isEmpty()) return true
@@ -87,7 +87,9 @@ private fun line(it: LineItem, i: Int, got: Int): CheckLine {
     val name = listOf(v.article, v.name).filter { s -> s.isNotBlank() }.distinct().joinToString(" ").ifBlank { "—" }
     // Size only ("6X10", "6/2,7/3"), without the colour written before it.
     val size = v.sizeText.split(" | ").map { s -> s.trim().replace(Regex("""^[A-Za-z][A-Za-z ./-]*?\s+(?=\d)"""), "") }.filter { s -> s.any(Char::isDigit) && !s.contains("MRP", true) && !s.startsWith(":") }.joinToString(",")
-    return CheckLine(it.id, "${v.sr ?: (i + 1)}", name, v.mrp?.stripTrailingZeros()?.toPlainString() ?: "", size, q, got.coerceIn(0, q), v.rate?.stripTrailingZeros()?.toPlainString() ?: "")
+    return CheckLine(it.id, "${v.sr ?: (i + 1)}", name, v.mrp?.stripTrailingZeros()?.toPlainString() ?: "", size, q, got.coerceIn(0, q), v.rate?.stripTrailingZeros()?.toPlainString() ?: "",
+        // On the narrow column: whole rupees from ₹100 up (the pencil shows the exact rate).
+        v.rate?.let { r -> if (r >= java.math.BigDecimal(100)) r.setScale(0, java.math.RoundingMode.HALF_UP).toPlainString() else r.stripTrailingZeros().toPlainString() } ?: "")
 }
 
 /** Pairs received and pairs on the bill. */
@@ -352,7 +354,7 @@ private fun LineRow(l: CheckLine, found: Boolean, locked: Boolean, onClick: () -
         Box(Modifier.width(W_CK).then(if (locked) Modifier.background(Color.Transparent) else Modifier)) { Box16(found, faded = locked) }
         Cell(l.no, W_NO, C.muted, end = false)
         Text(l.name, fontSize = 12.sp, color = C.ink, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-        Cell(if (l.rate.isEmpty()) "—" else "₹" + l.rate, W_RATE, C.orangeDark, bold = true)
+        Cell(if (l.rateShown.isEmpty()) "—" else "₹" + l.rateShown, W_RATE, C.orangeDark, bold = true)
         Cell(if (l.mrp.isEmpty()) "—" else "₹" + l.mrp, W_MRP)
         Cell(l.size.ifBlank { "—" }, W_SIZE, C.muted)
         if (found) Cell("${l.got}/${l.qty}", W_PCS, Green, bold = true) else Cell("${l.left}", W_PCS, bold = true)
