@@ -1,0 +1,616 @@
+--------- beginning of main
+11-04 14:43:52.365  1123  2144 W GLSUser : [AppCertManager] IOException while requesting key: 
+11-04 14:43:52.365  1123  2144 W GLSUser : java.io.IOException: Invalid device key response.
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at huk.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):46)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at hui.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):41)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at hud.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):0)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at hug.a(:com.google.android.gms@201817023@20.18.17 (040800-311416286):10)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at fzn.call(:com.google.android.gms@201817023@20.18.17 (040800-311416286):5)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at sji.b(:com.google.android.gms@201817023@20.18.17 (040800-311416286):12)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at sji.run(:com.google.android.gms@201817023@20.18.17 (040800-311416286):7)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at spj.run(:com.google.android.gms@201817023@20.18.17 (040800-311416286):0)
+11-04 14:43:52.365  1123  2144 W GLSUser : 	at java.lang.Thread.run(Thread.java:923)
+11-04 14:43:55.212  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:43:55.274  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:43:55.275  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:43:55.277  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:43:55.310  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:43:57.366  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:43:58.016  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:00.002   697   697 D KeyguardClockSwitch: Updating clock: 244
+11-04 14:44:00.348  1123  6358 E WakeLock: GCM_HB_ALARM release without a matched acquire!
+11-04 14:44:02.612  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:44:02.630  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:44:02.633  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:44:02.637  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:44:02.638  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:44:02.642  2910  3741 I OCRTEST : [patel_1309_big] page 1: words=405 size=2400x3200 ms=48056
+11-04 14:44:02.643  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:44:02.684  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:05.424  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:44:06.104  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:10.451  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:44:10.491  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:44:10.521  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:13.324  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:44:14.040  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:16.200  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:44:16.236  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:44:16.280  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:18.324  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:44:19.004  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:21.028  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:44:21.058  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:44:21.096  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:23.236  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:44:23.940  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:27.539  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:44:27.556  2910  3741 I OCRTEST : [patel_1309_big] page 2: words=124 size=2400x3200 ms=24913
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] HEADER supplier=PATEL TRADELINES | gstin=27AHTPP0412H1Z9 | no=G2/2627/1309 | date=20-Oct-2026 | buyer=SHIVTEJ FOOTWEAR AKLUJ | buyerGstin=null | grand=26012.00 | cgst=null sgst=null | qty=null sub=null
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] COLUMNS Sr No.=SR | Description Of Goods=ARTICLE | HSN Code=HSN | Qty in Pairs=QTY | Rate /Pair()=RATE | Total=GROSS | Disc %=DISC_PCT | Discount Amount=DISC_AMT | Taxable Value=TAXABLE | CGST %=CGST_PCT | CGST Amount=CGST_AMT | SGST %=SGST_PCT | SGST Amount=SGST_AMT
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 1 | 1180 | col=BLK | size=BLK 6X8/1 | qty=18 | mrp=235.00 | rate=170.12 | disc%=3.00 | amount=2970.30 | gst=null | baitha=26.27 | needs=[] | raw=[1, 1180-Paralite-Gents-EVA-6X10 MRP: 235.00 BLK 6X8/1, 64029 990, 18, 170.12, 3062.16, 3.00, 91.86, 2970.30, 2.50, 74.26, 2.50, 74.26]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 2 | 1210 | col=Black | size=Black 10/24 | qty=24 | mrp=169.50 | rate=122.71 | disc%=3.00 | amount=2856.69 | gst=null | baitha=26.27 | needs=[] | raw=[2, 1210-Paralite-Gents-EVA-6X10 MRP: 169.50 Black 10/24, 64022 090, 24, 122.71, 2945.04, 3.00, 88.35, 2856.69, 2.50, 71.42, 2.50, 71.42]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 3 | 1251 | col=BlackRed | size=BlackRed 8/5,9/4,10/3 | qty=12 | mrp=245.00 | rate=165.00 | disc%=3.00 | amount=1920.60 | gst=null | baitha=31.41 | needs=[] | raw=[3, 1251-Paralite-Gents-EVA-6X10 MRP: 245.00 BlackRed 8/5,9/4,10/3, 64029 990, 12, 165.00, 1980.0o, 3.00, 59.40, 1920.60, 2.50, 48.02, 2.50, 48.02]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 4 | 1553 | col=Black / Grey | size=Black 6/2,7/3,8/3,9/2,10/2 | Grey 7/3,8/3,9/3,10/3 | qty=24 | mrp=174.00 | rate=117.19 | disc%=3.00 | amount=2728.18 | gst=null | baitha=31.40 | needs=[] | raw=[4, 1553-Paralite-Gents-EVA-6X10 MRP: 174.00 Black 6/2,7/3,8/3,9/2, 10/2 Grey 7/3,8/3,9/3,10/3, 64022 090, 24, 117.19, 2812.56, 3.00, 84.38, 2728.18, 2.50, 68.22, 2.50, 68.22]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 5 | 1562 | col=BLK | size=BLK 6X10/1 | qty=18 | mrp=194.00 | rate=130.66 | disc%=3.00 | amount=2281.32 | gst=null | baitha=31.40 | needs=[] | raw=[5, 1562-Paralite-Gents-EVA-6X10 MRP: 194.00 BLK 6X10/1, 64022 090, 18, 130.66, 2351.88, 3.00, 70.56, 2281.32, 2.50, 57.03, 2.50, 57.03]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 6 | 6962 | col=RedBlack | size=MRP: | RedBlack 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=255.00 | rate=171.73 | disc%=3.00 | amount=1998.94 | gst=null | baitha=31.41 | needs=[] | raw=[6, 6962-Vertex-Gents-PU-6X10 MRP: 255.00 RedBlack 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 171.73, 2060.76, 3.00, 61.82, 1998.94, 2.50, 49.97, 2.50, 49.97]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 7 | E6225 | col=Black | size=:605.00 | Black 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=605.00 | rate=374.50 | disc%=3.00 | amount=4359.18 | gst=null | baitha=36.95 | needs=[] | raw=[7, E6225-EEken-Gents-PU-6X10 MRP :605.00 Black 6/2,7/3,8/3,9 /2,10/2, 64029 990, 12, 374.50, 4494.0o, 3.00, 134.82, 4359.18, 2.5O, 108.98, 2.50, 108.98]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 8 | E6225 | col=Tan | size=:639.00 | Tan 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=639.00 | rate=389.33 | disc%=3.00 | amount=4531.80 | gst=null | baitha=37.94 | needs=[] | raw=[8, E6225-EEken-Gents-PU-6X10 MRP :639.00 Tan 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 389.33, 4671.96, 3.00, 140.16, 4531.80, 2.50, 113.28, 2.50, 113.28]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 9 | E6227 | col=Brown | size=:555.00 | Brown 7/1 | qty=1 | mrp=555.00 | rate=343.55 | disc%=3.00 | amount=333.24 | gst=null | baitha=36.95 | needs=[] | raw=[9., E6227-eeken-Gents-PU-6X10 MRP :555.00 Brown 7/1, 64029 990, 1, 343.55, 343.55, 3.00, 10.31, 333.24, 2.50, 8.33, 2.50, 8.33]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 10 | FREIGHT | col=MIX | size=MIX 0/1 | qty=1 | mrp=446.00 | rate=446.00 | disc%=3.00 | amount=432.62 | gst=null | baitha=-1.85 | needs=[] | raw=[10, FREIGHT-NA-FREIGHT-NA-0X0 MRP: 446.00 MIX 0/1, 64029 990, 1, 446.00, 446.00, 3.00, 13.38, 432.62, 2.50, 10.82, 2.50, 10.82]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] ITEM 11 | S11500 | col= | size= | qty=1 | mrp=579.00 | rate=358.41 | disc%=3.00 | amount=347.66 | gst=null | baitha=36.95 | needs=[] | raw=[11, S11500-Stimulus-Ladies-PU-4X8 MRP: 579.00, 64029 990, 1, 358.41, 358.41, 3.00, 10.75, 347.66, 2.50, 8.69, 2.50, 8.69]
+11-04 14:44:30.587  2910  3741 I OCRTEST : [patel_1309_big] TOTALS Totals(lines=11, articleLines=10, qty=134, gross=25526.32, discount=765.79, taxable=24760.53, cgst=619.02, sgst=619.02, igst=0, other=0, grand=25998.57, printedGrand=26012.00)
+11-04 14:44:30.590  2910  3741 I OCRTEST : [patel_1309_big] WARN CHECK The bill total is ₹13.43 above its lines — about the discount ₹13.38 shown on "FREIGHT" but not taken off the total.
+11-04 14:44:30.590  2910  3741 I OCRTEST : [patel_1309_big] WARN TIP 5 1562: size quantities need checking
+11-04 14:44:30.590  2910  3741 I OCRTEST : [patel_1309_big] WARN CHECK 6 6962: size quantities need checking
+11-04 14:44:30.590  2910  3741 I OCRTEST : [patel_1309_big] WARN CHECK 7 E6225: size quantities need checking
+11-04 14:44:30.590  2910  3741 I OCRTEST : [patel_1309_big] WARN CHECK 8 E6225: size quantities need checking
+11-04 14:44:30.590  2910  3741 I OCRTEST : [patel_1309_big] WARN CHECK 9 E6227: size quantities need checking
+11-04 14:44:30.590  2910  3741 I OCRTEST : [patel_1309_big] WARN TIP 11 S11500: sizes missing
+11-04 14:44:30.661  2910  3741 I OCRTEST : [patel_1309_big] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/patel_1309_big
+11-04 14:44:34.433  1901  2784 W ProcessReaper: Memory state is: 100
+11-04 14:44:36.789  2910  3741 I OCRTEST : [patel_1309_big] SELFCHECK tried=0 fixed=0 doubtful before=0 after=0 ms=3053
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] HEADER supplier=PATEL TRADELINES | gstin=27AHTPP0412H1Z9 | no=G2/2627/1309 | date=20-Oct-2026 | buyer=SHIVTEJ FOOTWEAR AKLUJ | buyerGstin=null | grand=26012.00 | cgst=null sgst=null | qty=null sub=null
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] COLUMNS Sr No.=SR | Description Of Goods=ARTICLE | HSN Code=HSN | Qty in Pairs=QTY | Rate /Pair()=RATE | Total=GROSS | Disc %=DISC_PCT | Discount Amount=DISC_AMT | Taxable Value=TAXABLE | CGST %=CGST_PCT | CGST Amount=CGST_AMT | SGST %=SGST_PCT | SGST Amount=SGST_AMT
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 1 | 1180 | col=BLK | size=BLK 6X8/1 | qty=18 | mrp=235.00 | rate=170.12 | disc%=3.00 | amount=2970.30 | gst=null | baitha=26.27 | needs=[] | raw=[1, 1180-Paralite-Gents-EVA-6X10 MRP: 235.00 BLK 6X8/1, 64029 990, 18, 170.12, 3062.16, 3.00, 91.86, 2970.30, 2.50, 74.26, 2.50, 74.26]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 2 | 1210 | col=Black | size=Black 10/24 | qty=24 | mrp=169.50 | rate=122.71 | disc%=3.00 | amount=2856.69 | gst=null | baitha=26.27 | needs=[] | raw=[2, 1210-Paralite-Gents-EVA-6X10 MRP: 169.50 Black 10/24, 64022 090, 24, 122.71, 2945.04, 3.00, 88.35, 2856.69, 2.50, 71.42, 2.50, 71.42]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 3 | 1251 | col=BlackRed | size=BlackRed 8/5,9/4,10/3 | qty=12 | mrp=245.00 | rate=165.00 | disc%=3.00 | amount=1920.60 | gst=null | baitha=31.41 | needs=[] | raw=[3, 1251-Paralite-Gents-EVA-6X10 MRP: 245.00 BlackRed 8/5,9/4,10/3, 64029 990, 12, 165.00, 1980.0o, 3.00, 59.40, 1920.60, 2.50, 48.02, 2.50, 48.02]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 4 | 1553 | col=Black / Grey | size=Black 6/2,7/3,8/3,9/2,10/2 | Grey 7/3,8/3,9/3,10/3 | qty=24 | mrp=174.00 | rate=117.19 | disc%=3.00 | amount=2728.18 | gst=null | baitha=31.40 | needs=[] | raw=[4, 1553-Paralite-Gents-EVA-6X10 MRP: 174.00 Black 6/2,7/3,8/3,9/2, 10/2 Grey 7/3,8/3,9/3,10/3, 64022 090, 24, 117.19, 2812.56, 3.00, 84.38, 2728.18, 2.50, 68.22, 2.50, 68.22]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 5 | 1562 | col=BLK | size=BLK 6X10/1 | qty=18 | mrp=194.00 | rate=130.66 | disc%=3.00 | amount=2281.32 | gst=null | baitha=31.40 | needs=[] | raw=[5, 1562-Paralite-Gents-EVA-6X10 MRP: 194.00 BLK 6X10/1, 64022 090, 18, 130.66, 2351.88, 3.00, 70.56, 2281.32, 2.50, 57.03, 2.50, 57.03]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 6 | 6962 | col=RedBlack | size=MRP: | RedBlack 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=255.00 | rate=171.73 | disc%=3.00 | amount=1998.94 | gst=null | baitha=31.41 | needs=[] | raw=[6, 6962-Vertex-Gents-PU-6X10 MRP: 255.00 RedBlack 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 171.73, 2060.76, 3.00, 61.82, 1998.94, 2.50, 49.97, 2.50, 49.97]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 7 | E6225 | col=Black | size=:605.00 | Black 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=605.00 | rate=374.50 | disc%=3.00 | amount=4359.18 | gst=null | baitha=36.95 | needs=[] | raw=[7, E6225-EEken-Gents-PU-6X10 MRP :605.00 Black 6/2,7/3,8/3,9 /2,10/2, 64029 990, 12, 374.50, 4494.0o, 3.00, 134.82, 4359.18, 2.5O, 108.98, 2.50, 108.98]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 8 | E6225 | col=Tan | size=:639.00 | Tan 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=639.00 | rate=389.33 | disc%=3.00 | amount=4531.80 | gst=null | baitha=37.94 | needs=[] | raw=[8, E6225-EEken-Gents-PU-6X10 MRP :639.00 Tan 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 389.33, 4671.96, 3.00, 140.16, 4531.80, 2.50, 113.28, 2.50, 113.28]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 9 | E6227 | col=Brown | size=:555.00 | Brown 7/1 | qty=1 | mrp=555.00 | rate=343.55 | disc%=3.00 | amount=333.24 | gst=null | baitha=36.95 | needs=[] | raw=[9., E6227-eeken-Gents-PU-6X10 MRP :555.00 Brown 7/1, 64029 990, 1, 343.55, 343.55, 3.00, 10.31, 333.24, 2.50, 8.33, 2.50, 8.33]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 10 | FREIGHT | col=MIX | size=MIX 0/1 | qty=1 | mrp=446.00 | rate=446.00 | disc%=3.00 | amount=432.62 | gst=null | baitha=-1.85 | needs=[] | raw=[10, FREIGHT-NA-FREIGHT-NA-0X0 MRP: 446.00 MIX 0/1, 64029 990, 1, 446.00, 446.00, 3.00, 13.38, 432.62, 2.50, 10.82, 2.50, 10.82]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] ITEM 11 | S11500 | col= | size= | qty=1 | mrp=579.00 | rate=358.41 | disc%=3.00 | amount=347.66 | gst=null | baitha=36.95 | needs=[] | raw=[11, S11500-Stimulus-Ladies-PU-4X8 MRP: 579.00, 64029 990, 1, 358.41, 358.41, 3.00, 10.75, 347.66, 2.50, 8.69, 2.50, 8.69]
+11-04 14:44:39.828  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] TOTALS Totals(lines=11, articleLines=10, qty=134, gross=25526.32, discount=765.79, taxable=24760.53, cgst=619.02, sgst=619.02, igst=0, other=0, grand=25998.57, printedGrand=26012.00)
+11-04 14:44:39.830  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK The bill total is ₹13.43 above its lines — about the discount ₹13.38 shown on "FREIGHT" but not taken off the total.
+11-04 14:44:39.830  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] WARN TIP 5 1562: size quantities need checking
+11-04 14:44:39.830  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK 6 6962: size quantities need checking
+11-04 14:44:39.830  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK 7 E6225: size quantities need checking
+11-04 14:44:39.830  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK 8 E6225: size quantities need checking
+11-04 14:44:39.830  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] WARN CHECK 9 E6227: size quantities need checking
+11-04 14:44:39.830  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] WARN TIP 11 S11500: sizes missing
+11-04 14:44:39.901  2910  3741 I OCRTEST : [patel_1309_big_selfcheck] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/patel_1309_big/selfcheck
+11-04 14:44:39.901  2910  3741 I TestRunner: finished: patelBig(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:44:39.902  2910  3741 I TestRunner: started: patelNew(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:44:39.935  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:44:39.936  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:44:39.937  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:44:39.972  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:42.604  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:44:43.316  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:57.484  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:44:57.546  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:44:57.548  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:44:57.552  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:44:57.554  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:44:57.572  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:44:57.606  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:44:59.004  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 2 lines
+11-04 14:44:59.696  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:00.002   697   697 D KeyguardClockSwitch: Updating clock: 245
+11-04 14:45:00.349  1123  1123 W GCM     : Heartbeat timeout, GCM connection reset -1
+11-04 14:45:00.358  1123  6925 E WakeLock: GCM_HB_ALARM release without a matched acquire!
+11-04 14:45:00.358  1123  6925 W WakeLock: GCM_HB_ALARM counter does not exist
+11-04 14:45:00.360  1123  6925 W GCM     : Dropping heartbeat interval to 0 from 550000, good=0 bad=2
+--------- beginning of system
+11-04 14:45:00.360   498   643 D ConnectivityService: reportNetworkConnectivity(100, false) by 10122
+11-04 14:45:00.360   955  1889 D NetworkMonitor/100: Forcing reevaluation for UID 10122. Dns signal count: 0
+11-04 14:45:00.380  1123  6927 I NetworkManagementSocketTagger: tagSocketFd(-1, 805307399, -1) failed with errno-9
+11-04 14:45:00.389   955  6928 D NetworkMonitor/100: PROBE_DNS www.google.com 18ms OK 142.251.156.119,142.251.151.119,142.251.157.119,142.251.153.119,142.251.155.119,142.251.152.119,142.251.150.119,142.251.154.119,2001:4860:4829:7700::,2001:4860:482d:7700::,2001:4860:4827:7700::,2001:4860:4828:7700::,2001:4860:482c:7700::,2001:4860:482a:7700::,2001:4860:482b:7700::,2001:4860:4826:7700::
+11-04 14:45:00.390   955  6929 D NetworkMonitor/100: PROBE_DNS connectivitycheck.gstatic.com 21ms OK 142.250.69.163,2607:f8b0:400a:800::2003
+11-04 14:45:00.392  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:00.408   955  6929 D NetworkMonitor/100: PROBE_HTTP http://connectivitycheck.gstatic.com/generate_204 time=17ms ret=204 request={Connection=[close], User-Agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.32 Safari/537.36]} headers={null=[HTTP/1.1 204 No Content], Connection=[close], Content-Length=[0], Cross-Origin-Resource-Policy=[cross-origin], Date=[Wed, 04 Nov 2026 14:45:01 GMT], X-Android-Received-Millis=[1793803500407], X-Android-Response-Source=[NETWORK 204], X-Android-Selected-Protocol=[http/1.1], X-Android-Sent-Millis=[1793803500401]}
+11-04 14:45:00.430   955  6928 D NetworkMonitor/100: PROBE_HTTPS https://www.google.com/generate_204 time=40ms ret=204 request={Connection=[close], User-Agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.32 Safari/537.36]} headers={null=[HTTP/1.1 204 No Content], Alt-Svc=[h3=":443"; ma=2592000,h3-29=":443"; ma=2592000], Connection=[close], Content-Length=[0], Cross-Origin-Resource-Policy=[cross-origin], Date=[Wed, 04 Nov 2026 14:45:01 GMT], X-Android-Received-Millis=[1793803500429], X-Android-Response-Source=[NETWORK 204], X-Android-Selected-Protocol=[http/1.1], X-Android-Sent-Millis=[1793803500422]}
+11-04 14:45:00.432   498   537 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.net.conn.NETWORK_CONDITIONS_MEASURED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+11-04 14:45:00.434   955  6926 D NetworkMonitor/100: isCaptivePortal: isSuccessful()=true isPortal()=false RedirectUrl=null isPartialConnectivity()=false Time=62ms
+11-04 14:45:00.436   498   643 D ConnectivityService: [100 WIFI] validation passed
+11-04 14:45:00.484  1389  3086 I Checkin : [EventLogChimeraService] Opted in for usage reporting: false
+11-04 14:45:00.484  1389  3086 I Checkin : [EventLogChimeraService] Aggregate from 1793802278029 (log), 0 (data)
+--------- beginning of kernel
+11-04 14:44:40.280     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=300000 cc=10 chg=a
+11-04 14:45:00.747     0     0 D logd    : logdr: UID=10122 GID=10122 PID=1389 n tail=0 logMask=4 pid=0 start=0ns timeout=0ns
+11-04 14:45:00.564   498  1005 I DropBoxManagerService: add tag=event_data isTagEnabled=true flags=0x2
+11-04 14:45:00.566   498   537 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+11-04 14:45:00.566   498   537 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+11-04 14:45:01.012  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:05.456   955   978 W rkstack.proces: Reducing the number of considered missed Gc histogram windows from 127 to 100
+11-04 14:45:07.530  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:45:07.596  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:45:07.628  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:09.588  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:45:10.272  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:19.703  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:45:19.774  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:45:19.775  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:45:19.777  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:45:19.816  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:21.872  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:45:22.532  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:27.220  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:45:27.242  2910  3741 I OCRTEST : [patel_1309_new] page 1: words=405 size=1659x2212 ms=47309
+11-04 14:45:27.244  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:45:27.280  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:30.012  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:45:30.720  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:35.059  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:45:35.076  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:45:35.078  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:45:35.081  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:45:35.082  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:45:35.105  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:45:35.140  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:40.280     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=300000 cc=10 chg=a
+11-04 14:45:37.872  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:45:38.540  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:40.792  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:45:40.838  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:45:40.873  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:42.808  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:45:43.500  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:45.577  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:45:45.614  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:45:45.655  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:47.800  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:45:48.516  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:45:52.076  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:45:52.091  2910  3741 I OCRTEST : [patel_1309_new] page 2: words=121 size=1659x2212 ms=24847
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] HEADER supplier=PATEL TRADELINES | gstin=27AHTPP0412H1Z9 | no=G2/2627/1309 | date=20-Oct-2026 | buyer=SHIVTEJ FOOTWEAR AKLUJ | buyerGstin=null | grand=26012.00 | cgst=null sgst=null | qty=null sub=null
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] COLUMNS Sr No.=SR | Description Of Goods=ARTICLE | HSN Code=HSN | Qty in Pairs=QTY | Rate /Pair()=RATE | Total=GROSS | Discount %=DISC_PCT | Discount Amount=DISC_AMT | Taxable Value=TAXABLE | CGST %=CGST_PCT | CGST Amount=CGST_AMT | SGST %=SGST_PCT | SGST Amount=SGST_AMT
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 1 | 1180 | col=BLK | size=BLK 6X8/1 | qty=18 | mrp=235.00 | rate=170.12 | disc%=3.00 | amount=2970.30 | gst=null | baitha=26.27 | needs=[] | raw=[1, 1180-Paralite-Gents-EVA-6X10 MRP: 235.00 BLK 6X8/1, 64029 990, 18, 170.12, 3062,16, 3.00, 91.86, 2970.30, 2.50, 74.26, 2.50, 74.26]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 2 | 121O | col=Black | size=Black 10/24 | qty=24 | mrp=169.50 | rate=122.71 | disc%=3.00 | amount=2856.69 | gst=null | baitha=26.27 | needs=[] | raw=[2, 121O-Paralite-Gents-EVA-6X10 MRP: 169.50 Black 10/24, 64022 090, 24, 122.71, 2945.04, 3.00, 88.35, 2856.69, 2.50, 71.42, 2.50, 71.42]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 3 | 1251 | col=BlackRed | size=BlackRed 8/5,9/4,10/3 | qty=12 | mrp=245.00 | rate=165.00 | disc%=3.00 | amount=1920.60 | gst=null | baitha=31.41 | needs=[] | raw=[3, 1251-Paralite-Gents-EVA-6X10 MRP: 245.00 BlackRed 8/5,9/4,10/3, 64029 990, 12, 165.00, 1980.0o, 3.00, 59.40, 1920.60, 2.50O, 48.02, 2.50, 48.02]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 4 | 1553 | col=Black / Grey | size=Black 6/2,7/3,8/3,9/2,10/2 | Grey 7/3,8/3,9/3,10/3 | qty=24 | mrp=174.00 | rate=117.19 | disc%=3.00 | amount=2728.18 | gst=null | baitha=31.40 | needs=[] | raw=[4, 1553-Paralite-Gents-EVA-6X10 MRP: 174.00 Black 6/2,7/3,8/3,9 /2, 10/2 Grey 7/3,8/3,9/3,10/3, 64022 090, 24, 117.19, 2812.56, 3.00, 84.38, 2728.18, 2.50, 68.22, 2.50, 68.22]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 5 | 1562 | col=BLK | size=BLK 6X10/1 | qty=18 | mrp=194.00 | rate=130.66 | disc%=3.00 | amount=2281.32 | gst=null | baitha=31.40 | needs=[] | raw=[5, 1562-Paralite-Gents-EVA-6X10 MRP: 194.00 BLK 6X10/1, 64022 090, 18, 130.66, 2351.88, 3.00, 70.56, 2281.32, 2.50, 57.03, 2.50, 57.03]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 6 | 6962 | col=RedBlack | size=RedBlack 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=255.00 | rate=171.73 | disc%=3.00 | amount=1998.94 | gst=null | baitha=31.41 | needs=[] | raw=[6, 6962-Vertex-Gents-PU-6X10 MRP : 255.00 RedBlack 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 171.73, 2060.76, 3.00, 61.82, 1998.94, 2.50, 49.97, 2.50, 49.97]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 7 | E6225 | col=Black | size=:605.00 | Black 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=605.00 | rate=374.50 | disc%=3.00 | amount=4359.18 | gst=null | baitha=36.95 | needs=[] | raw=[7, E6225-EEken-Gents-PU-6X10 MRP :605.00 Black 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 374.50, 4494.00, 3.00, 134.82, 4359.18, 2.50, 108.98, 2.50, 108.98]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 8 | E6225 | col=Tan | size=:639.00 | Tan 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=639.00 | rate=389.33 | disc%=3.00 | amount=4531.80 | gst=null | baitha=37.94 | needs=[] | raw=[8, E6225-EEken-Gents-PU-6X10 MRP :639.00 Tan 6/2,7/3,8/3,9 /2,10/2, 64029 990, 12, 389.33, 4671.96, 3.00, 140.16, 4531.80, 2.50, 113.28, 2.50, 113.28]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 9 | E6227 | col=Brown | size=:555.00 | Brown 7/1 | qty=1 | mrp=555.00 | rate=343.55 | disc%=3.00 | amount=333.24 | gst=null | baitha=36.95 | needs=[] | raw=[9, E6227-eeken-Gents-PU-6X1O MRP :555.00 Brown 7/1, 64029 990, 1, 343.55, 343.55, 3.00, 10.31, 333.24, 2.50, 8.33, 2.50, 8.33]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 10 | FREIGHT | col=MIX | size=MIX 0/1 | qty=1 | mrp=446.00 | rate=446.00 | disc%=3.00 | amount=432.62 | gst=null | baitha=-1.85 | needs=[] | raw=[10, FREIGHT-NA-FREIGHT-NA-0X0 MRP: 446.00 MIX 0/1, 64029 990, 1, 446.00, 446.00, 3.00, 13.38, 432.62, 2.50, 10.82, 2.50, 10.82]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] ITEM 11 | S11500 | col=ROff | size=ROff .08 | qty=1 | mrp=579.00 | rate=358.41 | disc%=3.00 | amount=347.66 | gst=null | baitha=36.95 | needs=[] | raw=[11, S11500-Stimulus-Ladies-PU-4X8 MRP: 579.00 ROff .08, 64029 990, 1, 358.41, 358.41, 3.00, 10.75, 347.66, 2.50, 8.69, 2.50, 8.69]
+11-04 14:45:54.483  2910  3741 I OCRTEST : [patel_1309_new] TOTALS Totals(lines=11, articleLines=10, qty=134, gross=25526.32, discount=765.79, taxable=24760.53, cgst=619.02, sgst=619.02, igst=0, other=0, grand=25998.57, printedGrand=26012.00)
+11-04 14:45:54.485  2910  3741 I OCRTEST : [patel_1309_new] WARN CHECK The bill total is ₹13.43 above its lines — about the discount ₹13.38 shown on "FREIGHT" but not taken off the total.
+11-04 14:45:54.485  2910  3741 I OCRTEST : [patel_1309_new] WARN TIP 5 1562: size quantities need checking
+11-04 14:45:54.485  2910  3741 I OCRTEST : [patel_1309_new] WARN CHECK 7 E6225: size quantities need checking
+11-04 14:45:54.485  2910  3741 I OCRTEST : [patel_1309_new] WARN CHECK 8 E6225: size quantities need checking
+11-04 14:45:54.485  2910  3741 I OCRTEST : [patel_1309_new] WARN CHECK 9 E6227: size quantities need checking
+11-04 14:45:54.556  2910  3741 I OCRTEST : [patel_1309_new] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/patel_1309_new
+11-04 14:45:59.346  2910  3741 I OCRTEST : [patel_1309_new] SELFCHECK tried=0 fixed=0 doubtful before=0 after=0 ms=2399
+11-04 14:46:00.002   697   697 D KeyguardClockSwitch: Updating clock: 246
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] HEADER supplier=PATEL TRADELINES | gstin=27AHTPP0412H1Z9 | no=G2/2627/1309 | date=20-Oct-2026 | buyer=SHIVTEJ FOOTWEAR AKLUJ | buyerGstin=null | grand=26012.00 | cgst=null sgst=null | qty=null sub=null
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] COLUMNS Sr No.=SR | Description Of Goods=ARTICLE | HSN Code=HSN | Qty in Pairs=QTY | Rate /Pair()=RATE | Total=GROSS | Discount %=DISC_PCT | Discount Amount=DISC_AMT | Taxable Value=TAXABLE | CGST %=CGST_PCT | CGST Amount=CGST_AMT | SGST %=SGST_PCT | SGST Amount=SGST_AMT
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 1 | 1180 | col=BLK | size=BLK 6X8/1 | qty=18 | mrp=235.00 | rate=170.12 | disc%=3.00 | amount=2970.30 | gst=null | baitha=26.27 | needs=[] | raw=[1, 1180-Paralite-Gents-EVA-6X10 MRP: 235.00 BLK 6X8/1, 64029 990, 18, 170.12, 3062,16, 3.00, 91.86, 2970.30, 2.50, 74.26, 2.50, 74.26]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 2 | 121O | col=Black | size=Black 10/24 | qty=24 | mrp=169.50 | rate=122.71 | disc%=3.00 | amount=2856.69 | gst=null | baitha=26.27 | needs=[] | raw=[2, 121O-Paralite-Gents-EVA-6X10 MRP: 169.50 Black 10/24, 64022 090, 24, 122.71, 2945.04, 3.00, 88.35, 2856.69, 2.50, 71.42, 2.50, 71.42]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 3 | 1251 | col=BlackRed | size=BlackRed 8/5,9/4,10/3 | qty=12 | mrp=245.00 | rate=165.00 | disc%=3.00 | amount=1920.60 | gst=null | baitha=31.41 | needs=[] | raw=[3, 1251-Paralite-Gents-EVA-6X10 MRP: 245.00 BlackRed 8/5,9/4,10/3, 64029 990, 12, 165.00, 1980.0o, 3.00, 59.40, 1920.60, 2.50O, 48.02, 2.50, 48.02]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 4 | 1553 | col=Black / Grey | size=Black 6/2,7/3,8/3,9/2,10/2 | Grey 7/3,8/3,9/3,10/3 | qty=24 | mrp=174.00 | rate=117.19 | disc%=3.00 | amount=2728.18 | gst=null | baitha=31.40 | needs=[] | raw=[4, 1553-Paralite-Gents-EVA-6X10 MRP: 174.00 Black 6/2,7/3,8/3,9 /2, 10/2 Grey 7/3,8/3,9/3,10/3, 64022 090, 24, 117.19, 2812.56, 3.00, 84.38, 2728.18, 2.50, 68.22, 2.50, 68.22]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 5 | 1562 | col=BLK | size=BLK 6X10/1 | qty=18 | mrp=194.00 | rate=130.66 | disc%=3.00 | amount=2281.32 | gst=null | baitha=31.40 | needs=[] | raw=[5, 1562-Paralite-Gents-EVA-6X10 MRP: 194.00 BLK 6X10/1, 64022 090, 18, 130.66, 2351.88, 3.00, 70.56, 2281.32, 2.50, 57.03, 2.50, 57.03]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 6 | 6962 | col=RedBlack | size=RedBlack 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=255.00 | rate=171.73 | disc%=3.00 | amount=1998.94 | gst=null | baitha=31.41 | needs=[] | raw=[6, 6962-Vertex-Gents-PU-6X10 MRP : 255.00 RedBlack 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 171.73, 2060.76, 3.00, 61.82, 1998.94, 2.50, 49.97, 2.50, 49.97]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 7 | E6225 | col=Black | size=:605.00 | Black 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=605.00 | rate=374.50 | disc%=3.00 | amount=4359.18 | gst=null | baitha=36.95 | needs=[] | raw=[7, E6225-EEken-Gents-PU-6X10 MRP :605.00 Black 6/2,7/3,8/3,9/2,10/2, 64029 990, 12, 374.50, 4494.00, 3.00, 134.82, 4359.18, 2.50, 108.98, 2.50, 108.98]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 8 | E6225 | col=Tan | size=:639.00 | Tan 6/2,7/3,8/3,9/2,10/2 | qty=12 | mrp=639.00 | rate=389.33 | disc%=3.00 | amount=4531.80 | gst=null | baitha=37.94 | needs=[] | raw=[8, E6225-EEken-Gents-PU-6X10 MRP :639.00 Tan 6/2,7/3,8/3,9 /2,10/2, 64029 990, 12, 389.33, 4671.96, 3.00, 140.16, 4531.80, 2.50, 113.28, 2.50, 113.28]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 9 | E6227 | col=Brown | size=:555.00 | Brown 7/1 | qty=1 | mrp=555.00 | rate=343.55 | disc%=3.00 | amount=333.24 | gst=null | baitha=36.95 | needs=[] | raw=[9, E6227-eeken-Gents-PU-6X1O MRP :555.00 Brown 7/1, 64029 990, 1, 343.55, 343.55, 3.00, 10.31, 333.24, 2.50, 8.33, 2.50, 8.33]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 10 | FREIGHT | col=MIX | size=MIX 0/1 | qty=1 | mrp=446.00 | rate=446.00 | disc%=3.00 | amount=432.62 | gst=null | baitha=-1.85 | needs=[] | raw=[10, FREIGHT-NA-FREIGHT-NA-0X0 MRP: 446.00 MIX 0/1, 64029 990, 1, 446.00, 446.00, 3.00, 13.38, 432.62, 2.50, 10.82, 2.50, 10.82]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] ITEM 11 | S11500 | col=ROff | size=ROff .08 | qty=1 | mrp=579.00 | rate=358.41 | disc%=3.00 | amount=347.66 | gst=null | baitha=36.95 | needs=[] | raw=[11, S11500-Stimulus-Ladies-PU-4X8 MRP: 579.00 ROff .08, 64029 990, 1, 358.41, 358.41, 3.00, 10.75, 347.66, 2.50, 8.69, 2.50, 8.69]
+11-04 14:46:01.744  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] TOTALS Totals(lines=11, articleLines=10, qty=134, gross=25526.32, discount=765.79, taxable=24760.53, cgst=619.02, sgst=619.02, igst=0, other=0, grand=25998.57, printedGrand=26012.00)
+11-04 14:46:01.746  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] WARN CHECK The bill total is ₹13.43 above its lines — about the discount ₹13.38 shown on "FREIGHT" but not taken off the total.
+11-04 14:46:01.746  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] WARN TIP 5 1562: size quantities need checking
+11-04 14:46:01.746  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] WARN CHECK 7 E6225: size quantities need checking
+11-04 14:46:01.746  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] WARN CHECK 8 E6225: size quantities need checking
+11-04 14:46:01.746  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] WARN CHECK 9 E6227: size quantities need checking
+11-04 14:46:01.817  2910  3741 I OCRTEST : [patel_1309_new_selfcheck] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/patel_1309_new/selfcheck
+11-04 14:46:01.817  2910  3741 I TestRunner: finished: patelNew(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:46:01.819  2910  3741 I TestRunner: started: shPatelAgencies(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:46:01.845  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:46:01.852  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:46:01.854  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:46:01.888  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:46:04.764  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:46:05.476  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:46:21.679  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:46:21.743  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:46:21.744  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:46:21.747  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:46:21.749  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:46:21.776  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:46:21.816  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:46:24.516  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:46:25.180  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:46:30.674  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:46:30.739  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:46:30.776  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:46:30.968   498  1186 D WifiNl80211Manager: Scan result ready event
+11-04 14:46:30.968   498  1186 D WifiNative: Scan result ready event
+11-04 14:46:31.355  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:46:32.652  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 2 lines
+11-04 14:46:33.336  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:46:43.995  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:46:44.077  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:46:44.079  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:46:44.085  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:46:44.116  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:46:46.180  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:46:46.856  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:46:52.832  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:46:52.854  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:46:52.856  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:46:52.859  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:46:52.861  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:46:52.868  2910  3741 I OCRTEST : [shpatel_agencies] page 1: words=502 size=1932x2576 ms=51027
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] HEADER supplier=S.H.PATEL AGENCIES | gstin=27AARPP7024L1Z2 | no=SHPA2526684 | date=10-Sep-26 | buyer=AKLUJ, SHIVTEJ FOOTWEAR | buyerGstin=27ECIPS0222J1ZI | grand=31052.00 | cgst=739.33 sgst=739.33 | qty=117 sub=29572.86
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] COLUMNS SI No.=null | Description of Goods=ARTICLE | HSN/SAC=HSN | GST Rate=GST_PCT | MRP/ Marginal=MRP | Quantity=QTY | Rate=RATE | per=null | Disc. %=DISC_PCT | Amount=TAXABLE
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 1 | (STRIKER1) | col= | size=7*10 | qty=8 | mrp=229.00 | rate=141.76 | disc%=null | amount=1134.08 | gst=5 | baitha=35.00 | needs=[] | raw=[1, (STRIKER1 ) 7*10, 64041190, 5%, 229.00, 8 Pairs, 141.76 Pairs, , , 1,134.08]
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 2 | STRIKER -2 | col= | size= | qty=4 | mrp=249.00 | rate=154.14 | disc%=null | amount=616.56 | gst=5 | baitha=35.00 | needs=[] | raw=[2, STRIKER -2, 64041920, 5%, 249.00, 4 Pairs, 154.14 Pairs, , , 616.56]
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 3 | AERO BLU (L404) | col= | size= | qty=5 | mrp=429.00 | rate=286.00 | disc%=null | amount=1430.00 | gst=5 | baitha=30.00 | needs=[] | raw=[3, AERO BLU ( L404 ), 640299, 5 %, 429.00, 5 Pairs, 286.00 Pairs, , , 1,430.00]
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 4 | CR (141) | col= | size=11*1 | qty=8 | mrp=469.00 | rate=290.36 | disc%=null | amount=2322.88 | gst=5 | baitha=34.99 | needs=[] | raw=[4, CR ( 141 ) 11*1, 640419, 5%, 469,00, 8 Pairs, 290.36 Pairs, , , 2,322.88]
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 5 | BONK (KOOKIE) | col= | size= | qty=7 | mrp=549.00 | rate=339.86 | disc%=null | amount=2379.02 | gst=5 | baitha=35.00 | needs=[] | raw=[5, BONK ( KOOKIE), 64022010, 5%, 549.00, 7 Pairs, 339.86 Pairs, , , 2,379.02]
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 6 | BONK (KOOKIE) | col= | size= | qty=8 | mrp=549.00 | rate=339.86 | disc%=null | amount=2718.88 | gst=5 | baitha=35.00 | needs=[] | raw=[6, BONK ( KOOKIE), 64022010, 5%, 549.00, 8 Pairs, 339.86 Pairs, , , 2,718.88]
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 7 | BONK (KOOKIE) | col= | size= | qty=7 | mrp=549.00 | rate=339.86 | disc%=null | amount=2379.02 | gst=5 | baitha=35.00 | needs=[] | raw=[7, BONK ( KOOKIE ), 64022010, 5%, 549.00, 7 Pairs, 339.86 Pairs, , , 2,379.02]
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 8 | BONK (TABBY) 11*3 | col= | size= | qty=12 | mrp=399.00 | rate=247.00 | disc%=null | amount=2964.00 | gst=5 | baitha=35.00 | needs=[] | raw=[8, BONK ( TABBY ) 11*3, 64022010, 5%, 399.00, 12 Pairs, 247.00 Pairs, , , 2,964.00]
+11-04 14:46:56.573  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 9 | BONK (TABBY) 11*3 | col= | size= | qty=12 | mrp=425.00 | rate=263.12 | disc%=null | amount=3157.44 | gst=5 | baitha=34.99 | needs=[] | raw=[9, BONK ( TABBY ) 11*3, 64022010, 5%, 425.00, 12 Pairs, 263.12 Pairs, , , 3,157.44]
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 10 | SPYN (SPY 11) | col= | size= | qty=5 | mrp=284.00 | rate=162.29 | disc%=null | amount=811.45 | gst=5 | baitha=40.00 | needs=[] | raw=[10, SPYN ( SPY 11 ), 64041920, 5%, 284.00, 5 Pairs, 162.29 Pairs, , , 811.45]
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 11 | SPYN(SPY 10) | col= | size= | qty=5 | mrp=284.00 | rate=162.29 | disc%=null | amount=811.45 | gst=5 | baitha=40.00 | needs=[] | raw=[11, SPYN( SPY 10 ), 64041920, 5%, 284.00, 5 Pairs, 162.29 Pairs, , , 811.45]
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 12 | SPYN (KNIT 501)2*5 | col= | size= | qty=8 | mrp=469.00 | rate=268.00 | disc%=null | amount=2144.00 | gst=5 | baitha=40.00 | needs=[] | raw=[12, SPYN ( KNIT 501 )2*5, 640411, 5%, 469.00, 8 Pairs, 268.00 Pairs, , , 2,144.00]
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 13 | SPYN (KNIT 101) | col= | size= | qty=8 | mrp=399.00 | rate=228.00 | disc%=null | amount=1824.00 | gst=5 | baitha=40.00 | needs=[] | raw=[13, SPYN ( KNIT 101 ), 640419, 5%, 399.00, 8 Pairs, 228.00 Pairs, , , 1,824.00]
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 14 | SPYN (KNIT 101) | col= | size= | qty=8 | mrp=419.00 | rate=239.44 | disc%=null | amount=1915.52 | gst=5 | baitha=40.00 | needs=[] | raw=[14, SPYN ( KNIT 101 ), 640419, 5%, 419.00, 8 Pairs, 239.44 Pairs, , , 1,915.52]
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 15 | SPYN (GALEXY 12)11*1 | col= | size= | qty=8 | mrp=449.00 | rate=256.57 | disc%=null | amount=2052.56 | gst=5 | baitha=40.00 | needs=[] | raw=[15, SPYN ( GALEXY 12 )11*1, 640411, 5%, 449.00, 8 Pairs, 256.57, , , 2,052.56]
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] ITEM 16 | SPYN (KNIT 102) | col= | size=11*1 | qty=4 | mrp=399.00 | rate=228.00 | disc%=null | amount=912.00 | gst=5 | baitha=40.00 | needs=[] | raw=[16, SPYN ( KNIT 102 ) 11*1, 640411, 5%, 399.00, 4 Pairs, 228.00 Pairs, , , 912.00]
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] TOTALS Totals(lines=16, articleLines=16, qty=117, gross=0, discount=0, taxable=29572.86, cgst=739.33, sgst=739.33, igst=0, other=0, grand=31052.00, printedGrand=31052.00)
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 2 STRIKER -2: sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 3 AERO BLU (L404): sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 5 BONK (KOOKIE): sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 6 BONK (KOOKIE): sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 6 BONK (KOOKIE): same article/colour/MRP as line 5 BONK (KOOKIE)
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 7 BONK (KOOKIE): sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 7 BONK (KOOKIE): same article/colour/MRP as line 5 BONK (KOOKIE)
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 8 BONK (TABBY) 11*3: sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 9 BONK (TABBY) 11*3: sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 10 SPYN (SPY 11): sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 11 SPYN(SPY 10): sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 12 SPYN (KNIT 501)2*5: sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 13 SPYN (KNIT 101): sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 14 SPYN (KNIT 101): sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP 15 SPYN (GALEXY 12)11*1: sizes missing
+11-04 14:46:56.574  2910  3741 I OCRTEST : [shpatel_agencies] WARN TIP Everything looks fine — verify, then export stock if you want.
+11-04 14:46:56.642  2910  3741 I OCRTEST : [shpatel_agencies] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/shpatel_agencies
+11-04 14:47:00.002   697   697 D KeyguardClockSwitch: Updating clock: 247
+11-04 14:47:04.014  2910  3741 I OCRTEST : [shpatel_agencies] SELFCHECK tried=0 fixed=0 doubtful before=0 after=0 ms=3691
+11-04 14:47:07.719  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] HEADER supplier=S.H.PATEL AGENCIES | gstin=27AARPP7024L1Z2 | no=SHPA2526684 | date=10-Sep-26 | buyer=AKLUJ, SHIVTEJ FOOTWEAR | buyerGstin=27ECIPS0222J1ZI | grand=31052.00 | cgst=739.33 sgst=739.33 | qty=117 sub=29572.86
+11-04 14:47:07.719  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] COLUMNS SI No.=null | Description of Goods=ARTICLE | HSN/SAC=HSN | GST Rate=GST_PCT | MRP/ Marginal=MRP | Quantity=QTY | Rate=RATE | per=null | Disc. %=DISC_PCT | Amount=TAXABLE
+11-04 14:47:07.719  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 1 | (STRIKER1) | col= | size=7*10 | qty=8 | mrp=229.00 | rate=141.76 | disc%=null | amount=1134.08 | gst=5 | baitha=35.00 | needs=[] | raw=[1, (STRIKER1 ) 7*10, 64041190, 5%, 229.00, 8 Pairs, 141.76 Pairs, , , 1,134.08]
+11-04 14:47:07.719  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 2 | STRIKER -2 | col= | size= | qty=4 | mrp=249.00 | rate=154.14 | disc%=null | amount=616.56 | gst=5 | baitha=35.00 | needs=[] | raw=[2, STRIKER -2, 64041920, 5%, 249.00, 4 Pairs, 154.14 Pairs, , , 616.56]
+11-04 14:47:07.719  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 3 | AERO BLU (L404) | col= | size= | qty=5 | mrp=429.00 | rate=286.00 | disc%=null | amount=1430.00 | gst=5 | baitha=30.00 | needs=[] | raw=[3, AERO BLU ( L404 ), 640299, 5 %, 429.00, 5 Pairs, 286.00 Pairs, , , 1,430.00]
+11-04 14:47:07.719  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 4 | CR (141) | col= | size=11*1 | qty=8 | mrp=469.00 | rate=290.36 | disc%=null | amount=2322.88 | gst=5 | baitha=34.99 | needs=[] | raw=[4, CR ( 141 ) 11*1, 640419, 5%, 469,00, 8 Pairs, 290.36 Pairs, , , 2,322.88]
+11-04 14:47:07.719  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 5 | BONK (KOOKIE) | col= | size= | qty=7 | mrp=549.00 | rate=339.86 | disc%=null | amount=2379.02 | gst=5 | baitha=35.00 | needs=[] | raw=[5, BONK ( KOOKIE), 64022010, 5%, 549.00, 7 Pairs, 339.86 Pairs, , , 2,379.02]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 6 | BONK (KOOKIE) | col= | size= | qty=8 | mrp=549.00 | rate=339.86 | disc%=null | amount=2718.88 | gst=5 | baitha=35.00 | needs=[] | raw=[6, BONK ( KOOKIE), 64022010, 5%, 549.00, 8 Pairs, 339.86 Pairs, , , 2,718.88]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 7 | BONK (KOOKIE) | col= | size= | qty=7 | mrp=549.00 | rate=339.86 | disc%=null | amount=2379.02 | gst=5 | baitha=35.00 | needs=[] | raw=[7, BONK ( KOOKIE ), 64022010, 5%, 549.00, 7 Pairs, 339.86 Pairs, , , 2,379.02]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 8 | BONK (TABBY) 11*3 | col= | size= | qty=12 | mrp=399.00 | rate=247.00 | disc%=null | amount=2964.00 | gst=5 | baitha=35.00 | needs=[] | raw=[8, BONK ( TABBY ) 11*3, 64022010, 5%, 399.00, 12 Pairs, 247.00 Pairs, , , 2,964.00]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 9 | BONK (TABBY) 11*3 | col= | size= | qty=12 | mrp=425.00 | rate=263.12 | disc%=null | amount=3157.44 | gst=5 | baitha=34.99 | needs=[] | raw=[9, BONK ( TABBY ) 11*3, 64022010, 5%, 425.00, 12 Pairs, 263.12 Pairs, , , 3,157.44]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 10 | SPYN (SPY 11) | col= | size= | qty=5 | mrp=284.00 | rate=162.29 | disc%=null | amount=811.45 | gst=5 | baitha=40.00 | needs=[] | raw=[10, SPYN ( SPY 11 ), 64041920, 5%, 284.00, 5 Pairs, 162.29 Pairs, , , 811.45]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 11 | SPYN(SPY 10) | col= | size= | qty=5 | mrp=284.00 | rate=162.29 | disc%=null | amount=811.45 | gst=5 | baitha=40.00 | needs=[] | raw=[11, SPYN( SPY 10 ), 64041920, 5%, 284.00, 5 Pairs, 162.29 Pairs, , , 811.45]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 12 | SPYN (KNIT 501)2*5 | col= | size= | qty=8 | mrp=469.00 | rate=268.00 | disc%=null | amount=2144.00 | gst=5 | baitha=40.00 | needs=[] | raw=[12, SPYN ( KNIT 501 )2*5, 640411, 5%, 469.00, 8 Pairs, 268.00 Pairs, , , 2,144.00]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 13 | SPYN (KNIT 101) | col= | size= | qty=8 | mrp=399.00 | rate=228.00 | disc%=null | amount=1824.00 | gst=5 | baitha=40.00 | needs=[] | raw=[13, SPYN ( KNIT 101 ), 640419, 5%, 399.00, 8 Pairs, 228.00 Pairs, , , 1,824.00]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 14 | SPYN (KNIT 101) | col= | size= | qty=8 | mrp=419.00 | rate=239.44 | disc%=null | amount=1915.52 | gst=5 | baitha=40.00 | needs=[] | raw=[14, SPYN ( KNIT 101 ), 640419, 5%, 419.00, 8 Pairs, 239.44 Pairs, , , 1,915.52]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 15 | SPYN (GALEXY 12)11*1 | col= | size= | qty=8 | mrp=449.00 | rate=256.57 | disc%=null | amount=2052.56 | gst=5 | baitha=40.00 | needs=[] | raw=[15, SPYN ( GALEXY 12 )11*1, 640411, 5%, 449.00, 8 Pairs, 256.57, , , 2,052.56]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] ITEM 16 | SPYN (KNIT 102) | col= | size=11*1 | qty=4 | mrp=399.00 | rate=228.00 | disc%=null | amount=912.00 | gst=5 | baitha=40.00 | needs=[] | raw=[16, SPYN ( KNIT 102 ) 11*1, 640411, 5%, 399.00, 4 Pairs, 228.00 Pairs, , , 912.00]
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] TOTALS Totals(lines=16, articleLines=16, qty=117, gross=0, discount=0, taxable=29572.86, cgst=739.33, sgst=739.33, igst=0, other=0, grand=31052.00, printedGrand=31052.00)
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 2 STRIKER -2: sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 3 AERO BLU (L404): sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 5 BONK (KOOKIE): sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 6 BONK (KOOKIE): sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 6 BONK (KOOKIE): same article/colour/MRP as line 5 BONK (KOOKIE)
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 7 BONK (KOOKIE): sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 7 BONK (KOOKIE): same article/colour/MRP as line 5 BONK (KOOKIE)
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 8 BONK (TABBY) 11*3: sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 9 BONK (TABBY) 11*3: sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 10 SPYN (SPY 11): sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 11 SPYN(SPY 10): sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 12 SPYN (KNIT 501)2*5: sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 13 SPYN (KNIT 101): sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 14 SPYN (KNIT 101): sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP 15 SPYN (GALEXY 12)11*1: sizes missing
+11-04 14:47:07.720  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] WARN TIP Everything looks fine — verify, then export stock if you want.
+11-04 14:47:07.788  2910  3741 I OCRTEST : [shpatel_agencies_selfcheck] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/shpatel_agencies/selfcheck
+11-04 14:47:07.788  2910  3741 I TestRunner: finished: shPatelAgencies(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:47:07.790  2910  3741 I TestRunner: started: charanD61(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:47:07.812  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:47:07.844  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:47:10.572  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:47:11.272  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:47:20.884  1123  6927 E WakeLock: GCM_HB_ALARM release without a matched acquire!
+11-04 14:47:23.125  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:47:23.175  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:47:23.177  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:47:23.180  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:47:23.181  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:47:23.197  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:47:23.203  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:47:23.205  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:47:23.236  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:47:25.980  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:47:26.664  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:47:28.303  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:47:28.339  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:47:28.380  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:47:31.244  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:47:31.948  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:47:38.181  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:47:38.243  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:46:40.280     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=300000 cc=10 chg=a
+11-04 14:47:40.280     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=300000 cc=10 chg=a
+11-04 14:47:51.210  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:47:51.277  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:47:51.316  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:47:54.180  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:47:54.896  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:47:58.500  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:47:58.518  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:47:58.525  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:47:58.528  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:47:58.530  2910  3741 I OCRTEST : [charan_d61] page 1: words=402 size=1080x2412 ms=50718
+11-04 14:47:58.531  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:48:00.002   697   697 D KeyguardClockSwitch: Updating clock: 248
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] HEADER supplier=Trading in red | gstin=27AONPK1329H2ZO | no=D61 | date=15/09/2026 | buyer=Shivtej Footwear | buyerGstin=27ECIPS0222J1ZI | grand=28368.00 | cgst=675.49 sgst=675.49 | qty=108 sub=30014.92
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] COLUMNS Sr.=SR | lItem=ARTICLE | Colour=COLOUR | HSN=HSN | M.R.P.=MRP | GST%=GST_PCT | Oty=QTY | Rate=RATE | CD%=DISC_PCT | Amount=TAXABLE
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 1 | SAANJH 5-8 | col=LEATHER-6402201o | size= | qty=8 | mrp=599.00 | rate=309.52 | disc%=null | amount=2476.16 | gst=5.0 | baitha=51.17 | needs=[] | raw=[, SAANJH 5-8, LEATHER-6402201o, , 599.00, 5.0, 8, 309.52, 10.00, 2476.16]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 2 | SAANJH 5-8 | col=MOUSE | size= | qty=8 | mrp=599.00 | rate=309.52 | disc%=null | amount=2476.16 | gst=5.0 | baitha=51.17 | needs=[] | raw=[, SAANJH 5-8, MOUSE, 64022010, 599.00, 5.0, 8, 309.52, 10.00, 2476.16]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 3 | PANKHURI 5-8 | col=MOUSE | size= | qty=8 | mrp=559.00 | rate=309.52 | disc%=null | amount=2476.16 | gst=5.0 | baitha=47.67 | needs=[] | raw=[, PANKHURI 5-8, MOUSE, 64022010, 559.00, 5.0, 8, 309.52, 10.00, 2476.16]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 4 | IVORY 5-8 | col=PEACH | size= | qty=8 | mrp=579.00 | rate=309.52 | disc%=null | amount=2476.16 | gst=5.0 | baitha=49.48 | needs=[] | raw=[4, IVORY 5-8, PEACH, 64022010, 579.00, 5.0, 8, 309.52, 10.00, 2476.16]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 5 | SOPHIA 2 | col=NAVY | size= | qty=8 | mrp=699.00 | rate=432.38 | disc%=null | amount=3459.04 | gst=5.0 | baitha=41.54 | needs=[] | raw=[5, SOPHIA 2 5-8, NAVY, 64022010, 699.00, 5.0, 8, 432.38, 10.00, 3459.04]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 6 | SOPHIA 4 | col=ONION | size= | qty=4 | mrp=629.00 | rate=389.52 | disc%=null | amount=1558.08 | gst=5.0 | baitha=41.48 | needs=[] | raw=[6, SOPHIA 4 5-8, ONION, 64022010, 629.00, 5.0, 4, 389.52, 10.00, 1558.08]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 7 | SOPHIA 4 | col=D.GRY | size= | qty=8 | mrp=629.00 | rate=389.52 | disc%=null | amount=3116.16 | gst=5.0 | baitha=41.48 | needs=[] | raw=[7, SOPHIA 4 5-8, D.GRY, 64022010, 629.00, 5.0, 8, 389.52, 10.00, 3116.16]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 8 | SOPHIA 4 | col=BLACK | size= | qty=8 | mrp=629.00 | rate=389.52 | disc%=null | amount=3116.16 | gst=5.0 | baitha=41.48 | needs=[] | raw=[8, SOPHIA 4 5-8, BLACK, 64022010, 629.00, 5.0, 8, 389.52, 10.00, 3116.16]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 9 | sOPHIA 4 | col=NAVY | size= | qty=8 | mrp=629.00 | rate=389.52 | disc%=null | amount=3116.16 | gst=5.0 | baitha=41.48 | needs=[] | raw=[9., sOPHIA 4 5-8, NAVY, 64022010, 629.00, 5.0, 8, 389.52, 10.00, 3116.16]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 10 | 24202 | col=CHRY | size=5X8 | qty=8 | mrp=225.00 | rate=139.05 | disc%=null | amount=1112.40 | gst=5.0 | baitha=41.60 | needs=[] | raw=[10., 24202 5X8, CHRY, 64022010, 225.00, 5.0, 8, 139.05, 10.00, 1112.40]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 11 | SOFTY 5X8 | col=PEACH | size= | qty=8 | mrp=359.00 | rate=221.90 | disc%=null | amount=1775.20 | gst=5 | baitha=41.59 | needs=[] | raw=[11, SOFTY 5X8, PEACH, 64022010, 359.00, 2922223:: 5.0, 8, 221.90, 10.00, 1775.20]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 12 | ZARA 15 | col=TAN | size= | qty=6 | mrp=189.00 | rate=117.14 | disc%=null | amount=702.84 | gst=5.0 | baitha=41.43 | needs=[] | raw=[12, ZARA 15 11-13, TAN, 64022010, 189.00, 5.0, 6, 117.14, 10.00, 702.84]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 13 | ZARA 15 | col=TAN | size=1X3 | qty=6 | mrp=195.00 | rate=120.95 | disc%=null | amount=725.70 | gst=5.0 | baitha=41.39 | needs=[] | raw=[13, ZARA 15 1X3, TAN, 64022010o, 195.00, 5.0, 6, 120.95, 10.00, 725.70]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 14 | ZARA 15 | col=CHRY | size= | qty=6 | mrp=189.00 | rate=117.14 | disc%=null | amount=702.84 | gst=5.0 | baitha=41.43 | needs=[] | raw=[14, ZARA 15 11-13, CHRY, 64022010, 189.00, 5.0, 6, 117.14, 10.00, 702.84]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] ITEM 15 | ZARA 15 | col=CHRY | size=1X3 | qty=6 | mrp=195.00 | rate=120.95 | disc%=null | amount=725.70 | gst=5.0 | baitha=41.39 | needs=[] | raw=[15, ZARA 15 1X3, CHRY, 64022010, 195.00, 5.0, 6, 120.95, 10.00, 725.70]
+11-04 14:48:01.423  2910  3741 I OCRTEST : [charan_d61] TOTALS Totals(lines=15, articleLines=15, qty=108, gross=0, discount=0, taxable=30014.92, cgst=675.49, sgst=675.49, igst=0, other=0, grand=28364.74, printedGrand=28368.00)
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN CHECK Lines add up to ₹28364.74 but the bill total is ₹28368.00 (difference ₹3.26).
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 1 SAANJH 5-8: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 2 SAANJH 5-8: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 3 PANKHURI 5-8: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 4 IVORY 5-8: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 5 SOPHIA 2: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 6 SOPHIA 4: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 7 SOPHIA 4: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 8 SOPHIA 4: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 9 sOPHIA 4: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 11 SOFTY 5X8: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 12 ZARA 15: sizes missing
+11-04 14:48:01.424  2910  3741 I OCRTEST : [charan_d61] WARN TIP 14 ZARA 15: sizes missing
+11-04 14:48:01.498  2910  3741 I OCRTEST : [charan_d61] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/charan_d61
+11-04 14:48:07.189  2910  3741 I OCRTEST : [charan_d61] SELFCHECK tried=0 fixed=0 doubtful before=0 after=0 ms=2835
+11-04 14:48:10.075  2910  3741 I OCRTEST : [charan_d61_selfcheck] HEADER supplier=Trading in red | gstin=27AONPK1329H2ZO | no=D61 | date=15/09/2026 | buyer=Shivtej Footwear | buyerGstin=27ECIPS0222J1ZI | grand=28368.00 | cgst=675.49 sgst=675.49 | qty=108 sub=30014.92
+11-04 14:48:10.075  2910  3741 I OCRTEST : [charan_d61_selfcheck] COLUMNS Sr.=SR | lItem=ARTICLE | Colour=COLOUR | HSN=HSN | M.R.P.=MRP | GST%=GST_PCT | Oty=QTY | Rate=RATE | CD%=DISC_PCT | Amount=TAXABLE
+11-04 14:48:10.075  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 1 | SAANJH 5-8 | col=LEATHER-6402201o | size= | qty=8 | mrp=599.00 | rate=309.52 | disc%=null | amount=2476.16 | gst=5.0 | baitha=51.17 | needs=[] | raw=[, SAANJH 5-8, LEATHER-6402201o, , 599.00, 5.0, 8, 309.52, 10.00, 2476.16]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 2 | SAANJH 5-8 | col=MOUSE | size= | qty=8 | mrp=599.00 | rate=309.52 | disc%=null | amount=2476.16 | gst=5.0 | baitha=51.17 | needs=[] | raw=[, SAANJH 5-8, MOUSE, 64022010, 599.00, 5.0, 8, 309.52, 10.00, 2476.16]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 3 | PANKHURI 5-8 | col=MOUSE | size= | qty=8 | mrp=559.00 | rate=309.52 | disc%=null | amount=2476.16 | gst=5.0 | baitha=47.67 | needs=[] | raw=[, PANKHURI 5-8, MOUSE, 64022010, 559.00, 5.0, 8, 309.52, 10.00, 2476.16]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 4 | IVORY 5-8 | col=PEACH | size= | qty=8 | mrp=579.00 | rate=309.52 | disc%=null | amount=2476.16 | gst=5.0 | baitha=49.48 | needs=[] | raw=[4, IVORY 5-8, PEACH, 64022010, 579.00, 5.0, 8, 309.52, 10.00, 2476.16]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 5 | SOPHIA 2 | col=NAVY | size= | qty=8 | mrp=699.00 | rate=432.38 | disc%=null | amount=3459.04 | gst=5.0 | baitha=41.54 | needs=[] | raw=[5, SOPHIA 2 5-8, NAVY, 64022010, 699.00, 5.0, 8, 432.38, 10.00, 3459.04]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 6 | SOPHIA 4 | col=ONION | size= | qty=4 | mrp=629.00 | rate=389.52 | disc%=null | amount=1558.08 | gst=5.0 | baitha=41.48 | needs=[] | raw=[6, SOPHIA 4 5-8, ONION, 64022010, 629.00, 5.0, 4, 389.52, 10.00, 1558.08]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 7 | SOPHIA 4 | col=D.GRY | size= | qty=8 | mrp=629.00 | rate=389.52 | disc%=null | amount=3116.16 | gst=5.0 | baitha=41.48 | needs=[] | raw=[7, SOPHIA 4 5-8, D.GRY, 64022010, 629.00, 5.0, 8, 389.52, 10.00, 3116.16]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 8 | SOPHIA 4 | col=BLACK | size= | qty=8 | mrp=629.00 | rate=389.52 | disc%=null | amount=3116.16 | gst=5.0 | baitha=41.48 | needs=[] | raw=[8, SOPHIA 4 5-8, BLACK, 64022010, 629.00, 5.0, 8, 389.52, 10.00, 3116.16]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 9 | sOPHIA 4 | col=NAVY | size= | qty=8 | mrp=629.00 | rate=389.52 | disc%=null | amount=3116.16 | gst=5.0 | baitha=41.48 | needs=[] | raw=[9., sOPHIA 4 5-8, NAVY, 64022010, 629.00, 5.0, 8, 389.52, 10.00, 3116.16]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 10 | 24202 | col=CHRY | size=5X8 | qty=8 | mrp=225.00 | rate=139.05 | disc%=null | amount=1112.40 | gst=5.0 | baitha=41.60 | needs=[] | raw=[10., 24202 5X8, CHRY, 64022010, 225.00, 5.0, 8, 139.05, 10.00, 1112.40]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 11 | SOFTY 5X8 | col=PEACH | size= | qty=8 | mrp=359.00 | rate=221.90 | disc%=null | amount=1775.20 | gst=5 | baitha=41.59 | needs=[] | raw=[11, SOFTY 5X8, PEACH, 64022010, 359.00, 2922223:: 5.0, 8, 221.90, 10.00, 1775.20]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 12 | ZARA 15 | col=TAN | size= | qty=6 | mrp=189.00 | rate=117.14 | disc%=null | amount=702.84 | gst=5.0 | baitha=41.43 | needs=[] | raw=[12, ZARA 15 11-13, TAN, 64022010, 189.00, 5.0, 6, 117.14, 10.00, 702.84]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 13 | ZARA 15 | col=TAN | size=1X3 | qty=6 | mrp=195.00 | rate=120.95 | disc%=null | amount=725.70 | gst=5.0 | baitha=41.39 | needs=[] | raw=[13, ZARA 15 1X3, TAN, 64022010o, 195.00, 5.0, 6, 120.95, 10.00, 725.70]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 14 | ZARA 15 | col=CHRY | size= | qty=6 | mrp=189.00 | rate=117.14 | disc%=null | amount=702.84 | gst=5.0 | baitha=41.43 | needs=[] | raw=[14, ZARA 15 11-13, CHRY, 64022010, 189.00, 5.0, 6, 117.14, 10.00, 702.84]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] ITEM 15 | ZARA 15 | col=CHRY | size=1X3 | qty=6 | mrp=195.00 | rate=120.95 | disc%=null | amount=725.70 | gst=5.0 | baitha=41.39 | needs=[] | raw=[15, ZARA 15 1X3, CHRY, 64022010, 195.00, 5.0, 6, 120.95, 10.00, 725.70]
+11-04 14:48:10.076  2910  3741 I OCRTEST : [charan_d61_selfcheck] TOTALS Totals(lines=15, articleLines=15, qty=108, gross=0, discount=0, taxable=30014.92, cgst=675.49, sgst=675.49, igst=0, other=0, grand=28364.74, printedGrand=28368.00)
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN CHECK Lines add up to ₹28364.74 but the bill total is ₹28368.00 (difference ₹3.26).
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 1 SAANJH 5-8: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 2 SAANJH 5-8: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 3 PANKHURI 5-8: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 4 IVORY 5-8: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 5 SOPHIA 2: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 6 SOPHIA 4: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 7 SOPHIA 4: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 8 SOPHIA 4: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 9 sOPHIA 4: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 11 SOFTY 5X8: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 12 ZARA 15: sizes missing
+11-04 14:48:10.077  2910  3741 I OCRTEST : [charan_d61_selfcheck] WARN TIP 14 ZARA 15: sizes missing
+11-04 14:48:10.151  2910  3741 I OCRTEST : [charan_d61_selfcheck] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/charan_d61/selfcheck
+11-04 14:48:10.151  2910  3741 I TestRunner: finished: charanD61(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:48:10.153  2910  3741 I TestRunner: started: charanD77(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:48:10.177  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:48:10.185  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:48:10.186  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:48:10.204  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:48:13.052  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:48:13.772  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:48:21.529  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:48:21.572  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:48:21.600  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:48:23.674  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:48:24.348  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:48:25.936  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:48:25.960  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:48:25.988  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:48:28.021  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:48:28.712  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:48:33.495  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:48:33.512  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:48:33.515  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:48:33.519  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:48:33.522  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:48:33.539  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:48:42.765  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:48:42.807  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:48:42.808  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:48:42.810  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:48:50.043  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:48:50.067  2910  3741 I OCRTEST : [charan_d77] page 1: words=264 size=1080x2412 ms=39891
+11-04 14:48:50.828  2910  3741 I OCRTEST : [charan_d77] HEADER supplier=CHARAN CARE | gstin=27AQNPK1329H2ZQ | no=D77 | date=26/09/2026 | buyer=Shivtej Footwear | buyerGstin=27ECIPS0222J1ZI | grand=12385.00 | cgst=294.89 sgst=294.89 | qty=24 sub=13104.72
+11-04 14:48:50.828  2910  3741 I OCRTEST : [charan_d77] COLUMNS Sr=SR | Item=ARTICLE | Colour=COLOUR | HSN=HSN | M.R.P.=MRP | GST%=GST_PCT | Qty=QTY | Rate=RATE | CD%=DISC_PCT | Amount=TAXABLE
+11-04 14:48:50.828  2910  3741 I OCRTEST : [charan_d77] ITEM 1 | EAZY 02 | col=NAVY | size= | qty=8 | mrp=899.00 | rate=556.19 | disc%=null | amount=4449.52 | gst=5.0 | baitha=41.53 | needs=[] | raw=[, EAZY 02, NAVY, 64022010, 899.00, 5.0, 8, 556.19, 10.00, 4449:52]
+11-04 14:48:50.828  2910  3741 I OCRTEST : [charan_d77] ITEM 2 | EAZY 02 | col=BLACK | size= | qty=8 | mrp=899.00 | rate=556.19 | disc%=null | amount=4449.52 | gst=5.0 | baitha=41.53 | needs=[] | raw=[2, EAZY 02, BLACK, 64022010, 899.00, 5.0, 8, 556.19, 10.00, 4449.52]
+11-04 14:48:50.828  2910  3741 I OCRTEST : [charan_d77] ITEM 3 | EAZY 01 | col=GREY | size=6X10 | qty=8 | mrp=849.00 | rate=525.71 | disc%=null | amount=4205.68 | gst=5.0 | baitha=41.48 | needs=[] | raw=[3, EAZY 01 6X10, GREY, 64022010, 849.00, 5.0, 8, 525.71, 10.00 CD, 4205.68]
+11-04 14:48:50.828  2910  3741 I OCRTEST : [charan_d77] TOTALS Totals(lines=3, articleLines=3, qty=24, gross=0, discount=0, taxable=13104.72, cgst=294.89, sgst=294.89, igst=0, other=0, grand=12384.18, printedGrand=12385.00)
+11-04 14:48:50.828  2910  3741 I OCRTEST : [charan_d77] WARN TIP Round-off difference ₹0.82.
+11-04 14:48:50.828  2910  3741 I OCRTEST : [charan_d77] WARN TIP 1 EAZY 02: sizes missing
+11-04 14:48:50.828  2910  3741 I OCRTEST : [charan_d77] WARN TIP 2 EAZY 02: sizes missing
+11-04 14:48:50.828  2910  3741 I OCRTEST : [charan_d77] WARN TIP Everything looks fine — verify, then export stock if you want.
+11-04 14:48:50.878  2910  3741 I OCRTEST : [charan_d77] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/charan_d77
+11-04 14:48:52.349  2910  3741 I OCRTEST : [charan_d77] SELFCHECK tried=0 fixed=0 doubtful before=0 after=0 ms=741
+11-04 14:48:53.113  2910  3741 I OCRTEST : [charan_d77_selfcheck] HEADER supplier=CHARAN CARE | gstin=27AQNPK1329H2ZQ | no=D77 | date=26/09/2026 | buyer=Shivtej Footwear | buyerGstin=27ECIPS0222J1ZI | grand=12385.00 | cgst=294.89 sgst=294.89 | qty=24 sub=13104.72
+11-04 14:48:53.113  2910  3741 I OCRTEST : [charan_d77_selfcheck] COLUMNS Sr=SR | Item=ARTICLE | Colour=COLOUR | HSN=HSN | M.R.P.=MRP | GST%=GST_PCT | Qty=QTY | Rate=RATE | CD%=DISC_PCT | Amount=TAXABLE
+11-04 14:48:53.113  2910  3741 I OCRTEST : [charan_d77_selfcheck] ITEM 1 | EAZY 02 | col=NAVY | size= | qty=8 | mrp=899.00 | rate=556.19 | disc%=null | amount=4449.52 | gst=5.0 | baitha=41.53 | needs=[] | raw=[, EAZY 02, NAVY, 64022010, 899.00, 5.0, 8, 556.19, 10.00, 4449:52]
+11-04 14:48:53.113  2910  3741 I OCRTEST : [charan_d77_selfcheck] ITEM 2 | EAZY 02 | col=BLACK | size= | qty=8 | mrp=899.00 | rate=556.19 | disc%=null | amount=4449.52 | gst=5.0 | baitha=41.53 | needs=[] | raw=[2, EAZY 02, BLACK, 64022010, 899.00, 5.0, 8, 556.19, 10.00, 4449.52]
+11-04 14:48:53.113  2910  3741 I OCRTEST : [charan_d77_selfcheck] ITEM 3 | EAZY 01 | col=GREY | size=6X10 | qty=8 | mrp=849.00 | rate=525.71 | disc%=null | amount=4205.68 | gst=5.0 | baitha=41.48 | needs=[] | raw=[3, EAZY 01 6X10, GREY, 64022010, 849.00, 5.0, 8, 525.71, 10.00 CD, 4205.68]
+11-04 14:48:53.113  2910  3741 I OCRTEST : [charan_d77_selfcheck] TOTALS Totals(lines=3, articleLines=3, qty=24, gross=0, discount=0, taxable=13104.72, cgst=294.89, sgst=294.89, igst=0, other=0, grand=12384.18, printedGrand=12385.00)
+11-04 14:48:53.114  2910  3741 I OCRTEST : [charan_d77_selfcheck] WARN TIP Round-off difference ₹0.82.
+11-04 14:48:53.114  2910  3741 I OCRTEST : [charan_d77_selfcheck] WARN TIP 1 EAZY 02: sizes missing
+11-04 14:48:53.114  2910  3741 I OCRTEST : [charan_d77_selfcheck] WARN TIP 2 EAZY 02: sizes missing
+11-04 14:48:53.114  2910  3741 I OCRTEST : [charan_d77_selfcheck] WARN TIP Everything looks fine — verify, then export stock if you want.
+11-04 14:48:53.163  2910  3741 I OCRTEST : [charan_d77_selfcheck] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/charan_d77/selfcheck
+11-04 14:48:53.164  2910  3741 I TestRunner: finished: charanD77(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:48:53.165  2910  3741 I TestRunner: started: shPatel(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:48:53.193  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:48:53.232  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:48:56.116  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:48:56.844  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:49:00.002   697   697 D KeyguardClockSwitch: Updating clock: 249
+11-04 14:49:10.901  1123  6927 E WakeLock: GCM_HB_ALARM release without a matched acquire!
+11-04 14:49:10.972   498  1005 D WifiNl80211Manager: Scan result ready event
+11-04 14:49:10.973   498  1005 D WifiNative: Scan result ready event
+11-04 14:49:12.557  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:49:12.621  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:49:12.623  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:49:12.626  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:49:12.627  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:49:12.652  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:49:12.680  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:49:15.524  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 4 lines
+11-04 14:49:16.236  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:49:24.775  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:49:24.865  2910  3830 D PipelineManager: Start process bitmap
+11-04 14:49:24.866  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:49:24.867  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:49:24.904  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:49:27.072  2910  3851 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:49:27.784  2910  3851 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:49:37.294  2910  3830 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:49:37.367  2910  3838 D PipelineManager: Start process bitmap
+11-04 14:49:37.400  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:48:40.280     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=300000 cc=10 chg=a
+11-04 14:49:40.280     0     0 W healthd : battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=300000 cc=10 chg=a
+11-04 14:49:39.432  2910  3850 I chatty  : uid=10167(com.shivtej.billscanner) identical 3 lines
+11-04 14:49:40.104  2910  3850 I tflite  : Replacing 44 out of 46 node(s) with delegate (TfLiteXNNPackDelegate) node, yielding 3 partitions for the whole graph.
+11-04 14:49:46.294  2910  3838 D PipelineManager: OCR process succeeded via visionkit pipeline.
+11-04 14:49:46.317  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:49:46.319  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:49:46.322  2910  3825 D TransportRuntime.SQLiteEventStore: Storing event with priority=VERY_LOW, name=FIREBASE_ML_SDK for destination cct
+11-04 14:49:46.323  2910  3825 D TransportRuntime.JobInfoScheduler: Upload for context TransportContext(cct, VERY_LOW, MSRodHRwczovL2ZpcmViYXNlbG9nZ2luZy5nb29nbGVhcGlzLmNvbS92MGNjL2xvZy9iYXRjaD9mb3JtYXQ9anNvbl9wcm90bzNc) is already scheduled. Returning...
+11-04 14:49:46.329  2910  3741 I OCRTEST : [shpatel] page 1: words=486 size=1932x2576 ms=53139
+11-04 14:49:49.694  2910  3741 I OCRTEST : [shpatel] HEADER supplier=Bata SH PATEL & SONS | gstin=27ABTPP5894K1ZI | no=SHPS26271221 | date=12-Sep-26 | buyer=SHIVTEJ FOOTWEAR | buyerGstin=27ECIPS0222J1ZI | grand=35558.00 | cgst=846.61 sgst=846.61 | qty=64 sub=33864.68
+11-04 14:49:49.694  2910  3741 I OCRTEST : [shpatel] COLUMNS SI No.=null | Description of Goods=ARTICLE | HSN/SAC=HSN | GST Rate=GST_PCT | MRP/ Marginal=MRP | Quantity=QTY | Rate=RATE | per=null | Disc. %=DISC_PCT | Amount=TAXABLE
+11-04 14:49:49.694  2910  3741 I OCRTEST : [shpatel] ITEM null | 62100 | col=1 REMO (81.6854) | size= | qty=6 | mrp=1099.00 | rate=753.60 | disc%=null | amount=4521.60 | gst=5 | baitha=28.00 | needs=[] | raw=[1, REMO (81.6854 ), 64041920, 5%, 1,099.00, 6 prs, 753.60, prs, , 4,521.60]
+11-04 14:49:49.694  2910  3741 I OCRTEST : [shpatel] ITEM 2 | REMO (821.6293) | col= | size= | qty=4 | mrp=849.00 | rate=582.17 | disc%=null | amount=2328.68 | gst=5 | baitha=28.00 | needs=[] | raw=[2, REMO (821.6293 ), 64041920, 5 %, 849.00, 4 prs, 582.17, prs, , 2,328.68]
+11-04 14:49:49.694  2910  3741 I OCRTEST : [shpatel] ITEM 3 | REMO (821.6260) | col= | size= | qty=7 | mrp=849.00 | rate=582.17 | disc%=null | amount=4075.19 | gst=5 | baitha=28.00 | needs=[] | raw=[3, REMO ( 821.6260 ), 64041920, 5%, 849.00, 7 prs, 582.17, prs, , 4,075.19]
+11-04 14:49:49.694  2910  3741 I OCRTEST : [shpatel] ITEM 4 | REMo (821.4328) | col= | size= | qty=3 | mrp=999.00 | rate=685.03 | disc%=null | amount=2055.09 | gst=5 | baitha=28.00 | needs=[] | raw=[4, REMo (821.4328 ), 64041920, 5%, 999.00, 3 prs, 685.03, prs, , 2,055.09]
+11-04 14:49:49.694  2910  3741 I OCRTEST : [shpatel] ITEM 5 | REMO (821.6516) | col= | size= | qty=2 | mrp=999.00 | rate=685.03 | disc%=null | amount=1370.06 | gst=5 | baitha=28.00 | needs=[] | raw=[5, REMO (821.6516 ), 640299, 5%, 999.00, 2 prs, 685.03 prs, , , 1,370.06]
+11-04 14:49:49.694  2910  3741 I OCRTEST : [shpatel] ITEM null | 6MACHO | col=(871.6161) | size= | qty=4 | mrp=659.00 | rate=451.89 | disc%=null | amount=1807.56 | gst=5 | baitha=28.00 | needs=[] | raw=[, 6MACHO (871.6161 ), 64041920, 5%, 659.00, 4 prs, 451.89, prs, , 1,807.56]
+11-04 14:49:49.694  2910  3741 I OCRTEST : [shpatel] ITEM null | 5860.00 | col=7 MACHO (871.3262 | size= | qty=6 | mrp=659.00 | rate=451.89 | disc%=null | amount=2711.34 | gst=5 | baitha=28.00 | needs=[] | raw=[7, MACHO (871.3262, 64041920, 5%, 659.00, 6 prs, 451.89, prs, , 2,711.34]
+11-04 14:49:49.694  2910  3741 I OCRTEST : [shpatel] ITEM 8 | FORD (871.3561) | col= | size= | qty=4 | mrp=699.00 | rate=479.31 | disc%=null | amount=1917.24 | gst=5 | baitha=28.00 | needs=[] | raw=[8, FORD (871.3561 ), 64041920, 5 %, 699.00, 4 prs, 479.31, prs, , 1,917.24]
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] ITEM null | JALSA (851.4296) | col= | size= | qty=2 | mrp=449.00 | rate=307.89 | disc%=null | amount=615.78 | gst=5 | baitha=28.00 | needs=[] | raw=[, JALSA (851.4296 ), 64041920, 5%, 449.00, 2 prs, 307.89, prs, , 615.78]
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] ITEM null | 78.5d1 | col=10 JALSA (851.4296) | size= | qty=2 | mrp=429.00 | rate=294.17 | disc%=null | amount=588.34 | gst=5 | baitha=28.00 | needs=[] | raw=[, 78.5d1 10 JALSA ( 851.4296 ), 64041920, 5%, 429.00, 2 prs, 294.17 prs, , , 588.34]
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] ITEM 11 | JALSA (851.6296) | col= | size= | qty=1 | mrp=449.00 | rate=307.89 | disc%=null | amount=307.89 | gst=5 | baitha=28.00 | needs=[] | raw=[11, JALSA (851.6296 ), 64041920, 5%, 449.00, 1 prs, 307.89, prs, , 307.89]
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] ITEM 12 | JALSA (851.6296) | col= | size= | qty=3 | mrp=429.00 | rate=294.17 | disc%=null | amount=882.51 | gst=5 | baitha=28.00 | needs=[] | raw=[12, JALSA (851.6296 ), 64041920, 5%, 429.00, 3 prs, 294.17, prs, , 882.51]
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] ITEM null | PAD 13 | col=REMO (851.6968 | size= | qty=8 | mrp=899.00 | rate=616.46 | disc%=null | amount=4931.68 | gst=5 | baitha=28.00 | needs=[] | raw=[, PAD 13 REMO (851.6968, 64041920, 5%, 899.00, 8 prs, 616.46, prs, , 4,931.68]
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] ITEM null | 586000 | col=14 FORD (871.6362) | size= | qty=8 | mrp=699.00 | rate=479.31 | disc%=null | amount=3834.48 | gst=5 | baitha=28.00 | needs=[] | raw=[14, FORD (871.6362 ), 64041920, 5%, 699.00, 8 prs, 479.31, prs, , 3,834.48]
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] ITEM null | 6360,00 | col=15 FORD (871.3561) | size= | qty=4 | mrp=699.00 | rate=479.31 | disc%=null | amount=1917.24 | gst=5 | baitha=28.00 | needs=[] | raw=[15, FORD (871.3561 ), 64041920, 5%, 699.00, 4 prs, 479.31, prs, , 1,917.24]
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] TOTALS Totals(lines=15, articleLines=15, qty=64, gross=0, discount=0, taxable=33864.68, cgst=846.61, sgst=846.61, igst=0, other=0, grand=35558.00, printedGrand=35558.00)
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] NOTE बिल का Total (735558.00) लाइनों से मेल नहीं खाता — गलत पढ़ा गया, छोड़ दिया
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 62100: sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 2 REMO (821.6293): sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 3 REMO (821.6260): sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 4 REMo (821.4328): sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 5 REMO (821.6516): sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 6MACHO: sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 5860.00: sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 8 FORD (871.3561): sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP JALSA (851.4296): sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 78.5d1: sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 11 JALSA (851.6296): sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 12 JALSA (851.6296): sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP PAD 13: sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 586000: sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP 6360,00: sizes missing
+11-04 14:49:49.695  2910  3741 I OCRTEST : [shpatel] WARN TIP Everything looks fine — verify, then export stock if you want.
+11-04 14:49:49.764  2910  3741 I OCRTEST : [shpatel] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/shpatel
+11-04 14:49:56.497  2910  3741 I OCRTEST : [shpatel] SELFCHECK tried=0 fixed=0 doubtful before=0 after=0 ms=3363
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] HEADER supplier=Bata SH PATEL & SONS | gstin=27ABTPP5894K1ZI | no=SHPS26271221 | date=12-Sep-26 | buyer=SHIVTEJ FOOTWEAR | buyerGstin=27ECIPS0222J1ZI | grand=35558.00 | cgst=846.61 sgst=846.61 | qty=64 sub=33864.68
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] COLUMNS SI No.=null | Description of Goods=ARTICLE | HSN/SAC=HSN | GST Rate=GST_PCT | MRP/ Marginal=MRP | Quantity=QTY | Rate=RATE | per=null | Disc. %=DISC_PCT | Amount=TAXABLE
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM null | 62100 | col=1 REMO (81.6854) | size= | qty=6 | mrp=1099.00 | rate=753.60 | disc%=null | amount=4521.60 | gst=5 | baitha=28.00 | needs=[] | raw=[1, REMO (81.6854 ), 64041920, 5%, 1,099.00, 6 prs, 753.60, prs, , 4,521.60]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM 2 | REMO (821.6293) | col= | size= | qty=4 | mrp=849.00 | rate=582.17 | disc%=null | amount=2328.68 | gst=5 | baitha=28.00 | needs=[] | raw=[2, REMO (821.6293 ), 64041920, 5 %, 849.00, 4 prs, 582.17, prs, , 2,328.68]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM 3 | REMO (821.6260) | col= | size= | qty=7 | mrp=849.00 | rate=582.17 | disc%=null | amount=4075.19 | gst=5 | baitha=28.00 | needs=[] | raw=[3, REMO ( 821.6260 ), 64041920, 5%, 849.00, 7 prs, 582.17, prs, , 4,075.19]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM 4 | REMo (821.4328) | col= | size= | qty=3 | mrp=999.00 | rate=685.03 | disc%=null | amount=2055.09 | gst=5 | baitha=28.00 | needs=[] | raw=[4, REMo (821.4328 ), 64041920, 5%, 999.00, 3 prs, 685.03, prs, , 2,055.09]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM 5 | REMO (821.6516) | col= | size= | qty=2 | mrp=999.00 | rate=685.03 | disc%=null | amount=1370.06 | gst=5 | baitha=28.00 | needs=[] | raw=[5, REMO (821.6516 ), 640299, 5%, 999.00, 2 prs, 685.03 prs, , , 1,370.06]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM null | 6MACHO | col=(871.6161) | size= | qty=4 | mrp=659.00 | rate=451.89 | disc%=null | amount=1807.56 | gst=5 | baitha=28.00 | needs=[] | raw=[, 6MACHO (871.6161 ), 64041920, 5%, 659.00, 4 prs, 451.89, prs, , 1,807.56]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM null | 5860.00 | col=7 MACHO (871.3262 | size= | qty=6 | mrp=659.00 | rate=451.89 | disc%=null | amount=2711.34 | gst=5 | baitha=28.00 | needs=[] | raw=[7, MACHO (871.3262, 64041920, 5%, 659.00, 6 prs, 451.89, prs, , 2,711.34]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM 8 | FORD (871.3561) | col= | size= | qty=4 | mrp=699.00 | rate=479.31 | disc%=null | amount=1917.24 | gst=5 | baitha=28.00 | needs=[] | raw=[8, FORD (871.3561 ), 64041920, 5 %, 699.00, 4 prs, 479.31, prs, , 1,917.24]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM null | JALSA (851.4296) | col= | size= | qty=2 | mrp=449.00 | rate=307.89 | disc%=null | amount=615.78 | gst=5 | baitha=28.00 | needs=[] | raw=[, JALSA (851.4296 ), 64041920, 5%, 449.00, 2 prs, 307.89, prs, , 615.78]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM null | 78.5d1 | col=10 JALSA (851.4296) | size= | qty=2 | mrp=429.00 | rate=294.17 | disc%=null | amount=588.34 | gst=5 | baitha=28.00 | needs=[] | raw=[, 78.5d1 10 JALSA ( 851.4296 ), 64041920, 5%, 429.00, 2 prs, 294.17 prs, , , 588.34]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM 11 | JALSA (851.6296) | col= | size= | qty=1 | mrp=449.00 | rate=307.89 | disc%=null | amount=307.89 | gst=5 | baitha=28.00 | needs=[] | raw=[11, JALSA (851.6296 ), 64041920, 5%, 449.00, 1 prs, 307.89, prs, , 307.89]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM 12 | JALSA (851.6296) | col= | size= | qty=3 | mrp=429.00 | rate=294.17 | disc%=null | amount=882.51 | gst=5 | baitha=28.00 | needs=[] | raw=[12, JALSA (851.6296 ), 64041920, 5%, 429.00, 3 prs, 294.17, prs, , 882.51]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM null | PAD 13 | col=REMO (851.6968 | size= | qty=8 | mrp=899.00 | rate=616.46 | disc%=null | amount=4931.68 | gst=5 | baitha=28.00 | needs=[] | raw=[, PAD 13 REMO (851.6968, 64041920, 5%, 899.00, 8 prs, 616.46, prs, , 4,931.68]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM null | 586000 | col=14 FORD (871.6362) | size= | qty=8 | mrp=699.00 | rate=479.31 | disc%=null | amount=3834.48 | gst=5 | baitha=28.00 | needs=[] | raw=[14, FORD (871.6362 ), 64041920, 5%, 699.00, 8 prs, 479.31, prs, , 3,834.48]
+11-04 14:49:59.856  2910  3741 I OCRTEST : [shpatel_selfcheck] ITEM null | 6360,00 | col=15 FORD (871.3561) | size= | qty=4 | mrp=699.00 | rate=479.31 | disc%=null | amount=1917.24 | gst=5 | baitha=28.00 | needs=[] | raw=[15, FORD (871.3561 ), 64041920, 5%, 699.00, 4 prs, 479.31, prs, , 1,917.24]
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] TOTALS Totals(lines=15, articleLines=15, qty=64, gross=0, discount=0, taxable=33864.68, cgst=846.61, sgst=846.61, igst=0, other=0, grand=35558.00, printedGrand=35558.00)
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] NOTE बिल का Total (735558.00) लाइनों से मेल नहीं खाता — गलत पढ़ा गया, छोड़ दिया
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 62100: sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 2 REMO (821.6293): sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 3 REMO (821.6260): sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 4 REMo (821.4328): sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 5 REMO (821.6516): sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 6MACHO: sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 5860.00: sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 8 FORD (871.3561): sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP JALSA (851.4296): sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 78.5d1: sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 11 JALSA (851.6296): sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 12 JALSA (851.6296): sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP PAD 13: sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 586000: sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP 6360,00: sizes missing
+11-04 14:49:59.857  2910  3741 I OCRTEST : [shpatel_selfcheck] WARN TIP Everything looks fine — verify, then export stock if you want.
+11-04 14:49:59.925  2910  3741 I OCRTEST : [shpatel_selfcheck] FILES /data/user/0/com.shivtej.billscanner/files/ocrtest/shpatel/selfcheck
+11-04 14:49:59.925  2910  3741 I TestRunner: finished: shPatel(com.shivtej.billscanner.OcrOnRealInvoiceTest)
+11-04 14:49:59.927  2910  3741 I TestRunner: run finished: 22 tests, 0 failed, 0 ignored
+11-04 14:49:59.929   498  1186 I ActivityManager: Force stopping com.shivtej.billscanner appid=10167 user=0: finished inst
+11-04 14:49:59.929   498  1186 I ActivityManager: Killing 2910:com.shivtej.billscanner/u0a167 (adj 0): stop com.shivtej.billscanner due to finished inst
+11-04 14:49:59.937  2752  2752 I app_process: System.exit called, status: 0
+11-04 14:49:59.937  2752  2752 I AndroidRuntime: VM exiting with result code 0.
+11-04 14:50:00.203     0     0 D logd    : logdr: UID=2000 GID=2000 PID=7312 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+11-04 14:50:00.207     0     0 I binder  : undelivered TRANSACTION_COMPLETE
+11-04 14:50:00.208     0     0 I binder  : undelivered transaction 467184, process died.
+11-04 14:49:59.976   288   288 I Zygote  : Process 2910 exited due to signal 9 (Killed)
+11-04 14:50:00.001   697   697 D KeyguardClockSwitch: Updating clock: 250
+11-04 14:50:00.016   498   539 I libprocessgroup: Successfully killed process cgroup uid 10167 pid 2910 in 86ms
