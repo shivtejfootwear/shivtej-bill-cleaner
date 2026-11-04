@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.RealOcrTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-04T13:46:18.023Z" hostname="runnervmnwato" time="2.869">
+  <properties/>
+  <testcase name="sameBillAddedTwiceKeepsOneCopy" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.274"/>
+  <testcase name="aLineThatSlidSidewaysIsDealtAgainByWhatItsWordsLookLike" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.157"/>
+  <testcase name="shPatelBillsWithAnotherBooksEdge" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.227"/>
+  <testcase name="lostPairsAndLostPointTogetherAreWorkedOut" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.172"/>
+  <testcase name="lakhaniOldAndNewMrpCartonsAndBillDiscounts" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.075"/>
+  <testcase name="memosAndSmallSuppliers" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.455"/>
+  <testcase name="lakhaniPdfAsThePhoneReadsIt" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.118"/>
+  <testcase name="eachLineKnowsWhereItIsOnThePhoto" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.301"/>
+  <testcase name="patelTradingRateOnlyAndHiddenSerial" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.194"/>
+  <testcase name="dharashivV3617ScreenshotOfTwoPages" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.248"/>
+  <testcase name="bankAndSignatureLinesAreNeverArticles" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.214"/>
+  <testcase name="dharashivR2395BentPhoto" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.209"/>
+  <testcase name="patelWithStampAndGluedSerial" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.143"/>
+  <testcase name="yashArticleColourMrpCodes" classname="com.shivtej.billscanner.core.RealOcrTest" time="0.081"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

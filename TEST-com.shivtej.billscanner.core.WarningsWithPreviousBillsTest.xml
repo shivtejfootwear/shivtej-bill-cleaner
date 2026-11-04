@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.WarningsWithPreviousBillsTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-04T13:46:22.341Z" hostname="runnervmnwato" time="0.096">
+  <properties/>
+  <testcase name="aLineWithoutMrpBesideAnEarlierBillDoesNotCrash" classname="com.shivtej.billscanner.core.WarningsWithPreviousBillsTest" time="0.096"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

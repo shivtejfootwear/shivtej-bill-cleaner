@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.LearningTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-04T13:46:15.212Z" hostname="runnervmnwato" time="0.308">
+  <properties/>
+  <testcase name="aTaughtColumnIsUsedNextTime" classname="com.shivtej.billscanner.core.LearningTest" time="0.308"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

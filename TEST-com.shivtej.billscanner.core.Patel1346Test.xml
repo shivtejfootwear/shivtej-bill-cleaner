@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.Patel1346Test" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-04T13:46:16.155Z" hostname="runnervmnwato" time="0.438">
+  <properties/>
+  <testcase name="pageOfAnotherBillIsLeftOut" classname="com.shivtej.billscanner.core.Patel1346Test" time="0.12"/>
+  <testcase name="withTheBuiltInCode" classname="com.shivtej.billscanner.core.Patel1346Test" time="0.219"/>
+  <testcase name="firstPageAlone" classname="com.shivtej.billscanner.core.Patel1346Test" time="0.098"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
