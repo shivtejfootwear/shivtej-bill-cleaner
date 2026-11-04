@@ -189,6 +189,9 @@ fun CheckContent(
         dismissButton = { androidx.compose.material3.TextButton(onClick = { askDone = false }) { Text(tr("यहीं रहें", "Stay"), color = C.navy) } },
     )
 
+    val sToFound = tr("माल मिला में गया", "moved to received")
+    val sCount = tr("गिनती बदली", "count changed")
+    val sBack = tr("माल नहीं मिला में लौटा", "moved back to not received")
     // The last tick (or untick), for 5 seconds: "↩ वापस" puts the line back.
     var last by remember { mutableStateOf<Triple<String, Int, String>?>(null) }
     LaunchedEffect(last) { if (last != null) { kotlinx.coroutines.delay(5000); last = null } }
@@ -243,8 +246,8 @@ fun CheckContent(
                     HeadRow()
                     LazyColumn(Modifier.fillMaxSize()) {
                         items(shown, key = { "p" + it.id }) { l ->
-                            if (editing == l.id) EditRow(l, l.left, onOk = { n, r -> r?.let { onRate(l.id, it) }; if (n > 0) move(l, l.got + n.coerceIn(0, l.left), "✓ ${l.name} " + tr("माल मिला में गया", "moved to received")); editing = null }, onCancel = { editing = null })
-                            else LineRow(l, false, locked, onClick = { move(l, l.qty, "✓ ${l.name} " + tr("माल मिला में गया", "moved to received")) }, onEdit = { if (locked) onLockedTap() else editing = l.id })
+                            if (editing == l.id) EditRow(l, l.left, onOk = { n, r -> r?.let { onRate(l.id, it) }; if (n > 0) move(l, l.got + n.coerceIn(0, l.left), "✓ ${l.name} " + sToFound); editing = null }, onCancel = { editing = null })
+                            else LineRow(l, false, locked, onClick = { move(l, l.qty, "✓ ${l.name} " + sToFound) }, onEdit = { if (locked) onLockedTap() else editing = l.id })
                         }
                         if (shown.isEmpty()) item { Empty(if (pending.isEmpty()) tr("सारा माल मिल गया", "Everything received") else tr("कुछ नहीं मिला", "Nothing found")) }
                     }
@@ -268,8 +271,8 @@ fun CheckContent(
                     HeadRow()
                     LazyColumn(Modifier.fillMaxSize()) {
                         items(shown, key = { "f" + it.id }) { l ->
-                            if (editing == "f" + l.id) EditRow(l, l.got, onOk = { n, r -> r?.let { onRate(l.id, it) }; if (n != l.got) move(l, n.coerceIn(0, l.qty), "↩ ${l.name} " + tr("गिनती बदली", "count changed")); editing = null }, onCancel = { editing = null })
-                            else LineRow(l, true, locked, onClick = { move(l, 0, "↩ ${l.name} " + tr("माल नहीं मिला में लौटा", "moved back to not received")) }, onEdit = { if (locked) onLockedTap() else editing = "f" + l.id })
+                            if (editing == "f" + l.id) EditRow(l, l.got, onOk = { n, r -> r?.let { onRate(l.id, it) }; if (n != l.got) move(l, n.coerceIn(0, l.qty), "↩ ${l.name} " + sCount); editing = null }, onCancel = { editing = null })
+                            else LineRow(l, true, locked, onClick = { move(l, 0, "↩ ${l.name} " + sBack) }, onEdit = { if (locked) onLockedTap() else editing = "f" + l.id })
                         }
                         if (shown.isEmpty()) item { Empty(if (found.isEmpty()) tr("ऊपर लाइन दबाओ, माल यहाँ आएगा", "Tap a line above; it comes here") else tr("कुछ नहीं मिला", "Nothing found")) }
                     }
