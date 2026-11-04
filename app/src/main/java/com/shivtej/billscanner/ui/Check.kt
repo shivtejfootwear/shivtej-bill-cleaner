@@ -1,6 +1,10 @@
 package com.shivtej.billscanner.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +32,8 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.Percent
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
@@ -35,6 +41,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -58,13 +66,15 @@ import com.shivtej.billscanner.core.model.Invoice
 import com.shivtej.billscanner.core.model.ItemKind
 import com.shivtej.billscanner.core.model.LineItem
 import com.shivtej.billscanner.core.model.Totals
+import java.math.BigDecimal
+import kotlinx.coroutines.launch
 
 /** One bill line for the goods check. */
-data class CheckLine(val id: String, val no: String, val name: String, val mrp: String, val size: String, val qty: Int, val got: Int) {
+data class CheckLine(val id: String, val no: String, val name: String, val mrp: String, val size: String, val qty: Int, val got: Int, val rate: String = "") {
     val left get() = (qty - got).coerceAtLeast(0)
     fun matches(q: String): Boolean {
         val t = q.trim(); if (t.isEmpty()) return true
-        return no == t || listOf(name, mrp, size).any { it.contains(t, true) }
+        return no == t || listOf(name, mrp, size, rate).any { it.contains(t, true) }
     }
 }
 
@@ -77,7 +87,7 @@ private fun line(it: LineItem, i: Int, got: Int): CheckLine {
     val name = listOf(v.article, v.name).filter { s -> s.isNotBlank() }.distinct().joinToString(" ").ifBlank { "—" }
     // Size only ("6X10", "6/2,7/3"), without the colour written before it.
     val size = v.sizeText.split(" | ").map { s -> s.trim().replace(Regex("""^[A-Za-z][A-Za-z ./-]*?\s+(?=\d)"""), "") }.filter { s -> s.any(Char::isDigit) && !s.contains("MRP", true) && !s.startsWith(":") }.joinToString(",")
-    return CheckLine(it.id, "${v.sr ?: (i + 1)}", name, v.mrp?.stripTrailingZeros()?.toPlainString() ?: "", size, q, got.coerceIn(0, q))
+    return CheckLine(it.id, "${v.sr ?: (i + 1)}", name, v.mrp?.stripTrailingZeros()?.toPlainString() ?: "", size, q, got.coerceIn(0, q), v.rate?.stripTrailingZeros()?.toPlainString() ?: "")
 }
 
 /** Pairs received and pairs on the bill. */
@@ -125,11 +135,23 @@ fun CheckScreen(id: String, onBack: () -> Unit, onDone: () -> Unit = onBack) {
     val c = LocalContext.current.container
     val inv by remember(id) { c.repo.watch(id) }.collectAsState(initial = null)
     val bill = inv ?: return
-    CheckContent(bill, c.checks.of(id), onSet = { line, n -> c.checks.set(id, line, n) }, onBack = onBack, onDone = onDone)
+    var locked by remember { mutableStateOf(c.prefs.checkLocked) }
+    val ctx = LocalContext.current
+    CheckContent(bill, c.checks.of(id), onSet = { line, n -> c.checks.set(id, line, n) }, onBack = onBack, onDone = onDone,
+        locked = locked, onLock = { on -> locked = on; c.prefs.checkLocked = on },
+        onLockedTap = { android.widget.Toast.makeText(ctx, tr2(c.lang, "टिक बंद है — टिक करने के लिए 🔒 दबाएँ", "Ticking is locked — tap 🔒 to tick"), android.widget.Toast.LENGTH_SHORT).show() },
+        onRate = { line, r ->
+            // The rate from the company, typed in during the goods check: saved on the bill line (amount worked out again).
+            val item = bill.items.firstOrNull { it.id == line }
+            if (item != null) c.scope.launch { c.repo.save(com.shivtej.billscanner.core.model.Edits.updateItem(bill, line, com.shivtej.billscanner.core.model.Calc.recalc(item.current.copy(rate = r)), System.currentTimeMillis())) }
+        })
 }
 
 @Composable
-fun CheckContent(inv: Invoice, got: Map<String, Int>, onSet: (String, Int) -> Unit, onBack: () -> Unit, onDone: () -> Unit = onBack) {
+fun CheckContent(
+    inv: Invoice, got: Map<String, Int>, onSet: (String, Int) -> Unit, onBack: () -> Unit, onDone: () -> Unit = onBack,
+    locked: Boolean = false, onLock: (Boolean) -> Unit = {}, onLockedTap: () -> Unit = {}, onRate: (String, BigDecimal) -> Unit = { _, _ -> },
+) {
     val lines = checkLines(inv, got)
     var qp by rememberSaveable { mutableStateOf("") }
     var qf by rememberSaveable { mutableStateOf("") }
@@ -147,6 +169,17 @@ fun CheckContent(inv: Invoice, got: Map<String, Int>, onSet: (String, Int) -> Un
         dismissButton = { androidx.compose.material3.TextButton(onClick = { askDone = false }) { Text(tr("यहीं रहें", "Stay"), color = C.navy) } },
     )
 
+    // The last tick (or untick), for 5 seconds: "↩ वापस" puts the line back.
+    var last by remember { mutableStateOf<Triple<String, Int, String>?>(null) }
+    LaunchedEffect(last) { if (last != null) { kotlinx.coroutines.delay(5000); last = null } }
+    fun move(l: CheckLine, to: Int, msg: String) {
+        if (locked) { onLockedTap(); return }
+        last = Triple(l.id, l.got, msg); onSet(l.id, to); editing = null
+    }
+    // Share of the height for "माल नहीं मिला" (the rest is "माल मिला"); 0 or 1 = one list on the whole screen.
+    var frac by rememberSaveable { mutableStateOf(0.62f) }
+
+    Box(Modifier.fillMaxSize()) {
     Column(Modifier.fillMaxSize().background(C.bg)) {
         // ---- header with progress
         Column(Modifier.fillMaxWidth().background(C.headerBrush).padding(start = 4.dp, end = 14.dp, top = 6.dp, bottom = 10.dp)) {
@@ -155,6 +188,11 @@ fun CheckContent(inv: Invoice, got: Map<String, Int>, onSet: (String, Int) -> Un
                 Column(Modifier.weight(1f)) {
                     Text("${inv.header.supplierName ?: "—"} · ${inv.header.invoiceNo ?: "—"}", fontSize = 12.sp, color = Color.White.copy(alpha = 0.8f), maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(tr("माल चेक", "Goods check"), fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                }
+                Row(Modifier.padding(end = 6.dp).background(if (locked) C.orange else Green, RoundedCornerShape(14.dp)).clickable { onLock(!locked) }.padding(horizontal = 10.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Icon(if (locked) Icons.Outlined.Lock else Icons.Outlined.LockOpen, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Text(if (locked) tr(" टिक बंद", " Locked") else tr(" टिक चालू", " Ticking on"), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
                 if (total > 0 && done >= total) Text(tr("पूरा मिला ✓", "All received ✓"), fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White,
                     modifier = Modifier.background(Green, RoundedCornerShape(10.dp)).clickable { askDone = true }.padding(horizontal = 12.dp, vertical = 8.dp))
@@ -165,41 +203,84 @@ fun CheckContent(inv: Invoice, got: Map<String, Int>, onSet: (String, Int) -> Un
             Text("$done / $total ${tr("जोड़ी मिली", "pairs received")}", fontSize = 11.sp, color = Color.White.copy(alpha = 0.85f), modifier = Modifier.padding(start = 12.dp, top = 3.dp))
         }
 
-        // ---- not received (bigger part)
-        Section(Modifier.weight(0.62f), tr("माल नहीं मिला", "Not received"), "${pending.size} ${tr("आर्टिकल", "articles")}", C.orangeDark, C.orangeSoft,
-            qp, { qp = it }, tr("नाम, MRP, साइज़ या नंबर", "Name, MRP, size or no.")) {
-            val shown = pending.filter { it.matches(qp) }
-            HeadRow()
-            LazyColumn(Modifier.fillMaxSize()) {
-                items(shown, key = { "p" + it.id }) { l ->
-                    if (editing == l.id) EditRow(l, onOk = { n -> onSet(l.id, l.got + n.coerceIn(0, l.left)); editing = null }, onCancel = { editing = null })
-                    else LineRow(l, false, onClick = { onSet(l.id, l.qty); editing = null }, onEdit = { editing = l.id })
+        if (locked) Text(tr("🔒 देखने का मोड — किसी लाइन पर टिक नहीं होगा", "🔒 Look-only mode — no line gets ticked"), fontSize = 12.sp, fontWeight = FontWeight.Bold,
+            color = C.orangeDark, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().background(C.orangeSoft).padding(vertical = 5.dp))
+        BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
+            val density = LocalDensity.current
+            val handle = 26.dp; val bar = 36.dp
+            val free = maxHeight - handle
+            val topH = when {
+                frac <= 0f -> bar
+                frac >= 1f -> free - bar
+                else -> (free * frac).coerceIn(bar, maxOf(bar, free - bar))
+            }
+            val freePx = with(density) { free.toPx() }.coerceAtLeast(1f)
+            Column(Modifier.fillMaxSize()) {
+                // ---- not received
+                Section(Modifier.height(topH), tr("माल नहीं मिला", "Not received"), "${pending.size} ${tr("आर्टिकल", "articles")}", C.orangeDark, C.orangeSoft,
+                    qp, { qp = it }, tr("नाम, रेट, MRP, साइज़ या नंबर", "Name, rate, MRP, size or no."), collapsed = frac <= 0f, onExpand = { frac = 0.5f }) {
+                    val shown = pending.filter { it.matches(qp) }
+                    HeadRow()
+                    LazyColumn(Modifier.fillMaxSize()) {
+                        items(shown, key = { "p" + it.id }) { l ->
+                            if (editing == l.id) EditRow(l, l.left, onOk = { n, r -> r?.let { onRate(l.id, it) }; if (n > 0) move(l, l.got + n.coerceIn(0, l.left), "✓ ${l.name} " + tr("माल मिला में गया", "moved to received")); editing = null }, onCancel = { editing = null })
+                            else LineRow(l, false, locked, onClick = { move(l, l.qty, "✓ ${l.name} " + tr("माल मिला में गया", "moved to received")) }, onEdit = { if (locked) onLockedTap() else editing = l.id })
+                        }
+                        if (shown.isEmpty()) item { Empty(if (pending.isEmpty()) tr("सारा माल मिल गया", "Everything received") else tr("कुछ नहीं मिला", "Nothing found")) }
+                    }
                 }
-                if (shown.isEmpty()) item { Empty(if (pending.isEmpty()) tr("सारा माल मिल गया", "Everything received") else tr("कुछ नहीं मिला", "Nothing found")) }
+                // ---- the bar between the two lists: drag up = "माल मिला" on the whole screen, down = "माल नहीं मिला"
+                Column(
+                    Modifier.fillMaxWidth().height(handle).draggable(
+                        orientation = Orientation.Vertical,
+                        state = rememberDraggableState { d -> frac = (frac.coerceIn(0.02f, 0.98f) + d / freePx).coerceIn(0f, 1f) },
+                        onDragStopped = { frac = when { frac < 0.12f -> 0f; frac > 0.88f -> 1f; else -> frac } },
+                    ).clickable { frac = if (frac in 0.3f..0.7f) 0.62f else 0.5f },
+                    horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
+                ) {
+                    Box(Modifier.width(54.dp).height(5.dp).background(C.muted.copy(alpha = 0.6f), RoundedCornerShape(3.dp)))
+                    Text(tr("⇕ ऊपर-नीचे खींचें", "⇕ Drag up or down"), fontSize = 9.sp, color = C.muted)
+                }
+                // ---- received
+                Section(Modifier.weight(1f).padding(bottom = 8.dp), tr("माल मिला", "Received"), "${found.size} ${tr("आर्टिकल", "articles")}", Green, GreenSoft,
+                    qf, { qf = it }, tr("मिले माल में खोजें", "Search received"), collapsed = frac >= 1f, onExpand = { frac = 0.5f }) {
+                    val shown = found.filter { it.matches(qf) }
+                    HeadRow()
+                    LazyColumn(Modifier.fillMaxSize()) {
+                        items(shown, key = { "f" + it.id }) { l ->
+                            if (editing == "f" + l.id) EditRow(l, l.got, onOk = { n, r -> r?.let { onRate(l.id, it) }; if (n != l.got) move(l, n.coerceIn(0, l.qty), "↩ ${l.name} " + tr("गिनती बदली", "count changed")); editing = null }, onCancel = { editing = null })
+                            else LineRow(l, true, locked, onClick = { move(l, 0, "↩ ${l.name} " + tr("माल नहीं मिला में लौटा", "moved back to not received")) }, onEdit = { if (locked) onLockedTap() else editing = "f" + l.id })
+                        }
+                        if (shown.isEmpty()) item { Empty(if (found.isEmpty()) tr("ऊपर लाइन दबाओ, माल यहाँ आएगा", "Tap a line above; it comes here") else tr("कुछ नहीं मिला", "Nothing found")) }
+                    }
+                }
             }
         }
-        // ---- received
-        Section(Modifier.weight(0.38f).padding(bottom = 8.dp), tr("माल मिला", "Received"), "${found.size} ${tr("आर्टिकल", "articles")}", Green, GreenSoft,
-            qf, { qf = it }, tr("मिले माल में खोजें", "Search received")) {
-            val shown = found.filter { it.matches(qf) }
-            LazyColumn(Modifier.fillMaxSize()) {
-                items(shown, key = { "f" + it.id }) { l -> LineRow(l, true, onClick = { onSet(l.id, 0) }, onEdit = {}) }
-                if (shown.isEmpty()) item { Empty(if (found.isEmpty()) tr("ऊपर लाइन दबाओ, माल यहाँ आएगा", "Tap a line above; it comes here") else tr("कुछ नहीं मिला", "Nothing found")) }
-            }
+    }
+    // ---- "↩ वापस" for 5 seconds after a tick
+    last?.let { (lid, before, msg) ->
+        Row(Modifier.align(Alignment.BottomCenter).padding(12.dp).fillMaxWidth().background(C.navy, RoundedCornerShape(10.dp)).padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+            Text(msg, fontSize = 13.sp, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+            Text(tr("↩ वापस", "↩ Undo"), fontSize = 14.sp, fontWeight = FontWeight.Bold, color = C.orange,
+                modifier = Modifier.clickable { onSet(lid, before); last = null }.padding(start = 12.dp))
         }
+    }
     }
 }
 
 @Composable
 private fun Section(
     modifier: Modifier, title: String, count: String, fg: Color, bg: Color, query: String, onQuery: (String) -> Unit, hint: String,
+    collapsed: Boolean = false, onExpand: () -> Unit = {},
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(modifier.padding(horizontal = 8.dp).padding(top = 6.dp).fillMaxWidth().background(C.card, RoundedCornerShape(10.dp)).border(1.dp, C.line, RoundedCornerShape(10.dp))) {
-        Row(Modifier.fillMaxWidth().background(bg, RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)).padding(horizontal = 10.dp, vertical = 5.dp)) {
+        Row(Modifier.fillMaxWidth().background(bg, RoundedCornerShape(if (collapsed) 10.dp else 0.dp)).then(if (collapsed) Modifier.clickable(onClick = onExpand) else Modifier).padding(horizontal = 10.dp, vertical = 5.dp)) {
             Text(title, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = fg, modifier = Modifier.weight(1f))
             Text(count, fontSize = 12.sp, color = fg)
         }
+        if (collapsed) return@Column
         Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp).border(1.dp, C.line, RoundedCornerShape(8.dp)).padding(horizontal = 8.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Outlined.Search, contentDescription = null, tint = C.muted, modifier = Modifier.size(16.dp))
@@ -213,7 +294,7 @@ private fun Section(
     }
 }
 
-private val W_CK = 18.dp; private val W_NO = 22.dp; private val W_MRP = 50.dp; private val W_SIZE = 46.dp; private val W_PCS = 46.dp; private val W_ED = 24.dp
+private val W_CK = 18.dp; private val W_NO = 22.dp; private val W_RATE = 44.dp; private val W_MRP = 44.dp; private val W_SIZE = 42.dp; private val W_PCS = 38.dp; private val W_ED = 24.dp
 
 @Composable
 private fun Cell(text: String, w: Dp, color: Color = C.ink, bold: Boolean = false, end: Boolean = true) =
@@ -225,53 +306,70 @@ private fun HeadRow() {
     Row(Modifier.fillMaxWidth().background(C.bg).padding(horizontal = 8.dp, vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         Spacer(Modifier.width(W_CK)); Cell("#", W_NO, C.muted, end = false)
         Text(tr("आर्टिकल", "Article"), fontSize = 11.sp, color = C.muted, modifier = Modifier.weight(1f))
-        Cell("MRP", W_MRP, C.muted); Cell(tr("साइज़", "Size"), W_SIZE, C.muted); Cell(tr("पीस", "Pcs"), W_PCS, C.muted); Spacer(Modifier.width(W_ED))
+        Cell(tr("रेट", "Rate"), W_RATE, C.orangeDark); Cell("MRP", W_MRP, C.muted); Cell(tr("साइज़", "Size"), W_SIZE, C.muted); Cell(tr("पीस", "Pcs"), W_PCS, C.muted); Spacer(Modifier.width(W_ED))
     }
 }
 
 @Composable
-private fun Box16(on: Boolean) = Box(
-    Modifier.size(16.dp).background(if (on) Green else Color.Transparent, RoundedCornerShape(4.dp)).border(1.3.dp, if (on) Green else C.muted.copy(alpha = 0.5f), RoundedCornerShape(4.dp)),
+private fun Box16(on: Boolean, faded: Boolean = false) = Box(
+    Modifier.size(16.dp).background(if (on) Green.copy(alpha = if (faded) 0.35f else 1f) else Color.Transparent, RoundedCornerShape(4.dp))
+        .border(1.3.dp, if (on) Green.copy(alpha = if (faded) 0.35f else 1f) else C.muted.copy(alpha = if (faded) 0.25f else 0.5f), RoundedCornerShape(4.dp)),
     contentAlignment = Alignment.Center,
 ) { if (on) Icon(Icons.Outlined.Check, contentDescription = null, tint = Color.White, modifier = Modifier.size(12.dp)) }
 
 @Composable
-private fun LineRow(l: CheckLine, found: Boolean, onClick: () -> Unit, onEdit: () -> Unit) {
+private fun LineRow(l: CheckLine, found: Boolean, locked: Boolean, onClick: () -> Unit, onEdit: () -> Unit) {
     Row(
         Modifier.fillMaxWidth().height(30.dp).clickable(onClick = onClick).padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Box(Modifier.width(W_CK)) { Box16(found) }
+        Box(Modifier.width(W_CK).then(if (locked) Modifier.background(Color.Transparent) else Modifier)) { Box16(found, faded = locked) }
         Cell(l.no, W_NO, C.muted, end = false)
         Text(l.name, fontSize = 12.sp, color = C.ink, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+        Cell(if (l.rate.isEmpty()) "—" else "₹" + l.rate, W_RATE, C.orangeDark, bold = true)
         Cell(if (l.mrp.isEmpty()) "—" else "₹" + l.mrp, W_MRP)
         Cell(l.size.ifBlank { "—" }, W_SIZE, C.muted)
         if (found) Cell("${l.got}/${l.qty}", W_PCS, Green, bold = true) else Cell("${l.left}", W_PCS, bold = true)
         Box(Modifier.width(W_ED), contentAlignment = Alignment.Center) {
-            if (!found) Icon(Icons.Outlined.Edit, contentDescription = tr("गिनती बदलें", "Change count"), tint = C.navy, modifier = Modifier.size(18.dp).clickable(onClick = onEdit))
+            Icon(Icons.Outlined.Edit, contentDescription = tr("गिनती बदलें", "Change count"), tint = C.navy, modifier = Modifier.size(18.dp).clickable(onClick = onEdit))
         }
     }
     Box(Modifier.fillMaxWidth().height(0.5.dp).background(C.line))
 }
 
-/** Part of a line arrived: type how many pieces came. */
+/** Part of a line arrived: type how many pieces came, and the rate from the company if it is missing or different. */
 @Composable
-private fun EditRow(l: CheckLine, onOk: (Int) -> Unit, onCancel: () -> Unit) {
-    var t by remember(l.id) { mutableStateOf("${l.left}") }
-    val ok = { t.trim().toIntOrNull()?.let { if (it > 0) onOk(it) else onCancel() } ?: onCancel() }
-    Row(Modifier.fillMaxWidth().background(C.orangeSoft).padding(horizontal = 8.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text("${l.no}. ${l.name}", fontSize = 12.sp, color = C.ink, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-        Text(tr("कितने मिले?", "How many?"), fontSize = 11.sp, color = C.muted)
-        BasicTextField(
-            t, { s -> t = s.filter { it.isDigit() }.take(4) }, singleLine = true,
-            textStyle = TextStyle(fontSize = 14.sp, color = C.ink, textAlign = TextAlign.Center),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done), keyboardActions = KeyboardActions(onDone = { ok() }),
-            modifier = Modifier.width(48.dp).background(C.card, RoundedCornerShape(6.dp)).border(1.dp, C.line, RoundedCornerShape(6.dp)).padding(vertical = 4.dp),
-        )
-        Text("/ ${l.left}", fontSize = 12.sp, color = C.muted)
-        Text("OK", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White,
-            modifier = Modifier.background(C.orange, RoundedCornerShape(6.dp)).clickable { ok() }.padding(horizontal = 10.dp, vertical = 4.dp))
-        Icon(Icons.Outlined.Close, contentDescription = tr("रद्द", "Cancel"), tint = C.muted, modifier = Modifier.size(18.dp).clickable(onClick = onCancel))
+private fun EditRow(l: CheckLine, start: Int, onOk: (Int, BigDecimal?) -> Unit, onCancel: () -> Unit) {
+    var t by remember(l.id) { mutableStateOf("$start") }
+    var r by remember(l.id) { mutableStateOf(l.rate) }
+    val ok = {
+        val n = t.trim().toIntOrNull() ?: start
+        val rate = r.trim().toBigDecimalOrNull()?.takeIf { it.signum() > 0 && it.stripTrailingZeros().toPlainString() != l.rate }
+        onOk(n, rate)
+    }
+    Column(Modifier.fillMaxWidth().background(C.orangeSoft).padding(horizontal = 8.dp, vertical = 4.dp)) {
+        Text("${l.no}. ${l.name}", fontSize = 12.sp, color = C.ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(tr("कितने मिले?", "How many?"), fontSize = 11.sp, color = C.muted)
+            BasicTextField(
+                t, { s -> t = s.filter { it.isDigit() }.take(4) }, singleLine = true,
+                textStyle = TextStyle(fontSize = 14.sp, color = C.ink, textAlign = TextAlign.Center),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                modifier = Modifier.width(44.dp).background(C.card, RoundedCornerShape(6.dp)).border(1.dp, C.line, RoundedCornerShape(6.dp)).padding(vertical = 4.dp),
+            )
+            Text("/ ${l.qty}", fontSize = 12.sp, color = C.muted)
+            Text(tr("रेट ₹", "Rate ₹"), fontSize = 11.sp, color = C.orangeDark)
+            BasicTextField(
+                r, { s -> r = s.filter { it.isDigit() || it == '.' }.take(7) }, singleLine = true,
+                textStyle = TextStyle(fontSize = 14.sp, color = C.ink, textAlign = TextAlign.Center),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Done), keyboardActions = KeyboardActions(onDone = { ok() }),
+                modifier = Modifier.width(60.dp).background(C.card, RoundedCornerShape(6.dp)).border(1.dp, C.line, RoundedCornerShape(6.dp)).padding(vertical = 4.dp),
+            )
+            Spacer(Modifier.weight(1f))
+            Text("OK", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White,
+                modifier = Modifier.background(C.orange, RoundedCornerShape(6.dp)).clickable { ok() }.padding(horizontal = 10.dp, vertical = 4.dp))
+            Icon(Icons.Outlined.Close, contentDescription = tr("रद्द", "Cancel"), tint = C.muted, modifier = Modifier.size(18.dp).clickable(onClick = onCancel))
+        }
     }
 }
 
