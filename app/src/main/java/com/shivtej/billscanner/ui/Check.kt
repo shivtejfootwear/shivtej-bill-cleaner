@@ -140,6 +140,25 @@ fun CheckScreen(id: String, onBack: () -> Unit, onDone: () -> Unit = onBack) {
     CheckContent(bill, c.checks.of(id), onSet = { line, n -> c.checks.set(id, line, n) }, onBack = onBack, onDone = onDone,
         locked = locked, onLock = { on -> locked = on; c.prefs.checkLocked = on },
         onLockedTap = { android.widget.Toast.makeText(ctx, tr2(c.lang, "टिक बंद है — टिक करने के लिए 🔒 दबाएँ", "Ticking is locked — tap 🔒 to tick"), android.widget.Toast.LENGTH_SHORT).show() },
+        onPdf = { received ->
+            // The list as it is now: what arrived (pieces got) or what is still to come (pieces left).
+            val now = checkLines(bill, c.checks.of(id)).filter { if (received) it.got > 0 else it.left > 0 }
+            val rows = now.map { l ->
+                val v = bill.items.firstOrNull { it.id == l.id }?.current
+                com.shivtej.billscanner.export.Pdf.GoodsRow(l.no, v?.let { com.shivtej.billscanner.core.ocr.KachaBill.billOf(it) }.orEmpty().takeIf { s -> s.all(Char::isDigit) }.orEmpty(),
+                    l.name, v?.colour.orEmpty(), l.size, v?.rate, v?.mrp, if (received) l.got else l.left, l.qty)
+            }
+            c.scope.launch {
+                runCatching {
+                    val name = com.shivtej.billscanner.core.export.InvoiceExport.fileBase(bill) + if (received) "_Maal_Mila.pdf" else "_Maal_Nahi_Mila.pdf"
+                    val data = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                        java.io.ByteArrayOutputStream().also { com.shivtej.billscanner.export.Pdf.goods(bill, rows, received, it) }.toByteArray()
+                            .also { d -> Files.saveToDownloads(ctx, name, "application/pdf", d) }
+                    }
+                    Files.open(ctx, name, "application/pdf", data)
+                }.onFailure { e -> android.widget.Toast.makeText(ctx, tr2(c.lang, "PDF नहीं बनी: ", "PDF failed: ") + e.message, android.widget.Toast.LENGTH_LONG).show() }
+            }
+        },
         onRate = { line, r ->
             // The rate from the company, typed in during the goods check: saved on the bill line (amount worked out again).
             val item = bill.items.firstOrNull { it.id == line }
@@ -151,6 +170,7 @@ fun CheckScreen(id: String, onBack: () -> Unit, onDone: () -> Unit = onBack) {
 fun CheckContent(
     inv: Invoice, got: Map<String, Int>, onSet: (String, Int) -> Unit, onBack: () -> Unit, onDone: () -> Unit = onBack,
     locked: Boolean = false, onLock: (Boolean) -> Unit = {}, onLockedTap: () -> Unit = {}, onRate: (String, BigDecimal) -> Unit = { _, _ -> },
+    onPdf: (Boolean) -> Unit = {},
 ) {
     val lines = checkLines(inv, got)
     var qp by rememberSaveable { mutableStateOf("") }
@@ -218,7 +238,7 @@ fun CheckContent(
             Column(Modifier.fillMaxSize()) {
                 // ---- not received
                 Section(Modifier.height(topH), tr("माल नहीं मिला", "Not received"), "${pending.size} ${tr("आर्टिकल", "articles")}", C.orangeDark, C.orangeSoft,
-                    qp, { qp = it }, tr("नाम, रेट, MRP, साइज़ या नंबर", "Name, rate, MRP, size or no."), collapsed = frac <= 0f, onExpand = { frac = 0.5f }) {
+                    qp, { qp = it }, tr("नाम, रेट, MRP, साइज़ या नंबर", "Name, rate, MRP, size or no."), collapsed = frac <= 0f, onExpand = { frac = 0.5f }, onPdf = { onPdf(false) }) {
                     val shown = pending.filter { it.matches(qp) }
                     HeadRow()
                     LazyColumn(Modifier.fillMaxSize()) {
@@ -243,7 +263,7 @@ fun CheckContent(
                 }
                 // ---- received
                 Section(Modifier.weight(1f).padding(bottom = 8.dp), tr("माल मिला", "Received"), "${found.size} ${tr("आर्टिकल", "articles")}", Green, GreenSoft,
-                    qf, { qf = it }, tr("मिले माल में खोजें", "Search received"), collapsed = frac >= 1f, onExpand = { frac = 0.5f }) {
+                    qf, { qf = it }, tr("मिले माल में खोजें", "Search received"), collapsed = frac >= 1f, onExpand = { frac = 0.5f }, onPdf = { onPdf(true) }) {
                     val shown = found.filter { it.matches(qf) }
                     HeadRow()
                     LazyColumn(Modifier.fillMaxSize()) {
@@ -272,13 +292,16 @@ fun CheckContent(
 @Composable
 private fun Section(
     modifier: Modifier, title: String, count: String, fg: Color, bg: Color, query: String, onQuery: (String) -> Unit, hint: String,
-    collapsed: Boolean = false, onExpand: () -> Unit = {},
+    collapsed: Boolean = false, onExpand: () -> Unit = {}, onPdf: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(modifier.padding(horizontal = 8.dp).padding(top = 6.dp).fillMaxWidth().background(C.card, RoundedCornerShape(10.dp)).border(1.dp, C.line, RoundedCornerShape(10.dp))) {
         Row(Modifier.fillMaxWidth().background(bg, RoundedCornerShape(if (collapsed) 10.dp else 0.dp)).then(if (collapsed) Modifier.clickable(onClick = onExpand) else Modifier).padding(horizontal = 10.dp, vertical = 5.dp)) {
-            Text(title, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = fg, modifier = Modifier.weight(1f))
-            Text(count, fontSize = 12.sp, color = fg)
+            Text(title, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = fg, modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
+            Text(count, fontSize = 12.sp, color = fg, modifier = Modifier.align(Alignment.CenterVertically))
+            // This list as a PDF, as it stands now (works even when the list is closed to its title).
+            if (onPdf != null) Text("PDF", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White,
+                modifier = Modifier.padding(start = 8.dp).background(fg, RoundedCornerShape(6.dp)).clickable(onClick = onPdf).padding(horizontal = 8.dp, vertical = 3.dp))
         }
         if (collapsed) return@Column
         Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp).border(1.dp, C.line, RoundedCornerShape(8.dp)).padding(horizontal = 8.dp, vertical = 6.dp),

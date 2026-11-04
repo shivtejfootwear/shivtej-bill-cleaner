@@ -320,7 +320,8 @@ object Pdf {
                 c.drawText(hd.supplierName ?: "Kachha bill", x0, y, Paint(b).apply { textSize = 16f }); y += 16f
                 c.drawText("Invoice No: ${hd.invoiceNo ?: ""}", x0, y, b); c.drawText("Date: ${hd.invoiceDate ?: ""}", x0 + 300, y, b); y += 13f
                 c.drawText("M/s SHIVTEJ FOOTWEAR AKLUJ", x0, y, p); c.drawText("Kachha bill (estimate)", x0 + 300, y, p); y += 12f
-                c.drawText("Typed from the handwritten bill for goods check. MRP blank = bill has no MRP (rate only).", x0, y, p); y += 18f
+                // (No sentence just above the table: the reader would take its words for column headings.)
+                y += 14f
             }
             c.drawLine(x0, y - 11, x0 + tw, y - 11, line)
             var x = x0
@@ -352,9 +353,74 @@ object Pdf {
                 c.drawText("Grand Total", x0 + 300, y, b); c.drawText(ta, x0 + tw - 3 - b.measureText(ta), y, b)
                 val ws = Warnings.of(inv).filter { w0 -> w0.level.name != "TIP" }
                 y += 18f
+                c.drawText("Note: typed from the handwritten kachha bill for goods check. Blank MRP = that bill gives no MRP.", x0, y, Paint(p).apply { textSize = 8f }); y += 13f
                 for (w0 in ws.take(12)) { c.drawText("• " + w0.hindi.take(110), x0, y, Paint(p).apply { color = ORANGE_DARK; textSize = 8f }); y += 11f }
             }
             c.drawText("Page ${pi + 1} of ${pages.size}", x0, h - 20f, Paint(p).apply { textSize = 8f })
+            doc.finishPage(page)
+        }
+        doc.writeTo(out); doc.close()
+    }
+
+    /** One line of a goods-check list for the PDF. */
+    class GoodsRow(val no: String, val bill: String, val article: String, val colour: String, val size: String, val rate: BigDecimal?, val mrp: BigDecimal?, val pcs: Int, val of: Int)
+
+    /**
+     * The goods check as a PDF: what arrived ("माल मिला") or what has not come yet ("माल नहीं मिला"), with pieces,
+     * rate, MRP and amount (pieces × rate) — for sending to the supplier or keeping.
+     */
+    fun goods(inv: Invoice, rows: List<GoodsRow>, received: Boolean, out: OutputStream) {
+        val doc = PdfDocument()
+        val w = 595; val h = 842; val x0 = 28f
+        val cols = listOf("#" to 26f, "Bill" to 34f, "Article" to 150f, "Colour" to 78f, "Size" to 40f, "Rate" to 46f, "MRP" to 46f, "Pcs" to 48f, "Amount" to 62f)
+        val right = setOf(5, 6, 7, 8)
+        val tw = cols.sumOf { it.second.toDouble() }.toFloat()
+        val p = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = 9f; color = Color.BLACK }
+        val b = Paint(p).apply { typeface = Typeface.DEFAULT_BOLD }
+        val line = Paint().apply { color = Color.BLACK; strokeWidth = 0.6f }
+        val title = if (received) "MAAL MILA — goods received" else "MAAL NAHI MILA — goods not received yet"
+        val tint = if (received) GREEN else ORANGE_DARK
+        val per = 46
+        val chunks = if (rows.isEmpty()) listOf(emptyList()) else rows.chunked(per)
+        fun money(v: BigDecimal?) = v?.let { Calc.r2(it).toPlainString() } ?: ""
+        var pcs = 0; var amt = BigDecimal.ZERO
+        for ((pi, pg) in chunks.withIndex()) {
+            val page = doc.startPage(PdfDocument.PageInfo.Builder(w, h, pi + 1).create())
+            val c = page.canvas
+            var y = 40f
+            if (pi == 0) {
+                c.drawText(title, x0, y, Paint(b).apply { textSize = 15f; color = tint }); y += 16f
+                c.drawText("${inv.header.supplierName ?: ""} · Bill ${inv.header.invoiceNo ?: ""} · ${inv.header.invoiceDate ?: ""}", x0, y, b); y += 13f
+                c.drawText("Goods check of ${stamp()} · Shivtej Footwear Akluj", x0, y, Paint(p).apply { color = MUTED }); y += 18f
+            }
+            c.drawLine(x0, y - 11, x0 + tw, y - 11, line)
+            var x = x0
+            for ((ci, col) in cols.withIndex()) { val t = col.first; if (ci in right) c.drawText(t, x + col.second - 3 - b.measureText(t), y, b) else c.drawText(t, x + 3, y, b); x += col.second }
+            c.drawLine(x0, y + 4, x0 + tw, y + 4, line)
+            y += 16f
+            for (r in pg) {
+                val a = r.rate?.let { it * BigDecimal(r.pcs) }
+                pcs += r.pcs; a?.let { amt += it }
+                val vals = listOf(r.no, r.bill, r.article, r.colour, r.size, money(r.rate), money(r.mrp), if (r.pcs == r.of) "${r.pcs}" else "${r.pcs} / ${r.of}", money(a))
+                x = x0
+                for ((ci, t0) in vals.withIndex()) {
+                    val cw = cols[ci].second
+                    var t = t0
+                    while (t.isNotEmpty() && p.measureText(t) > cw - 5) t = t.dropLast(1)
+                    if (ci in right) c.drawText(t, x + cw - 3 - p.measureText(t), y, p) else c.drawText(t, x + 3, y, p)
+                    x += cw
+                }
+                y += 15.5f
+            }
+            if (pi == chunks.lastIndex) {
+                y += 4f
+                c.drawLine(x0, y - 10, x0 + tw, y - 10, line)
+                c.drawText("Total ${rows.size} lines", x0 + 3, y + 2, b)
+                val tp = "$pcs"; val ta = money(amt)
+                c.drawText(tp, x0 + cols.take(8).sumOf { it.second.toDouble() }.toFloat() - 3 - b.measureText(tp), y + 2, b)
+                c.drawText(ta, x0 + tw - 3 - b.measureText(ta), y + 2, b)
+            }
+            c.drawText("Page ${pi + 1} of ${chunks.size}", x0, h - 20f, Paint(p).apply { textSize = 8f })
             doc.finishPage(page)
         }
         doc.writeTo(out); doc.close()
