@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.ParserTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-04T14:22:22.688Z" hostname="runnervmwuk1x" time="0.958">
+  <properties/>
+  <testcase name="everyLineAndEveryNumberIsRead" classname="com.shivtej.billscanner.core.ParserTest" time="0.091"/>
+  <testcase name="totalsAndReconciliation" classname="com.shivtej.billscanner.core.ParserTest" time="0.11"/>
+  <testcase name="discountMaths" classname="com.shivtej.billscanner.core.ParserTest" time="0.088"/>
+  <testcase name="sizeAssortments" classname="com.shivtej.billscanner.core.ParserTest" time="0.097"/>
+  <testcase name="textPartsAreKept" classname="com.shivtej.billscanner.core.ParserTest" time="0.096"/>
+  <testcase name="supplierRoundingIsNotAnError" classname="com.shivtej.billscanner.core.ParserTest" time="0.093"/>
+  <testcase name="unreadableDiscountIsNeedsVerificationNotInvented" classname="com.shivtej.billscanner.core.ParserTest" time="0.198"/>
+  <testcase name="headerIsRead" classname="com.shivtej.billscanner.core.ParserTest" time="0.172"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

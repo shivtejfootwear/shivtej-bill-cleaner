@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.KachaBillTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-04T14:22:16.754Z" hostname="runnervmwuk1x" time="0.314">
+  <properties/>
+  <testcase name="readsTheShopsWayOfWriting" classname="com.shivtej.billscanner.core.KachaBillTest" time="0.159"/>
+  <testcase name="aPhotoTakenSideways" classname="com.shivtej.billscanner.core.KachaBillTest" time="0.026"/>
+  <testcase name="theRunningTotalShowsAWrongPairCount" classname="com.shivtej.billscanner.core.KachaBillTest" time="0.118"/>
+  <testcase name="aTaxInvoiceIsNotAKachhaBill" classname="com.shivtej.billscanner.core.KachaBillTest" time="0.007"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

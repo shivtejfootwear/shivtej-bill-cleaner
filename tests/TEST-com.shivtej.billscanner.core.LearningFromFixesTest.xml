@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.shivtej.billscanner.core.LearningFromFixesTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-04T14:22:19.085Z" hostname="runnervmwuk1x" time="2.932">
+  <properties/>
+  <testcase name="aFixTeachesTheNextBill" classname="com.shivtej.billscanner.core.LearningFromFixesTest" time="1.763"/>
+  <testcase name="aDeletedJunkLineIsSkippedNextTime" classname="com.shivtej.billscanner.core.LearningFromFixesTest" time="0.508"/>
+  <testcase name="aWrongNumberTypedInTheWrongBoxTeachesNothing" classname="com.shivtej.billscanner.core.LearningFromFixesTest" time="0.656"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
